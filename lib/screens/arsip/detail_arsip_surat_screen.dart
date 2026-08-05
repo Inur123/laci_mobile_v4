@@ -55,22 +55,11 @@ class DetailArsipSuratScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.inputFill,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  _buildDetailRow(CupertinoIcons.number, 'Nomor Surat', '020/PW/A/7455/2026'),
-                  const Divider(height: 24, thickness: 1, color: Colors.black12),
-                  _buildDetailRow(CupertinoIcons.calendar, 'Tanggal', '16 Juli 2026'),
-                  const Divider(height: 24, thickness: 1, color: Colors.black12),
-                  _buildDetailRow(CupertinoIcons.person_2, 'Pengirim', 'PW IPPNU Jatim'),
-                ],
-              ),
-            ),
+            _buildDetailRow(CupertinoIcons.number, 'Nomor Surat', '020/PW/A/7455/2026'),
+            const Divider(height: 24, thickness: 1, color: Colors.black12),
+            _buildDetailRow(CupertinoIcons.calendar, 'Tanggal', '16 Juli 2026'),
+            const Divider(height: 24, thickness: 1, color: Colors.black12),
+            _buildDetailRow(CupertinoIcons.person_2, 'Pengirim', 'PW IPPNU Jatim'),
             
             const SizedBox(height: 24),
             const Text('Deskripsi', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),

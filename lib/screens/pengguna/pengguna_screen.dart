@@ -84,9 +84,8 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                       decoration: InputDecoration(
                         hintText: 'Cari nama atau email...',
                         hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                        prefixIcon: Icon(CupertinoIcons.search, color: AppColors.textSecondary, size: 20),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 14),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                         isDense: true,
                       ),
                     ),

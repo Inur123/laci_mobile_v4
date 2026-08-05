@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:laci_mobile/screens/pengajuan/pengajuan_screen.dart';
 import 'package:laci_mobile/screens/agenda/agenda_screen.dart';
 import 'package:laci_mobile/screens/pengguna/pengguna_screen.dart';
+import 'package:laci_mobile/screens/presensi/presensi_screen.dart';
 import 'package:laci_mobile/screens/lainnya_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 
@@ -150,7 +151,15 @@ class HomeScreen extends StatelessWidget {
                                   Navigator.push(context, MaterialPageRoute(builder: (context) => AgendaScreen(isCabang: isCabang)));
                                 },
                               ),
-                              _buildMenuButton(CupertinoIcons.qrcode_viewfinder, 'Presensi', Colors.green.shade100, Colors.green.shade700),
+                              _buildMenuButton(
+                                CupertinoIcons.qrcode_viewfinder, 
+                                'Presensi', 
+                                Colors.green.shade100, 
+                                Colors.green.shade700,
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PresensiScreen(isCabang: isCabang)));
+                                },
+                              ),
                               _buildMenuButton(
                                 CupertinoIcons.square_grid_2x2_fill, 
                                 'Lainnya', 

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/screens/arsip/detail_arsip_surat_screen.dart';
 import 'package:laci_mobile/screens/arsip/detail_sp_screen.dart';
+import 'package:laci_mobile/screens/arsip/detail_berkas_cabang_screen.dart';
 import 'package:laci_mobile/screens/arsip/form_arsip_surat_screen.dart';
 import 'package:laci_mobile/screens/arsip/form_berkas_cabang_screen.dart';
 import 'package:laci_mobile/screens/arsip/form_sp_screen.dart';
@@ -341,10 +342,19 @@ class _ArsipScreenState extends State<ArsipScreen> {
           BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Baris Atas: Badge & Menu
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailArsipSuratScreen(isCabang: widget.isCabang)));
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Baris Atas: Badge & Menu
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -423,8 +433,11 @@ class _ArsipScreenState extends State<ArsipScreen> {
           )
         ],
       ),
-    );
-  }
+    ),
+  ),
+),
+);
+}
 
   Widget _buildSpCard(int index) {
     final names = ['Pk Ipnu Tarbiyatul \'ulum', 'Pac Ippnu Karas', 'Pac Ippnu Plaosan', 'Pac Ippnu Maospati'];
@@ -444,10 +457,19 @@ class _ArsipScreenState extends State<ArsipScreen> {
           BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailSpScreen(isCabang: widget.isCabang)));
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
@@ -506,7 +528,10 @@ class _ArsipScreenState extends State<ArsipScreen> {
               const Text('Akhir: 23 Nov 2026', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
             ],
           ),
-        ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -526,10 +551,19 @@ class _ArsipScreenState extends State<ArsipScreen> {
           BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBerkasCabangScreen(isCabang: widget.isCabang)));
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
@@ -570,7 +604,10 @@ class _ArsipScreenState extends State<ArsipScreen> {
               const Text('Catatan: -', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
             ],
           ),
-        ],
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
