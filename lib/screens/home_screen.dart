@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:laci_mobile/screens/pengajuan/pengajuan_screen.dart';
 import 'package:laci_mobile/screens/agenda/agenda_screen.dart';
+import 'package:laci_mobile/screens/pengguna/pengguna_screen.dart';
 import 'package:laci_mobile/screens/lainnya_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 
@@ -130,7 +132,15 @@ class HomeScreen extends StatelessWidget {
                             crossAxisSpacing: 8,
                             childAspectRatio: 0.8, // Fix for bottom overflow
                             children: [
-                              _buildMenuButton(CupertinoIcons.person_3_fill, 'Pengguna', Colors.blue.shade100, Colors.blue.shade700),
+                              _buildMenuButton(
+                                CupertinoIcons.person_3_fill, 
+                                'Pengguna', 
+                                Colors.blue.shade100, 
+                                Colors.blue.shade700,
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PenggunaScreen(isCabang: isCabang)));
+                                },
+                              ),
                               _buildMenuButton(
                                 CupertinoIcons.calendar_today, 
                                 'Agenda', 
