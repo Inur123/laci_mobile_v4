@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
+import 'package:laci_mobile/screens/arsip/form_arsip_surat_screen.dart';
 
-class DetailArsipScreen extends StatelessWidget {
-  const DetailArsipScreen({super.key});
+class DetailArsipSuratScreen extends StatelessWidget {
+  final bool isCabang;
+  const DetailArsipSuratScreen({super.key, this.isCabang = true});
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +21,15 @@ class DetailArsipScreen extends StatelessWidget {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: const Icon(CupertinoIcons.back, color: AppColors.primary),
+          icon: Icon(CupertinoIcons.back, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text('Detail Arsip', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16)),
         actions: [
           IconButton(
-            icon: const Icon(CupertinoIcons.pencil, color: AppColors.primary),
+            icon: Icon(CupertinoIcons.pencil, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
             onPressed: () {
-              // Bisa untuk shortcut edit
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const FormArsipSuratScreen(isEdit: true)));
             },
           )
         ],
@@ -109,7 +111,7 @@ class DetailArsipScreen extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(CupertinoIcons.cloud_download, color: AppColors.primary),
+                    icon: Icon(CupertinoIcons.cloud_download, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
                     onPressed: () {},
                   )
                 ],

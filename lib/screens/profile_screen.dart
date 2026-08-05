@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/widgets/custom_text_field.dart';
 
@@ -11,10 +12,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // Variabel untuk testing kondisi (bisa diubah-ubah)
   bool _isEmailVerified = true;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  String? _photoFileName;
 
   @override
   Widget build(BuildContext context) {
@@ -304,14 +305,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade600,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
+            InkWell(
+              onTap: _pickPhoto,
+              borderRadius: BorderRadius.circular(30),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade600,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 3),
+                ),
+                child: const Icon(CupertinoIcons.camera_fill, color: Colors.white, size: 16),
               ),
-              child: const Icon(CupertinoIcons.camera_fill, color: Colors.white, size: 16),
             ),
           ],
         ),
@@ -346,9 +351,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        const Text(
-          'Klik ikon kamera untuk ganti foto baru. Maks 2MB.',
-          style: TextStyle(color: Colors.grey, fontSize: 11),
+        Text(
+          _photoFileName ?? 'Klik ikon kamera untuk ganti foto baru. Maks 2MB.',
+          style: TextStyle(color: _photoFileName != null ? Colors.blue.shade700 : Colors.grey, fontSize: 11, fontWeight: _photoFileName != null ? FontWeight.bold : FontWeight.normal),
+          textAlign: TextAlign.center,
         ),
       ],
     );
@@ -382,5 +388,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _pickPhoto() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (result != null) {
+      setState(() {
+        _photoFileName = result.files.single.name;
+      });
+    }
   }
 }

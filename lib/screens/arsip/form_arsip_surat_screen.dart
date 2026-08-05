@@ -1,21 +1,24 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/widgets/custom_text_field.dart';
 
-class TambahArsipScreen extends StatefulWidget {
+class FormArsipSuratScreen extends StatefulWidget {
+  final bool isCabang;
   final bool isEdit;
   
-  const TambahArsipScreen({super.key, this.isEdit = false});
+  const FormArsipSuratScreen({super.key, this.isCabang = true, this.isEdit = false});
 
   @override
-  State<TambahArsipScreen> createState() => _TambahArsipScreenState();
+  State<FormArsipSuratScreen> createState() => _FormArsipSuratScreenState();
 }
 
-class _TambahArsipScreenState extends State<TambahArsipScreen> {
+class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
   String? _selectedJenisSurat;
   String? _selectedOrganisasi;
   String? _selectedTanggal;
+  String? _fileName;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +34,7 @@ class _TambahArsipScreenState extends State<TambahArsipScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: const Icon(CupertinoIcons.back, color: AppColors.primary),
+          icon: Icon(CupertinoIcons.back, color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -117,50 +120,64 @@ class _TambahArsipScreenState extends State<TambahArsipScreen> {
               const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
-                  color: AppColors.inputFill,
-                  borderRadius: BorderRadius.circular(16),
-                ),
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
                 child: const TextField(
                   maxLines: 4,
                   decoration: InputDecoration(
                     hintText: 'Deskripsi singkat mengenai surat (opsional)',
                     hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
                     border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
                     contentPadding: EdgeInsets.all(16),
                   ),
                 ),
               ),
               const SizedBox(height: 24),
               
-              const Text(
-                'File Surat',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-              ),
+              const Text('File Surat', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
               const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.blue.withOpacity(0.3), style: BorderStyle.solid),
-                ),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+              InkWell(
+                onTap: _pickFile,
+                borderRadius: BorderRadius.circular(8),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.withOpacity(0.3), style: BorderStyle.solid),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                        ),
+                        child: Icon(
+                          _fileName != null ? CupertinoIcons.doc_fill : CupertinoIcons.cloud_upload, 
+                          color: Colors.blue, 
+                          size: 28,
+                        ),
                       ),
-                      child: const Icon(CupertinoIcons.cloud_upload, color: Colors.blue, size: 28),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text('Klik untuk upload', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 8),
-                    const Text('Maksimal 2MB. Format: PDF, Word, atau Gambar', textAlign: TextAlign.center, style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                  ],
+                      const SizedBox(height: 16),
+                      Text(
+                        _fileName ?? 'Klik untuk upload', 
+                        style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      if (_fileName == null) ...[
+                        const SizedBox(height: 8),
+                        const Text('Maksimal 2MB. Format: PDF, Word, atau Gambar', textAlign: TextAlign.center, style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                      ],
+                    ],
+                  ),
                 ),
               ),
               
@@ -173,8 +190,8 @@ class _TambahArsipScreenState extends State<TambahArsipScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: const BorderSide(color: Colors.black12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text('Batal', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
                     ),
@@ -187,7 +204,7 @@ class _TambahArsipScreenState extends State<TambahArsipScreen> {
                         backgroundColor: Colors.blue.shade700, // Tombol biru seperti di web
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: Text(widget.isEdit ? 'Simpan Perubahan' : 'Simpan Surat', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                     ),
@@ -221,8 +238,8 @@ class _TambahArsipScreenState extends State<TambahArsipScreen> {
             height: 56,
             decoration: BoxDecoration(
               color: AppColors.inputFill,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.transparent),
+              borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.transparent),
             ),
             child: Row(
               children: [
@@ -328,6 +345,18 @@ class _TambahArsipScreenState extends State<TambahArsipScreen> {
     );
     if (picked != null) {
       onDateSelected("${picked.day}/${picked.month}/${picked.year}");
+    }
+  }
+
+  Future<void> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'png', 'jpeg'],
+    );
+    if (result != null) {
+      setState(() {
+        _fileName = result.files.single.name;
+      });
     }
   }
 }

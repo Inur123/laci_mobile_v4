@@ -1,18 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/widgets/custom_text_field.dart';
 
-class TambahAnggotaScreen extends StatefulWidget {
+class FormAnggotaScreen extends StatefulWidget {
+  final bool isCabang;
   final bool isEdit;
   
-  const TambahAnggotaScreen({super.key, this.isEdit = false});
+  const FormAnggotaScreen({super.key, this.isCabang = true, this.isEdit = false});
 
   @override
-  State<TambahAnggotaScreen> createState() => _TambahAnggotaScreenState();
+  State<FormAnggotaScreen> createState() => _FormAnggotaScreenState();
 }
 
-class _TambahAnggotaScreenState extends State<TambahAnggotaScreen> {
+class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
   // State for dynamic lists
   List<int> _perkaderanList = [];
   List<int> _pendidikanList = [];
@@ -22,6 +24,7 @@ class _TambahAnggotaScreenState extends State<TambahAnggotaScreen> {
   // Form states
   String? _selectedJenisKelamin;
   String? _selectedTanggalLahir;
+  String? _photoFileName;
 
   // States for dynamic forms (just to store values for UI display)
   Map<int, String> _selectedPerkaderan = {};
@@ -42,7 +45,7 @@ class _TambahAnggotaScreenState extends State<TambahAnggotaScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: const Icon(CupertinoIcons.back, color: AppColors.primary),
+          icon: Icon(CupertinoIcons.back, color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -61,24 +64,35 @@ class _TambahAnggotaScreenState extends State<TambahAnggotaScreen> {
               _buildSectionTitle('Foto Anggota', CupertinoIcons.camera),
               const SizedBox(height: 16),
               Center(
-                child: Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade400,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 4),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10),
-                    ],
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(CupertinoIcons.cloud_upload, color: Colors.white, size: 32),
-                      SizedBox(height: 8),
-                      Text('Upload Foto', style: TextStyle(color: Colors.white, fontSize: 12)),
-                    ],
+                child: InkWell(
+                  onTap: _pickPhoto,
+                  borderRadius: BorderRadius.circular(75),
+                  child: Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: _photoFileName != null ? Colors.blue.shade50 : Colors.grey.shade400,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 4),
+                      boxShadow: [
+                        BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          _photoFileName != null ? CupertinoIcons.checkmark_seal_fill : CupertinoIcons.cloud_upload, 
+                          color: _photoFileName != null ? Colors.blue : Colors.white, 
+                          size: 32
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          _photoFileName != null ? 'Foto Terpilih' : 'Upload Foto', 
+                          style: TextStyle(color: _photoFileName != null ? Colors.blue : Colors.white, fontSize: 12)
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -262,8 +276,8 @@ class _TambahAnggotaScreenState extends State<TambahAnggotaScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: const BorderSide(color: Colors.black12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text('Batal', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
                     ),
@@ -277,7 +291,7 @@ class _TambahAnggotaScreenState extends State<TambahAnggotaScreen> {
                         backgroundColor: Colors.blue.shade700, 
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: Text(widget.isEdit ? 'Simpan Perubahan' : 'Simpan Data Anggota', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                     ),
@@ -425,9 +439,9 @@ class _TambahAnggotaScreenState extends State<TambahAnggotaScreen> {
           child: Container(
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.inputFill,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.transparent),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.grey.shade300),
             ),
             child: Row(
               children: [
@@ -533,6 +547,17 @@ class _TambahAnggotaScreenState extends State<TambahAnggotaScreen> {
     );
     if (picked != null) {
       onDateSelected("${picked.day}/${picked.month}/${picked.year}");
+    }
+  }
+
+  Future<void> _pickPhoto() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+    if (result != null) {
+      setState(() {
+        _photoFileName = result.files.single.name;
+      });
     }
   }
 }

@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:laci_mobile/screens/anggota/anggota_screen.dart';
 import 'package:laci_mobile/screens/arsip/arsip_screen.dart';
 import 'package:laci_mobile/screens/home_screen.dart';
+import 'package:laci_mobile/screens/pengajuan/pengajuan_screen.dart';
 import 'package:laci_mobile/screens/profile_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final bool isCabang;
+  
+  const MainScreen({super.key, this.isCabang = true});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -16,13 +19,19 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const ArsipScreen(),
-    const Center(child: Text('Pengajuan Berkas (Tengah)')),
-    const AnggotaScreen(),
-    const ProfileScreen(),
-  ];
+  late List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      HomeScreen(isCabang: widget.isCabang),
+      ArsipScreen(isCabang: widget.isCabang),
+      PengajuanScreen(isCabang: widget.isCabang),
+      AnggotaScreen(isCabang: widget.isCabang),
+      const ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +49,7 @@ class _MainScreenState extends State<MainScreen> {
                 _selectedIndex = 2; // Index for Pengajuan
               });
             },
-            backgroundColor: AppColors.primary,
+            backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
             elevation: 2,
             shape: const CircleBorder(),
             child: const Icon(CupertinoIcons.doc_text, color: Colors.white, size: 28),
@@ -82,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           Icon(
             icon,
-            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            color: isSelected ? (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary) : AppColors.textSecondary,
             size: 24,
           ),
           const SizedBox(height: 4),
@@ -91,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
             style: TextStyle(
               fontSize: 12,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              color: isSelected ? AppColors.primary : AppColors.textSecondary,
+              color: isSelected ? (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary) : AppColors.textSecondary,
             ),
           ),
         ],

@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:laci_mobile/screens/agenda/agenda_screen.dart';
 import 'package:laci_mobile/screens/lainnya_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final bool isCabang;
+  
+  const HomeScreen({super.key, this.isCabang = true});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +21,9 @@ class HomeScreen extends StatelessWidget {
             // 1. PREMIUM GREEN HEADER
             Container(
               padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 40),
-              decoration: const BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
@@ -74,10 +77,10 @@ class HomeScreen extends StatelessWidget {
                       color: Colors.white,
                       shape: BoxShape.circle,
                     ),
-                    child: const CircleAvatar(
+                    child: CircleAvatar(
                       radius: 26,
                       backgroundColor: Colors.white,
-                      child: Icon(CupertinoIcons.person_solid, color: AppColors.primary, size: 30),
+                      child: Icon(CupertinoIcons.person_solid, color: isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, size: 30),
                     ),
                   ),
                 ],
@@ -128,7 +131,15 @@ class HomeScreen extends StatelessWidget {
                             childAspectRatio: 0.8, // Fix for bottom overflow
                             children: [
                               _buildMenuButton(CupertinoIcons.person_3_fill, 'Pengguna', Colors.blue.shade100, Colors.blue.shade700),
-                              _buildMenuButton(CupertinoIcons.calendar_today, 'Agenda', Colors.orange.shade100, Colors.orange.shade700),
+                              _buildMenuButton(
+                                CupertinoIcons.calendar_today, 
+                                'Agenda', 
+                                Colors.orange.shade100, 
+                                Colors.orange.shade700,
+                                onTap: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AgendaScreen(isCabang: isCabang)));
+                                },
+                              ),
                               _buildMenuButton(CupertinoIcons.qrcode_viewfinder, 'Presensi', Colors.green.shade100, Colors.green.shade700),
                               _buildMenuButton(
                                 CupertinoIcons.square_grid_2x2_fill, 
@@ -136,7 +147,7 @@ class HomeScreen extends StatelessWidget {
                                 Colors.purple.shade100, 
                                 Colors.purple.shade700,
                                 onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const LainnyaScreen()));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LainnyaScreen(isCabang: isCabang)));
                                 },
                               ),
                             ],

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 
 class LainnyaScreen extends StatelessWidget {
-  const LainnyaScreen({super.key});
+  final bool isCabang;
+  
+  const LainnyaScreen({super.key, this.isCabang = true});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class LainnyaScreen extends StatelessWidget {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: const Icon(CupertinoIcons.back, color: AppColors.primary),
+          icon: Icon(CupertinoIcons.back, color: isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(

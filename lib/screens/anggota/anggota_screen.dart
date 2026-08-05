@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:laci_mobile/screens/anggota/tambah_anggota_screen.dart';
+import 'package:laci_mobile/screens/anggota/form_anggota_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:toastification/toastification.dart';
 
 class AnggotaScreen extends StatefulWidget {
-  const AnggotaScreen({super.key});
+  final bool isCabang;
+  const AnggotaScreen({super.key, this.isCabang = true});
 
   @override
   State<AnggotaScreen> createState() => _AnggotaScreenState();
@@ -31,15 +34,15 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
             padding: const EdgeInsets.only(right: 16, left: 4),
             child: TextButton.icon(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const TambahAnggotaScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => FormAnggotaScreen(isCabang: widget.isCabang)));
               },
               style: TextButton.styleFrom(
-                backgroundColor: AppColors.primary.withOpacity(0.1),
+                backgroundColor: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary).withOpacity(0.1),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               ),
-              icon: const Icon(CupertinoIcons.add, size: 16, color: AppColors.primary),
-              label: const Text('Tambah', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+              icon: Icon(CupertinoIcons.add, size: 16, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
+              label: Text('Tambah', style: TextStyle(color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, fontWeight: FontWeight.bold)),
             ),
           )
         ],
@@ -74,34 +77,36 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
               children: [
                 Expanded(
                   child: Container(
-                    height: 40,
+                    height: 48,
                     decoration: BoxDecoration(
-                      color: AppColors.inputFill,
-                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade300),
                     ),
                     child: const TextField(
                       decoration: InputDecoration(
                         hintText: 'Cari nama, jabatan, NIK, NIA...',
                         hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                        prefixIcon: Icon(CupertinoIcons.search, size: 18, color: AppColors.textSecondary),
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 10),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        isDense: true,
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Container(
-                  height: 40,
-                  width: 40,
+                  height: 48,
+                  width: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.inputFill,
-                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: IconButton(
                     icon: const Icon(CupertinoIcons.slider_horizontal_3, size: 18, color: AppColors.textPrimary),
                     onPressed: () {
-                      // Filter modal
+                      _showFilterModal(context);
                     },
                   ),
                 ),
@@ -230,13 +235,35 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
           // Menu 3 Titik
           PopupMenuButton<String>(
             icon: const Icon(CupertinoIcons.ellipsis, size: 20, color: AppColors.textSecondary),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             color: Colors.white,
-            onSelected: (value) {
+            onSelected: (value) async {
               if (value == 'edit') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const TambahAnggotaScreen(isEdit: true)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const FormAnggotaScreen(isEdit: true)));
               } else if (value == 'hapus') {
-                // delete dialog
+                final result = await showOkCancelAlertDialog(
+                  context: context,
+                  title: 'Hapus Anggota',
+                  message: 'Apakah Anda yakin ingin menghapus data anggota ini? Data yang sudah dihapus tidak dapat dikembalikan.',
+                  okLabel: 'Hapus',
+                  cancelLabel: 'Batal',
+                  isDestructiveAction: true,
+                );
+                if (result == OkCancelResult.ok) {
+                  if (context.mounted) {
+                    toastification.show(
+                      context: context,
+                      type: ToastificationType.success,
+                      style: ToastificationStyle.flat,
+                      showProgressBar: false,
+                      primaryColor: Colors.white,
+                      icon: const Icon(Icons.check_circle_outline, color: Colors.green),
+                      title: const Text('Data anggota berhasil dihapus'),
+                      alignment: Alignment.topCenter,
+                      autoCloseDuration: const Duration(seconds: 3),
+                    );
+                  }
+                }
               }
             },
             itemBuilder: (context) => [
@@ -270,7 +297,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           title: Row(
             children: [
               Icon(CupertinoIcons.doc_on_clipboard_fill, color: Colors.blue.shade700),
@@ -321,6 +348,133 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
               child: const Text('Salin 0 Anggota', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             ),
           ],
+        );
+      },
+    );
+  }
+
+  void _showFilterModal(BuildContext context) {
+    String selectedPac = 'Semua PAC';
+    List<String> pacList = [
+      'Semua PAC',
+      'Pac Barat',
+      'Pac Bendo',
+      'Pacipnuippnu Lembeyan',
+      'Pacipnuippnumagetan',
+      'Pac Ipnu Ippnu Panekan',
+      'Pac Ipnu Ippnu Sukomoro',
+      'Pac Ipnu Ippnu Takeran'
+    ];
+    List<String> filteredPacList = List.from(pacList);
+    TextEditingController searchController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 24,
+                right: 24,
+                top: 24,
+              ),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.7,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Filter User', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          child: const Text('Batal', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          setState(() {
+                            filteredPacList = pacList.where((pac) => pac.toLowerCase().contains(value.toLowerCase())).toList();
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          hintText: 'Cari PAC...',
+                          hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          isDense: true,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Flexible(
+                      child: ListView.builder(
+                        itemCount: filteredPacList.length,
+                        physics: const BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          final pac = filteredPacList[index];
+                          final isSelected = pac == selectedPac;
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedPac = pac;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                              decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(pac, style: TextStyle(fontSize: 14, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: AppColors.textPrimary)),
+                                  if (isSelected) Icon(CupertinoIcons.checkmark_alt, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, size: 20),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        ),
+                        child: const Text('Terapkan Filter', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            );
+          },
         );
       },
     );

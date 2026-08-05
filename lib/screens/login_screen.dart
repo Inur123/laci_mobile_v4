@@ -14,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
+  bool _isCabang = true; // State untuk toggle Role
 
   @override
   Widget build(BuildContext context) {
@@ -80,17 +81,72 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
 
                   const SizedBox(height: 24),
+                  
+                  // Role Selector
+                  const Text('Masuk Sebagai:', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => setState(() => _isCabang = true),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: _isCabang ? AppColors.cabangPrimary.withOpacity(0.1) : Colors.transparent,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: _isCabang ? AppColors.cabangPrimary : Colors.black12, width: 2),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(CupertinoIcons.building_2_fill, color: _isCabang ? AppColors.cabangPrimary : Colors.grey, size: 20),
+                                const SizedBox(width: 8),
+                                Text('Cabang', style: TextStyle(color: _isCabang ? AppColors.cabangPrimary : Colors.grey, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => setState(() => _isCabang = false),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            decoration: BoxDecoration(
+                              color: !_isCabang ? AppColors.pacPrimary.withOpacity(0.1) : Colors.transparent,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: !_isCabang ? AppColors.pacPrimary : Colors.black12, width: 2),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(CupertinoIcons.person_3_fill, color: !_isCabang ? AppColors.pacPrimary : Colors.grey, size: 20),
+                                const SizedBox(width: 8),
+                                Text('PAC', style: TextStyle(color: !_isCabang ? AppColors.pacPrimary : Colors.grey, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 32),
 
                   // Login Button
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const MainScreen()),
+                        MaterialPageRoute(builder: (context) => MainScreen(isCabang: _isCabang)),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
+                      backgroundColor: _isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 16),
