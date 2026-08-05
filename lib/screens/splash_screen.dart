@@ -13,12 +13,19 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Simulate a delay for the splash screen
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(milliseconds: 2500), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (context) => const OnboardingScreen(),
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => const OnboardingScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 800),
           ),
         );
       }
@@ -27,42 +34,29 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // White background is safer for most logos
     return Scaffold(
       backgroundColor: Colors.white, 
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // User's custom logo
-            Image.asset(
-              'assets/images/logo.png',
-              width: 180,
-              height: 180,
-            ),
-            const SizedBox(height: 24),
-            // Title text
-            const Text(
-              'LACI',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0F4C3A), // Emerald Green
-                letterSpacing: 2.0,
+        // Menambahkan animasi bounce/elastis yang modern pada logo
+        child: TweenAnimationBuilder<double>(
+          tween: Tween<double>(begin: 0.0, end: 1.0),
+          duration: const Duration(milliseconds: 1500),
+          curve: Curves.elasticOut,
+          builder: (context, value, child) {
+            return Transform.scale(
+              scale: value,
+              child: Opacity(
+                opacity: value.clamp(0.0, 1.0),
+                child: child,
               ),
-            ),
-            const SizedBox(height: 8),
-            // Subtitle text
-            const Text(
-              'IPNU IPPNU',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.black54,
-                letterSpacing: 1.5,
-              ),
-            ),
-          ],
+            );
+          },
+          child: Image.asset(
+            'assets/images/logo.png',
+            width: 180,
+            height: 180,
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
