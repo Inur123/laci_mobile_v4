@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
+import 'package:laci_mobile/screens/periode/periode_screen.dart';
+import 'package:laci_mobile/screens/aktivitas/riwayat_aktivitas_screen.dart';
+import 'package:laci_mobile/screens/log_email/log_email_screen.dart';
+import 'package:laci_mobile/screens/database/backup_database_screen.dart';
 
 class LainnyaScreen extends StatelessWidget {
   final bool isCabang;
@@ -42,21 +46,27 @@ class LainnyaScreen extends StatelessWidget {
                 color: Colors.blue,
                 title: 'Periode',
                 subtitle: 'Kelola data periode kepengurusan aktif',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PeriodeScreen(isCabang: isCabang)));
+                },
               ),
               _buildMenuItem(
                 icon: CupertinoIcons.clock_fill,
                 color: Colors.orange,
                 title: 'Riwayat Aktivitas',
                 subtitle: 'Pantau log aktivitas pengguna aplikasi',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => RiwayatAktivitasScreen(isCabang: isCabang)));
+                },
               ),
               _buildMenuItem(
                 icon: CupertinoIcons.mail_solid,
                 color: Colors.red.shade400,
                 title: 'Log Email',
                 subtitle: 'Cek riwayat pengiriman email sistem',
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LogEmailScreen(isCabang: isCabang)));
+                },
               ),
               _buildMenuItem(
                 icon: CupertinoIcons.tray_arrow_down_fill,
@@ -64,7 +74,9 @@ class LainnyaScreen extends StatelessWidget {
                 title: 'Backup Database',
                 subtitle: 'Cadangkan atau pulihkan data sistem',
                 isLast: true,
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => BackupDatabaseScreen(isCabang: isCabang)));
+                },
               ),
             ],
           ),

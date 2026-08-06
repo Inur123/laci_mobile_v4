@@ -8,6 +8,9 @@ class CustomTextField extends StatelessWidget {
   final bool obscureText;
   final VoidCallback? onTogglePassword;
   final TextInputType? keyboardType;
+  final TextEditingController? controller;
+  final String? hintText;
+  final bool isCabang;
 
   const CustomTextField({
     super.key,
@@ -17,6 +20,9 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.onTogglePassword,
     this.keyboardType,
+    this.controller,
+    this.hintText,
+    this.isCabang = true,
   });
 
   @override
@@ -34,10 +40,11 @@ class CustomTextField extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         TextField(
+          controller: controller,
           obscureText: obscureText,
           keyboardType: keyboardType,
           decoration: InputDecoration(
-            hintText: 'Masukkan $label',
+            hintText: hintText ?? 'Masukkan $label',
             hintStyle: const TextStyle(color: Colors.black38),
             prefixIcon: Icon(icon, color: Colors.black45),
             suffixIcon: isPassword
@@ -61,7 +68,7 @@ class CustomTextField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.primary),
+              borderSide: BorderSide(color: isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
             ),
           ),
         ),

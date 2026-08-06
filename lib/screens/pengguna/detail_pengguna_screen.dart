@@ -199,8 +199,8 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
 
           const SizedBox(height: 32),
 
-          // Statistik Perkaderan
-          _buildSectionTitle(CupertinoIcons.book, 'Statistik Perkaderan'),
+          // Statistik pengkaderan
+          _buildSectionTitle(CupertinoIcons.book, 'Statistik pengkaderan'),
           const SizedBox(height: 12),
           Wrap(
             spacing: 12,

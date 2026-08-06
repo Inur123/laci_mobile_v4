@@ -12,7 +12,7 @@ import 'package:toastification/toastification.dart';
 
 class ArsipScreen extends StatefulWidget {
   final bool isCabang;
-  
+
   const ArsipScreen({super.key, this.isCabang = true});
 
   @override
@@ -22,6 +22,9 @@ class ArsipScreen extends StatefulWidget {
 class _ArsipScreenState extends State<ArsipScreen> {
   @override
   Widget build(BuildContext context) {
+    final primaryColor =
+        widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -30,34 +33,25 @@ class _ArsipScreenState extends State<ArsipScreen> {
           backgroundColor: Colors.white,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
-          title: const Text('Arsip', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 18)),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: TextButton.icon(
-              onPressed: () {
-                // Determine which tab is active (0=Surat, 1=SP, 2=Cabang)
-                // For now, let's open Tambah SP if we are just demonstrating it, or open Arsip Surat
-                // We'll show a bottom sheet to let user pick which one to add
-                _showAddOptions(context);
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary).withOpacity(0.1),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              ),
-              icon: Icon(CupertinoIcons.add, size: 16, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
-              label: Text('Tambah', style: TextStyle(color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, fontWeight: FontWeight.bold)),
-            ),
-            )
-          ],
+          title: const Text('Arsip',
+              style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18)),
+          actions: [],
           bottom: TabBar(
-            labelColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+            labelColor: widget.isCabang
+                ? AppColors.cabangPrimary
+                : AppColors.pacPrimary,
             unselectedLabelColor: AppColors.textSecondary,
-            indicatorColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+            indicatorColor: widget.isCabang
+                ? AppColors.cabangPrimary
+                : AppColors.pacPrimary,
             indicatorWeight: 3,
-            labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-            unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+            labelStyle:
+                const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+            unselectedLabelStyle:
+                const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
             tabs: [
               const Tab(text: 'Arsip Surat'),
               const Tab(text: 'Berkas SP'),
@@ -70,89 +64,6 @@ class _ArsipScreenState extends State<ArsipScreen> {
             // TAB 1: Arsip Surat (Original Content)
             Column(
               children: [
-          // STATISTIK HORIZONTAL
-          Container(
-            height: 110,
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            color: Colors.white,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              physics: const BouncingScrollPhysics(),
-              children: [
-                _buildStatCard('TOTAL', '254', CupertinoIcons.doc_text, Colors.blue),
-                _buildStatCard('MASUK', '131', CupertinoIcons.arrow_down_left, Colors.green),
-                _buildStatCard('KELUAR', '123', CupertinoIcons.arrow_up_right, Colors.orange),
-                _buildStatCard('IPNU', '40', CupertinoIcons.shield, Colors.teal),
-                _buildStatCard('IPPNU', '77', CupertinoIcons.shield, Colors.teal),
-              ],
-            ),
-          ),
-          
-          // SEARCH & FILTER
-          Container(
-            padding: const EdgeInsets.all(16),
-            color: Colors.white,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: const TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Cari nomor surat, perihal...',
-                        hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                        isDense: true,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(CupertinoIcons.slider_horizontal_3, size: 18, color: AppColors.textPrimary),
-                    onPressed: () {
-                      _showFilterModal(context);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          const Divider(height: 1, thickness: 1, color: Colors.black12),
-          
-          // LIST SURAT
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              physics: const BouncingScrollPhysics(),
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return _buildSuratCard(index);
-              },
-            ),
-          ),
-        ],
-      ),
-            
-            // TAB 2: Berkas SP
-            Column(
-              children: [
                 // STATISTIK HORIZONTAL
                 Container(
                   height: 110,
@@ -163,34 +74,50 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     physics: const BouncingScrollPhysics(),
                     children: [
-                      _buildStatCard('TOTAL BERKAS', '15', CupertinoIcons.doc_text, Colors.blue),
-                      _buildStatCard('IPNU', '12', CupertinoIcons.shield, Colors.green),
-                      _buildStatCard('IPPNU', '3', CupertinoIcons.shield, Colors.pink),
+                      _buildStatCard(
+                          'TOTAL', '254', CupertinoIcons.doc_text, Colors.blue),
+                      _buildStatCard('MASUK', '131',
+                          CupertinoIcons.arrow_down_left, Colors.green),
+                      _buildStatCard('KELUAR', '123',
+                          CupertinoIcons.arrow_up_right, Colors.orange),
+                      _buildStatCard(
+                          'IPNU', '40', CupertinoIcons.shield, Colors.teal),
+                      _buildStatCard(
+                          'IPPNU', '77', CupertinoIcons.shield, Colors.teal),
                     ],
                   ),
                 ),
-                
+
                 // SEARCH & FILTER
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   color: Colors.white,
                   child: Row(
                     children: [
                       Expanded(
-                        child: Container(
+                        child: SizedBox(
                           height: 48,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: const TextField(
+                          child: TextField(
                             decoration: InputDecoration(
-                              hintText: 'Cari nama pimpinan atau catatan...',
-                              hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                        isDense: true,
+                              hintText: 'Cari nomor surat, perihal...',
+                              hintStyle: const TextStyle(
+                                  fontSize: 14, color: AppColors.textSecondary),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 14),
+                              isDense: true,
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(color: primaryColor)),
                             ),
                           ),
                         ),
@@ -205,7 +132,102 @@ class _ArsipScreenState extends State<ArsipScreen> {
                           border: Border.all(color: Colors.grey.shade300),
                         ),
                         child: IconButton(
-                          icon: const Icon(CupertinoIcons.slider_horizontal_3, size: 18, color: AppColors.textPrimary),
+                          icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                              size: 18, color: AppColors.textPrimary),
+                          onPressed: () {
+                            _showFilterModal(context);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Divider(height: 1, thickness: 1, color: Colors.black12),
+
+                // LIST SURAT
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.all(16),
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: 5,
+                    itemBuilder: (context, index) {
+                      return _buildSuratCard(index);
+                    },
+                  ),
+                ),
+              ],
+            ),
+
+            // TAB 2: Berkas SP
+            Column(
+              children: [
+                // STATISTIK HORIZONTAL
+                Container(
+                  height: 110,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  color: Colors.white,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      _buildStatCard('TOTAL BERKAS', '15',
+                          CupertinoIcons.doc_text, Colors.blue),
+                      _buildStatCard(
+                          'IPNU', '12', CupertinoIcons.shield, Colors.green),
+                      _buildStatCard(
+                          'IPPNU', '3', CupertinoIcons.shield, Colors.pink),
+                    ],
+                  ),
+                ),
+
+                // SEARCH & FILTER
+                Container(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 48,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Cari nama pimpinan atau catatan...',
+                              hintStyle: const TextStyle(
+                                  fontSize: 14, color: AppColors.textSecondary),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 14),
+                              isDense: true,
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(color: primaryColor)),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Container(
+                        height: 48,
+                        width: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                              size: 18, color: AppColors.textPrimary),
                           onPressed: () {
                             _showFilterModal(context, showJenis: false);
                           },
@@ -214,9 +236,9 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     ],
                   ),
                 ),
-                
+
                 const Divider(height: 1, thickness: 1, color: Colors.black12),
-                
+
                 // LIST SP
                 Expanded(
                   child: ListView.builder(
@@ -230,7 +252,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                 ),
               ],
             ),
-            
+
             // TAB 3: Berkas Cabang/PAC
             Column(
               children: [
@@ -241,20 +263,29 @@ class _ArsipScreenState extends State<ArsipScreen> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Container(
+                        child: SizedBox(
                           height: 48,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: const TextField(
+                          child: TextField(
                             decoration: InputDecoration(
                               hintText: 'Cari nama atau catatan...',
-                              hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                        isDense: true,
+                              hintStyle: const TextStyle(
+                                  fontSize: 14, color: AppColors.textSecondary),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 14),
+                              isDense: true,
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide:
+                                      BorderSide(color: Colors.grey.shade300)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: BorderSide(color: primaryColor)),
                             ),
                           ),
                         ),
@@ -262,9 +293,9 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     ],
                   ),
                 ),
-                
+
                 const Divider(height: 1, thickness: 1, color: Colors.black12),
-                
+
                 // LIST BERKAS CABANG/PAC
                 Expanded(
                   child: ListView.builder(
@@ -280,26 +311,20 @@ class _ArsipScreenState extends State<ArsipScreen> {
             ),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          heroTag: 'arsip_fab',
+          onPressed: () {
+            _showAddOptions(context);
+          },
+          backgroundColor: primaryColor,
+          child: const Icon(CupertinoIcons.add, color: Colors.white),
+        ),
       ),
     );
   }
 
-  Widget _buildPlaceholderTab(String title, String subtitle, IconData icon) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 64, color: Colors.grey.shade300),
-          const SizedBox(height: 16),
-          Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-          const SizedBox(height: 8),
-          Text(subtitle, style: const TextStyle(color: AppColors.textSecondary)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatCard(String title, String count, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String title, String count, IconData icon, Color color) {
     return Container(
       width: 120,
       margin: const EdgeInsets.only(right: 12),
@@ -316,11 +341,17 @@ class _ArsipScreenState extends State<ArsipScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textSecondary)),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textSecondary)),
               Icon(icon, size: 14, color: color),
             ],
           ),
-          Text(count, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
+          Text(count,
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: color)),
         ],
       ),
     );
@@ -329,24 +360,31 @@ class _ArsipScreenState extends State<ArsipScreen> {
   Widget _buildSuratCard(int index) {
     // Dummy data variations
     final isMasuk = index % 2 == 0;
-    final org = index % 3 == 0 ? 'IPPNU' : (index % 3 == 1 ? 'IPNU' : 'BERSAMA');
-    
+    final org =
+        index % 3 == 0 ? 'IPPNU' : (index % 3 == 1 ? 'IPNU' : 'BERSAMA');
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.black.withOpacity(0.05)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailArsipSuratScreen(isCabang: widget.isCabang)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DetailArsipSuratScreen(isCabang: widget.isCabang)));
           },
           borderRadius: BorderRadius.circular(16),
           child: Padding(
@@ -355,113 +393,177 @@ class _ArsipScreenState extends State<ArsipScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Baris Atas: Badge & Menu
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  _buildBadge(org, org == 'IPPNU' ? Colors.pink : (org == 'IPNU' ? Colors.green : Colors.blue)),
-                  const SizedBox(width: 8),
-                  _buildBadge(isMasuk ? 'MASUK' : 'KELUAR', isMasuk ? Colors.indigo : Colors.orange),
-                ],
-              ),
-              PopupMenuButton<String>(
-                icon: const Icon(CupertinoIcons.ellipsis, size: 20, color: AppColors.textSecondary),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                color: Colors.white,
-                onSelected: (value) {
-                  if (value == 'lihat') {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailArsipSuratScreen(isCabang: widget.isCabang)));
-                  } else if (value == 'edit') {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const FormArsipSuratScreen(isEdit: true)));
-                  } else if (value == 'hapus') {
-                    _showDeleteDialog(context);
-                  }
-                },
-                itemBuilder: (context) => [
-                  _buildPopupMenuItem('lihat', CupertinoIcons.eye, 'Lihat Detail'),
-                  _buildPopupMenuItem('edit', CupertinoIcons.pencil, 'Edit'),
-                  _buildPopupMenuItem('hapus', CupertinoIcons.trash, 'Hapus', isDestructive: true),
-                ],
-              ),
-            ],
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        _buildBadge(
+                            org,
+                            org == 'IPPNU'
+                                ? Colors.pink
+                                : (org == 'IPNU' ? Colors.green : Colors.blue)),
+                        const SizedBox(width: 8),
+                        _buildBadge(isMasuk ? 'MASUK' : 'KELUAR',
+                            isMasuk ? Colors.indigo : Colors.orange),
+                      ],
+                    ),
+                    PopupMenuButton<String>(
+                      icon: const Icon(CupertinoIcons.ellipsis,
+                          size: 20, color: AppColors.textSecondary),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      color: Colors.white,
+                      onSelected: (value) {
+                        if (value == 'lihat') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailArsipSuratScreen(
+                                      isCabang: widget.isCabang)));
+                        } else if (value == 'edit') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const FormArsipSuratScreen(
+                                          isEdit: true)));
+                        } else if (value == 'hapus') {
+                          _showDeleteDialog(context);
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        _buildPopupMenuItem(
+                            'lihat', CupertinoIcons.eye, 'Lihat Detail'),
+                        _buildPopupMenuItem(
+                            'edit', CupertinoIcons.pencil, 'Edit'),
+                        _buildPopupMenuItem(
+                            'hapus', CupertinoIcons.trash, 'Hapus',
+                            isDestructive: true),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Perihal
+                Text(
+                  isMasuk
+                      ? 'Undangan Pra Rapimwil Jatim'
+                      : 'Instruksi Pelatihan Persidangan',
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 8),
+
+                // Info Detail
+                Row(
+                  children: [
+                    const Icon(CupertinoIcons.number,
+                        size: 14, color: AppColors.textSecondary),
+                    const SizedBox(width: 4),
+                    Expanded(
+                        child: Text('020/PW/A/7455/...',
+                            style: const TextStyle(
+                                fontSize: 12, color: AppColors.textSecondary))),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(CupertinoIcons.calendar,
+                        size: 14, color: AppColors.textSecondary),
+                    const SizedBox(width: 4),
+                    const Expanded(
+                        child: Text('16 Juli 2026',
+                            style: TextStyle(
+                                fontSize: 12, color: AppColors.textSecondary))),
+                  ],
+                ),
+
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child:
+                      Divider(height: 1, thickness: 1, color: Colors.black12),
+                ),
+
+                // Pengirim / Penerima
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: (widget.isCabang
+                                  ? AppColors.cabangPrimary
+                                  : AppColors.pacPrimary)
+                              .withOpacity(0.1),
+                          shape: BoxShape.circle),
+                      child: Icon(
+                          isMasuk
+                              ? CupertinoIcons.person_crop_circle
+                              : CupertinoIcons.paperplane,
+                          size: 16,
+                          color: widget.isCabang
+                              ? AppColors.cabangPrimary
+                              : AppColors.pacPrimary),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                        isMasuk
+                            ? 'Dari: PW IPPNU Jatim'
+                            : 'Kepada: PC IPNU Magetan',
+                        style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textPrimary)),
+                  ],
+                )
+              ],
+            ),
           ),
-          const SizedBox(height: 12),
-          
-          // Perihal
-          Text(
-            isMasuk ? 'Undangan Pra Rapimwil Jatim' : 'Instruksi Pelatihan Persidangan',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 8),
-          
-          // Info Detail
-          Row(
-            children: [
-              const Icon(CupertinoIcons.number, size: 14, color: AppColors.textSecondary),
-              const SizedBox(width: 4),
-              Expanded(child: Text('020/PW/A/7455/...', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary))),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              const Icon(CupertinoIcons.calendar, size: 14, color: AppColors.textSecondary),
-              const SizedBox(width: 4),
-              const Expanded(child: Text('16 Juli 2026', style: TextStyle(fontSize: 12, color: AppColors.textSecondary))),
-            ],
-          ),
-          
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: Divider(height: 1, thickness: 1, color: Colors.black12),
-          ),
-          
-          // Pengirim / Penerima
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary).withOpacity(0.1), shape: BoxShape.circle),
-                child: Icon(isMasuk ? CupertinoIcons.person_crop_circle : CupertinoIcons.paperplane, size: 16, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
-              ),
-              const SizedBox(width: 8),
-              Text(isMasuk ? 'Dari: PW IPPNU Jatim' : 'Kepada: PC IPNU Magetan', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
-            ],
-          )
-        ],
+        ),
       ),
-    ),
-  ),
-),
-);
-}
+    );
+  }
 
   Widget _buildSpCard(int index) {
-    final names = ['Pk Ipnu Tarbiyatul \'ulum', 'Pac Ippnu Karas', 'Pac Ippnu Plaosan', 'Pac Ippnu Maospati'];
+    final names = [
+      'Pk Ipnu Tarbiyatul \'ulum',
+      'Pac Ippnu Karas',
+      'Pac Ippnu Plaosan',
+      'Pac Ippnu Maospati'
+    ];
     final orgs = ['IPNU', 'IPPNU', 'IPPNU', 'IPPNU'];
     final sisaHari = ['110', '383', '537', '521'];
-    
+
     final isIppnu = orgs[index] == 'IPPNU';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.black.withOpacity(0.05)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailSpScreen(isCabang: widget.isCabang)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DetailSpScreen(isCabang: widget.isCabang)));
           },
           borderRadius: BorderRadius.circular(16),
           child: Padding(
@@ -470,64 +572,92 @@ class _ArsipScreenState extends State<ArsipScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  _buildBadge(orgs[index], isIppnu ? Colors.pink : Colors.green),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.green.shade50,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.green.shade200),
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        _buildBadge(
+                            orgs[index], isIppnu ? Colors.pink : Colors.green),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.green.shade200),
+                          ),
+                          child: Text('Aktif (Sisa ${sisaHari[index]} Hari)',
+                              style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green)),
+                        ),
+                      ],
                     ),
-                    child: Text('Aktif (Sisa ${sisaHari[index]} Hari)', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.green)),
-                  ),
-                ],
-              ),
-              PopupMenuButton<String>(
-                icon: const Icon(CupertinoIcons.ellipsis, size: 20, color: AppColors.textSecondary),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                color: Colors.white,
-                onSelected: (value) {
-                  if (value == 'lihat') {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => DetailSpScreen(isCabang: widget.isCabang)));
-                  } else if (value == 'edit') {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const FormSpScreen(isEdit: true)));
-                  } else if (value == 'hapus') {
-                    _showDeleteDialog(context);
-                  }
-                },
-                itemBuilder: (context) => [
-                  _buildPopupMenuItem('lihat', CupertinoIcons.eye, 'Lihat Detail'),
-                  _buildPopupMenuItem('edit', CupertinoIcons.pencil, 'Edit'),
-                  _buildPopupMenuItem('hapus', CupertinoIcons.trash, 'Hapus', isDestructive: true),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          
-          Text(names[index], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-          const SizedBox(height: 8),
-          
-          Row(
-            children: [
-              const Icon(CupertinoIcons.calendar, size: 14, color: AppColors.textSecondary),
-              const SizedBox(width: 6),
-              const Text('Mulai: 23 Nov 2026', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              const Icon(CupertinoIcons.calendar_circle, size: 14, color: AppColors.textSecondary),
-              const SizedBox(width: 6),
-              const Text('Akhir: 23 Nov 2026', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-            ],
-          ),
+                    PopupMenuButton<String>(
+                      icon: const Icon(CupertinoIcons.ellipsis,
+                          size: 20, color: AppColors.textSecondary),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      color: Colors.white,
+                      onSelected: (value) {
+                        if (value == 'lihat') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailSpScreen(
+                                      isCabang: widget.isCabang)));
+                        } else if (value == 'edit') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const FormSpScreen(isEdit: true)));
+                        } else if (value == 'hapus') {
+                          _showDeleteDialog(context);
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        _buildPopupMenuItem(
+                            'lihat', CupertinoIcons.eye, 'Lihat Detail'),
+                        _buildPopupMenuItem(
+                            'edit', CupertinoIcons.pencil, 'Edit'),
+                        _buildPopupMenuItem(
+                            'hapus', CupertinoIcons.trash, 'Hapus',
+                            isDestructive: true),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(names[index],
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(CupertinoIcons.calendar,
+                        size: 14, color: AppColors.textSecondary),
+                    const SizedBox(width: 6),
+                    const Text('Mulai: 23 Nov 2026',
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary)),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(CupertinoIcons.calendar_circle,
+                        size: 14, color: AppColors.textSecondary),
+                    const SizedBox(width: 6),
+                    const Text('Akhir: 23 Nov 2026',
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary)),
+                  ],
+                ),
               ],
             ),
           ),
@@ -537,25 +667,41 @@ class _ArsipScreenState extends State<ArsipScreen> {
   }
 
   Widget _buildBerkasCabangCard(int index) {
-    final names = ['LPJ Kader Connect 2026', 'LPJ Rapimcab 2026', 'LPJ Mujahadah 2026', 'SP IPNU'];
-    final tanggals = ['02 Agu 2026', '27 Jul 2026', '27 Jul 2026', '04 Jun 2026'];
-    
+    final names = [
+      'LPJ Kader Connect 2026',
+      'LPJ Rapimcab 2026',
+      'LPJ Mujahadah 2026',
+      'SP IPNU'
+    ];
+    final tanggals = [
+      '02 Agu 2026',
+      '27 Jul 2026',
+      '27 Jul 2026',
+      '04 Jun 2026'
+    ];
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.black.withOpacity(0.05)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailBerkasCabangScreen(isCabang: widget.isCabang)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DetailBerkasCabangScreen(isCabang: widget.isCabang)));
           },
           borderRadius: BorderRadius.circular(16),
           child: Padding(
@@ -564,46 +710,67 @@ class _ArsipScreenState extends State<ArsipScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(names[index], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary), maxLines: 1, overflow: TextOverflow.ellipsis),
-              ),
-              PopupMenuButton<String>(
-                icon: const Icon(CupertinoIcons.ellipsis, size: 20, color: AppColors.textSecondary),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                color: Colors.white,
-                onSelected: (value) {
-                  if (value == 'edit') {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => FormBerkasCabangScreen(isEdit: true, isCabang: widget.isCabang)));
-                  } else if (value == 'hapus') {
-                    _showDeleteDialog(context);
-                  }
-                },
-                itemBuilder: (context) => [
-                  _buildPopupMenuItem('edit', CupertinoIcons.pencil, 'Edit'),
-                  _buildPopupMenuItem('hapus', CupertinoIcons.trash, 'Hapus', isDestructive: true),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          
-          Row(
-            children: [
-              const Icon(CupertinoIcons.calendar, size: 14, color: AppColors.textSecondary),
-              const SizedBox(width: 6),
-              Text(tanggals[index], style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              const Icon(CupertinoIcons.doc_text, size: 14, color: AppColors.textSecondary),
-              const SizedBox(width: 6),
-              const Text('Catatan: -', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-            ],
-          ),
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(names[index],
+                          style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                    ),
+                    PopupMenuButton<String>(
+                      icon: const Icon(CupertinoIcons.ellipsis,
+                          size: 20, color: AppColors.textSecondary),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      color: Colors.white,
+                      onSelected: (value) {
+                        if (value == 'edit') {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FormBerkasCabangScreen(
+                                      isEdit: true,
+                                      isCabang: widget.isCabang)));
+                        } else if (value == 'hapus') {
+                          _showDeleteDialog(context);
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        _buildPopupMenuItem(
+                            'edit', CupertinoIcons.pencil, 'Edit'),
+                        _buildPopupMenuItem(
+                            'hapus', CupertinoIcons.trash, 'Hapus',
+                            isDestructive: true),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(CupertinoIcons.calendar,
+                        size: 14, color: AppColors.textSecondary),
+                    const SizedBox(width: 6),
+                    Text(tanggals[index],
+                        style: const TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary)),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(CupertinoIcons.doc_text,
+                        size: 14, color: AppColors.textSecondary),
+                    const SizedBox(width: 6),
+                    const Text('Catatan: -',
+                        style: TextStyle(
+                            fontSize: 12, color: AppColors.textSecondary)),
+                  ],
+                ),
               ],
             ),
           ),
@@ -622,12 +789,15 @@ class _ArsipScreenState extends State<ArsipScreen> {
       ),
       child: Text(
         text,
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
+        style:
+            TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: color),
       ),
     );
   }
 
-  PopupMenuItem<String> _buildPopupMenuItem(String value, IconData icon, String text, {bool isDestructive = false}) {
+  PopupMenuItem<String> _buildPopupMenuItem(
+      String value, IconData icon, String text,
+      {bool isDestructive = false}) {
     final color = isDestructive ? Colors.red : AppColors.textPrimary;
     return PopupMenuItem<String>(
       value: value,
@@ -635,7 +805,12 @@ class _ArsipScreenState extends State<ArsipScreen> {
         children: [
           Icon(icon, size: 18, color: color),
           const SizedBox(width: 12),
-          Text(text, style: TextStyle(color: color, fontSize: 14, fontWeight: isDestructive ? FontWeight.bold : FontWeight.w500)),
+          Text(text,
+              style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight:
+                      isDestructive ? FontWeight.bold : FontWeight.w500)),
         ],
       ),
     );
@@ -645,43 +820,90 @@ class _ArsipScreenState extends State<ArsipScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) {
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 8),
-              Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10))),
+              Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(10))),
               const Padding(
                 padding: EdgeInsets.all(24.0),
-                child: Text('Tambah Data Baru', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                child: Text('Tambah Data Baru',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
               ),
               ListTile(
-                leading: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: Colors.blue.shade50, shape: BoxShape.circle), child: const Icon(CupertinoIcons.doc_text, color: Colors.blue)),
-                title: const Text('Arsip Surat', style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: const Text('Surat masuk dan keluar', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                leading: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.blue.shade50, shape: BoxShape.circle),
+                    child: const Icon(CupertinoIcons.doc_text,
+                        color: Colors.blue)),
+                title: const Text('Arsip Surat',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: const Text('Surat masuk dan keluar',
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary)),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FormArsipSuratScreen(isCabang: widget.isCabang)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              FormArsipSuratScreen(isCabang: widget.isCabang)));
                 },
               ),
               ListTile(
-                leading: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: Colors.green.shade50, shape: BoxShape.circle), child: const Icon(CupertinoIcons.doc_person, color: Colors.green)),
-                title: const Text('Berkas SP', style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: const Text('Surat Pengesahan Kepengurusan', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                leading: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.green.shade50, shape: BoxShape.circle),
+                    child: const Icon(CupertinoIcons.doc_person,
+                        color: Colors.green)),
+                title: const Text('Berkas SP',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: const Text('Surat Pengesahan Kepengurusan',
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary)),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FormSpScreen(isCabang: widget.isCabang)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              FormSpScreen(isCabang: widget.isCabang)));
                 },
               ),
               ListTile(
-                leading: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: Colors.orange.shade50, shape: BoxShape.circle), child: const Icon(CupertinoIcons.folder, color: Colors.orange)),
-                title: Text(widget.isCabang ? 'Berkas Cabang' : 'Berkas PAC', style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text('Dokumen dan aset ${widget.isCabang ? 'cabang' : 'PAC'}', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                leading: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: Colors.orange.shade50, shape: BoxShape.circle),
+                    child: const Icon(CupertinoIcons.folder,
+                        color: Colors.orange)),
+                title: Text(widget.isCabang ? 'Berkas Cabang' : 'Berkas PAC',
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text(
+                    'Dokumen dan aset ${widget.isCabang ? 'cabang' : 'PAC'}',
+                    style: const TextStyle(
+                        fontSize: 12, color: AppColors.textSecondary)),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FormBerkasCabangScreen(isCabang: widget.isCabang)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FormBerkasCabangScreen(
+                              isCabang: widget.isCabang)));
                 },
               ),
               const SizedBox(height: 24),
@@ -699,7 +921,8 @@ class _ArsipScreenState extends State<ArsipScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
@@ -712,49 +935,100 @@ class _ArsipScreenState extends State<ArsipScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Filter Arsip', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                      const Text('Filter Arsip',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary)),
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                        child: const Text('Batal', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                        style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                        child: const Text('Batal',
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  const Text('Organisasi', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  const Text('Organisasi',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
                   const SizedBox(height: 8),
                   Container(
                     height: 50,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.shade300)),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300)),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: selectedOrganisasi,
                         isExpanded: true,
                         icon: const Icon(CupertinoIcons.chevron_down, size: 16),
-                        items: ['Semua Organisasi', 'IPNU', 'IPPNU', 'BERSAMA', 'CBP KPP'].map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontSize: 14)))).toList(),
+                        items: [
+                          'Semua Organisasi',
+                          'IPNU',
+                          'IPPNU',
+                          'BERSAMA',
+                          'CBP KPP'
+                        ]
+                            .map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e,
+                                    style: const TextStyle(fontSize: 14))))
+                            .toList(),
                         onChanged: (val) {
-                          if (val != null) setState(() => selectedOrganisasi = val);
+                          if (val != null) {
+                            setState(() => selectedOrganisasi = val);
+                          }
                         },
                       ),
                     ),
                   ),
                   if (showJenis) ...[
                     const SizedBox(height: 16),
-                    const Text('Jenis Surat', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                    const Text('Jenis Surat',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary)),
                     const SizedBox(height: 8),
                     Container(
                       height: 50,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.shade300)),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade300)),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: selectedJenis,
                           isExpanded: true,
-                          icon: const Icon(CupertinoIcons.chevron_down, size: 16),
-                          items: ['Semua Jenis', 'Surat Masuk', 'Surat Keluar', 'Surat Tugas', 'Surat Keputusan'].map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontSize: 14)))).toList(),
+                          icon:
+                              const Icon(CupertinoIcons.chevron_down, size: 16),
+                          items: [
+                            'Semua Jenis',
+                            'Surat Masuk',
+                            'Surat Keluar',
+                            'Surat Tugas',
+                            'Surat Keputusan'
+                          ]
+                              .map((e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(e,
+                                      style: const TextStyle(fontSize: 14))))
+                              .toList(),
                           onChanged: (val) {
-                            if (val != null) setState(() => selectedJenis = val);
+                            if (val != null) {
+                              setState(() => selectedJenis = val);
+                            }
                           },
                         ),
                       ),
@@ -766,11 +1040,17 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+                        backgroundColor: widget.isCabang
+                            ? AppColors.cabangPrimary
+                            : AppColors.pacPrimary,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text('Terapkan Filter', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: const Text('Terapkan Filter',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -787,7 +1067,8 @@ class _ArsipScreenState extends State<ArsipScreen> {
     final result = await showOkCancelAlertDialog(
       context: context,
       title: 'Hapus Arsip',
-      message: 'Apakah Anda yakin ingin menghapus arsip surat ini? Data yang sudah dihapus tidak dapat dikembalikan.',
+      message:
+          'Apakah Anda yakin ingin menghapus arsip surat ini? Data yang sudah dihapus tidak dapat dikembalikan.',
       okLabel: 'Hapus',
       cancelLabel: 'Batal',
       isDestructiveAction: true,

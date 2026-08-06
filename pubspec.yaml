@@ -47,7 +47,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   flutter_secure_storage: ^9.2.2
   data_table_2: ^2.5.18
-  fl_chart: ^0.71.0
+  fl_chart: ^0.68.0
   json_annotation: ^4.9.0
   adaptive_dialog: ^2.3.0
   toastification: ^2.3.0

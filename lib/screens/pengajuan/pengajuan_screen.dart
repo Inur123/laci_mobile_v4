@@ -7,7 +7,7 @@ import 'package:toastification/toastification.dart';
 
 class PengajuanScreen extends StatefulWidget {
   final bool isCabang;
-  
+
   const PengajuanScreen({super.key, this.isCabang = true});
 
   @override
@@ -48,6 +48,9 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor =
+        widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
@@ -56,7 +59,10 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
         elevation: 0,
         title: const Text(
           'Pengajuan Berkas',
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 18),
+          style: TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 18),
         ),
       ),
       body: Column(
@@ -71,35 +77,48 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               physics: const BouncingScrollPhysics(),
               children: [
-                _buildStatCard('TOTAL', '28', CupertinoIcons.doc_text, Colors.blue),
-                _buildStatCard('PENDING', '0', CupertinoIcons.clock, Colors.orange),
-                _buildStatCard('DITERIMA', '28', CupertinoIcons.checkmark_shield, Colors.green),
-                _buildStatCard('DITOLAK', '0', CupertinoIcons.xmark_shield, Colors.red),
+                _buildStatCard(
+                    'TOTAL', '28', CupertinoIcons.doc_text, Colors.blue),
+                _buildStatCard(
+                    'PENDING', '0', CupertinoIcons.clock, Colors.orange),
+                _buildStatCard('DITERIMA', '28',
+                    CupertinoIcons.checkmark_shield, Colors.green),
+                _buildStatCard(
+                    'DITOLAK', '0', CupertinoIcons.xmark_shield, Colors.red),
               ],
             ),
           ),
-          
+
           // SEARCH & FILTER
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             color: Colors.white,
             child: Row(
               children: [
                 Expanded(
-                  child: Container(
+                  child: SizedBox(
                     height: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: const TextField(
+                    child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Cari nomor surat, pengaju...',
-                        hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        hintStyle: const TextStyle(
+                            fontSize: 14, color: AppColors.textSecondary),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
                         isDense: true,
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade300)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade300)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: primaryColor)),
                       ),
                     ),
                   ),
@@ -110,11 +129,12 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                   width: 48,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: IconButton(
-                    icon: const Icon(CupertinoIcons.slider_horizontal_3, size: 20, color: AppColors.textPrimary),
+                    icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                        size: 20, color: AppColors.textPrimary),
                     onPressed: () {
                       _showFilterModal(context);
                     },
@@ -123,9 +143,9 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
               ],
             ),
           ),
-          
+
           const Divider(height: 1, thickness: 1, color: Colors.black12),
-          
+
           // LIST PENGAJUAN
           Expanded(
             child: ListView.builder(
@@ -140,18 +160,21 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
           ),
         ],
       ),
-      floatingActionButton: widget.isCabang 
-          ? null 
+      floatingActionButton: widget.isCabang
+          ? null
           : FloatingActionButton.extended(
               onPressed: () {},
               backgroundColor: AppColors.pacPrimary,
               icon: const Icon(CupertinoIcons.add, color: Colors.white),
-              label: const Text('Buat Pengajuan', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              label: const Text('Buat Pengajuan',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
             ),
     );
   }
 
-  Widget _buildStatCard(String title, String count, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String title, String count, IconData icon, Color color) {
     return Container(
       width: 120,
       margin: const EdgeInsets.only(right: 12),
@@ -168,11 +191,17 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textSecondary)),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textSecondary)),
               Icon(icon, size: 14, color: color),
             ],
           ),
-          Text(count, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
+          Text(count,
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: color)),
         ],
       ),
     );
@@ -193,16 +222,12 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
     }
 
     Color penerimaColor;
-    Color penerimaBg;
     if (item['penerima'] == 'BERSAMA') {
       penerimaColor = Colors.blue.shade700;
-      penerimaBg = Colors.blue.shade50;
     } else if (item['penerima'] == 'IPPNU') {
       penerimaColor = Colors.pink.shade700;
-      penerimaBg = Colors.pink.shade50;
     } else {
       penerimaColor = Colors.green.shade700;
-      penerimaBg = Colors.green.shade50;
     }
 
     return Container(
@@ -212,7 +237,10 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.black.withOpacity(0.05)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: InkWell(
@@ -239,7 +267,10 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                   Expanded(
                     child: Text(
                       item['no_surat'],
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: AppColors.textPrimary),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: AppColors.textPrimary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -248,21 +279,28 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: statusBg,
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: statusColor.withOpacity(0.3)),
+                          border:
+                              Border.all(color: statusColor.withOpacity(0.3)),
                         ),
                         child: Text(
                           item['status'],
-                          style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              color: statusColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                       const SizedBox(width: 4),
                       PopupMenuButton<String>(
-                        icon: const Icon(CupertinoIcons.ellipsis, size: 20, color: AppColors.textSecondary),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        icon: const Icon(CupertinoIcons.ellipsis,
+                            size: 20, color: AppColors.textSecondary),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                         color: Colors.white,
                         onSelected: (value) {
                           if (value == 'lihat') {
@@ -280,8 +318,11 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                           }
                         },
                         itemBuilder: (context) => [
-                          _buildPopupMenuItem('lihat', CupertinoIcons.eye, 'Lihat Detail'),
-                          _buildPopupMenuItem('hapus', CupertinoIcons.trash, 'Hapus', isDestructive: true),
+                          _buildPopupMenuItem(
+                              'lihat', CupertinoIcons.eye, 'Lihat Detail'),
+                          _buildPopupMenuItem(
+                              'hapus', CupertinoIcons.trash, 'Hapus',
+                              isDestructive: true),
                         ],
                       ),
                     ],
@@ -291,12 +332,14 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  const Icon(CupertinoIcons.person_solid, size: 14, color: AppColors.textSecondary),
+                  const Icon(CupertinoIcons.person_solid,
+                      size: 14, color: AppColors.textSecondary),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       item['pengaju'],
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textSecondary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -306,12 +349,14 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  const Icon(CupertinoIcons.doc_plaintext, size: 14, color: AppColors.textSecondary),
+                  const Icon(CupertinoIcons.doc_plaintext,
+                      size: 14, color: AppColors.textSecondary),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       item['keperluan'],
-                      style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                      style: const TextStyle(
+                          fontSize: 12, color: AppColors.textSecondary),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -327,13 +372,19 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                 children: [
                   Row(
                     children: [
-                      const Icon(CupertinoIcons.calendar, size: 14, color: AppColors.textSecondary),
+                      const Icon(CupertinoIcons.calendar,
+                          size: 14, color: AppColors.textSecondary),
                       const SizedBox(width: 4),
-                      Text(item['tanggal'], style: const TextStyle(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w500)),
+                      Text(item['tanggal'],
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                              fontWeight: FontWeight.w500)),
                     ],
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: penerimaColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
@@ -341,7 +392,10 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                     ),
                     child: Text(
                       item['penerima'],
-                      style: TextStyle(color: penerimaColor, fontSize: 10, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: penerimaColor,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -353,7 +407,9 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
     );
   }
 
-  PopupMenuItem<String> _buildPopupMenuItem(String value, IconData icon, String text, {bool isDestructive = false}) {
+  PopupMenuItem<String> _buildPopupMenuItem(
+      String value, IconData icon, String text,
+      {bool isDestructive = false}) {
     final color = isDestructive ? Colors.red : AppColors.textPrimary;
     return PopupMenuItem<String>(
       value: value,
@@ -361,7 +417,12 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
         children: [
           Icon(icon, size: 18, color: color),
           const SizedBox(width: 12),
-          Text(text, style: TextStyle(color: color, fontSize: 14, fontWeight: isDestructive ? FontWeight.bold : FontWeight.w500)),
+          Text(text,
+              style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight:
+                      isDestructive ? FontWeight.bold : FontWeight.w500)),
         ],
       ),
     );
@@ -376,7 +437,8 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
@@ -394,27 +456,54 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Filter Pengajuan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                      const Text('Filter Pengajuan',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary)),
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                        child: const Text('Batal', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                        style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                        child: const Text('Batal',
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
                   const SizedBox(height: 24),
-                  const Text('Status', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  const Text('Status',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
                   const SizedBox(height: 8),
                   Container(
                     height: 50,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.shade300)),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300)),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: selectedStatus,
                         isExpanded: true,
                         icon: const Icon(CupertinoIcons.chevron_down, size: 16),
-                        items: ['Semua Status', 'Pending', 'Diterima', 'Ditolak'].map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontSize: 14)))).toList(),
+                        items: [
+                          'Semua Status',
+                          'Pending',
+                          'Diterima',
+                          'Ditolak'
+                        ]
+                            .map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e,
+                                    style: const TextStyle(fontSize: 14))))
+                            .toList(),
                         onChanged: (val) {
                           if (val != null) setState(() => selectedStatus = val);
                         },
@@ -422,37 +511,75 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Penerima', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  const Text('Penerima',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
                   const SizedBox(height: 8),
                   Container(
                     height: 50,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.shade300)),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300)),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: selectedPenerima,
                         isExpanded: true,
                         icon: const Icon(CupertinoIcons.chevron_down, size: 16),
-                        items: ['Semua Penerima', 'IPNU', 'IPPNU', 'BERSAMA', 'CBP KPP'].map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontSize: 14)))).toList(),
+                        items: [
+                          'Semua Penerima',
+                          'IPNU',
+                          'IPPNU',
+                          'BERSAMA',
+                          'CBP KPP'
+                        ]
+                            .map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e,
+                                    style: const TextStyle(fontSize: 14))))
+                            .toList(),
                         onChanged: (val) {
-                          if (val != null) setState(() => selectedPenerima = val);
+                          if (val != null) {
+                            setState(() => selectedPenerima = val);
+                          }
                         },
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Filter PAC', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  const Text('Filter PAC',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
                   const SizedBox(height: 8),
                   Container(
                     height: 50,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.grey.shade300)),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey.shade300)),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: selectedPac,
                         isExpanded: true,
                         icon: const Icon(CupertinoIcons.chevron_down, size: 16),
-                        items: ['Semua PAC', 'Pac Barat', 'Pac Bendo', 'Pac Ipnu Ippnu Panekan', 'Pac Ipnu Ippnu Sukomoro'].map((e) => DropdownMenuItem(value: e, child: Text(e, style: const TextStyle(fontSize: 14)))).toList(),
+                        items: [
+                          'Semua PAC',
+                          'Pac Barat',
+                          'Pac Bendo',
+                          'Pac Ipnu Ippnu Panekan',
+                          'Pac Ipnu Ippnu Sukomoro'
+                        ]
+                            .map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e,
+                                    style: const TextStyle(fontSize: 14))))
+                            .toList(),
                         onChanged: (val) {
                           if (val != null) setState(() => selectedPac = val);
                         },
@@ -465,11 +592,17 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+                        backgroundColor: widget.isCabang
+                            ? AppColors.cabangPrimary
+                            : AppColors.pacPrimary,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text('Terapkan Filter', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: const Text('Terapkan Filter',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(height: 16),

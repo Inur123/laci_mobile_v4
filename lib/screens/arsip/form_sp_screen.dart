@@ -8,7 +8,7 @@ import 'package:toastification/toastification.dart';
 class FormSpScreen extends StatefulWidget {
   final bool isCabang;
   final bool isEdit;
-  
+
   const FormSpScreen({super.key, this.isCabang = true, this.isEdit = false});
 
   @override
@@ -31,12 +31,18 @@ class _FormSpScreenState extends State<FormSpScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+          icon: Icon(CupertinoIcons.back,
+              color: (widget.isCabang
+                  ? AppColors.cabangPrimary
+                  : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           widget.isEdit ? 'Edit Berkas SP' : 'Tambah Berkas SP',
-          style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
+          style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 16),
         ),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1.0),
@@ -66,7 +72,8 @@ class _FormSpScreenState extends State<FormSpScreen> {
                       title: 'Pilih Organisasi',
                       items: ['IPNU', 'IPPNU'],
                       currentValue: _selectedOrganisasi,
-                      onSelected: (val) => setState(() => _selectedOrganisasi = val),
+                      onSelected: (val) =>
+                          setState(() => _selectedOrganisasi = val),
                     );
                   },
                 ),
@@ -81,7 +88,8 @@ class _FormSpScreenState extends State<FormSpScreen> {
                         value: _tanggalMulai,
                         hint: 'Pilih',
                         onTap: () {
-                          _selectDate(context, (date) => setState(() => _tanggalMulai = date));
+                          _selectDate(context,
+                              (date) => setState(() => _tanggalMulai = date));
                         },
                       ),
                     ),
@@ -93,7 +101,10 @@ class _FormSpScreenState extends State<FormSpScreen> {
                         value: _tanggalBerakhir,
                         hint: 'Pilih',
                         onTap: () {
-                          _selectDate(context, (date) => setState(() => _tanggalBerakhir = date));
+                          _selectDate(
+                              context,
+                              (date) =>
+                                  setState(() => _tanggalBerakhir = date));
                         },
                       ),
                     ),
@@ -101,41 +112,55 @@ class _FormSpScreenState extends State<FormSpScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                const Text('Catatan (Opsional)', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                const Text('Catatan (Opsional)',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
                 const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: const TextField(
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: 'Tambahkan catatan jika ada...',
-                      hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.all(16),
-                    ),
+                TextField(
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    hintText: 'Tambahkan catatan jika ada...',
+                    hintStyle: const TextStyle(
+                        color: AppColors.textSecondary, fontSize: 14),
+                    contentPadding: const EdgeInsets.all(16),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade300)),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey.shade300)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(
+                            color: widget.isCabang
+                                ? AppColors.cabangPrimary
+                                : AppColors.pacPrimary)),
                   ),
                 ),
                 const SizedBox(height: 16),
 
                 // Upload File
-                const Text('File Berkas SP', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                const Text('File Berkas SP',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
                 const SizedBox(height: 8),
                 InkWell(
                   onTap: _pickFile,
                   borderRadius: BorderRadius.circular(8),
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 24),
                     decoration: BoxDecoration(
                       color: Colors.blue.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.blue.withOpacity(0.3), style: BorderStyle.solid),
+                      border: Border.all(
+                          color: Colors.blue.withOpacity(0.3),
+                          style: BorderStyle.solid),
                     ),
                     child: Column(
                       children: [
@@ -144,23 +169,36 @@ class _FormSpScreenState extends State<FormSpScreen> {
                           decoration: BoxDecoration(
                             color: Colors.white,
                             shape: BoxShape.circle,
-                            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10)
+                            ],
                           ),
                           child: Icon(
-                            _fileName != null ? CupertinoIcons.doc_fill : CupertinoIcons.cloud_upload, 
-                            color: Colors.blue, 
+                            _fileName != null
+                                ? CupertinoIcons.doc_fill
+                                : CupertinoIcons.cloud_upload,
+                            color: Colors.blue,
                             size: 28,
                           ),
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          _fileName ?? 'Klik untuk upload', 
-                          style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.bold),
+                          _fileName ?? 'Klik untuk upload',
+                          style: TextStyle(
+                              color: Colors.blue.shade700,
+                              fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
                         if (_fileName == null) ...[
                           const SizedBox(height: 8),
-                          const Text('Maksimal 2MB. Format: PDF, Word, atau Gambar', textAlign: TextAlign.center, style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                          const Text(
+                              'Maksimal 2MB. Format: PDF, Word, atau Gambar',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 12)),
                         ],
                       ],
                     ),
@@ -170,7 +208,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
               ],
             ),
           ),
-          
+
           // Action Buttons
           Container(
             padding: const EdgeInsets.all(20),
@@ -186,9 +224,13 @@ class _FormSpScreenState extends State<FormSpScreen> {
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       side: BorderSide(color: Colors.grey.shade300),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text('Batal', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                    child: const Text('Batal',
+                        style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -203,7 +245,8 @@ class _FormSpScreenState extends State<FormSpScreen> {
                         style: ToastificationStyle.flat,
                         showProgressBar: false,
                         primaryColor: Colors.white,
-                        icon: const Icon(Icons.check_circle_outline, color: Colors.green),
+                        icon: const Icon(Icons.check_circle_outline,
+                            color: Colors.green),
                         title: const Text('Berkas SP berhasil disimpan!'),
                         alignment: Alignment.topCenter,
                         autoCloseDuration: const Duration(seconds: 3),
@@ -213,9 +256,12 @@ class _FormSpScreenState extends State<FormSpScreen> {
                       backgroundColor: Colors.blue.shade700,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                     ),
-                    child: const Text('Simpan Berkas', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    child: const Text('Simpan Berkas',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
@@ -236,7 +282,11 @@ class _FormSpScreenState extends State<FormSpScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary)),
         const SizedBox(height: 8),
         InkWell(
           onTap: onTap,
@@ -257,14 +307,17 @@ class _FormSpScreenState extends State<FormSpScreen> {
                   child: Text(
                     value ?? hint,
                     style: TextStyle(
-                      color: value != null ? AppColors.textPrimary : AppColors.textSecondary,
+                      color: value != null
+                          ? AppColors.textPrimary
+                          : AppColors.textSecondary,
                       fontSize: 14,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(CupertinoIcons.chevron_down, color: AppColors.textSecondary, size: 20),
+                const Icon(CupertinoIcons.chevron_down,
+                    color: AppColors.textSecondary, size: 20),
                 const SizedBox(width: 16),
               ],
             ),
@@ -303,7 +356,11 @@ class _FormSpScreenState extends State<FormSpScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
                 const SizedBox(height: 16),
                 ...items.map((item) {
                   final isSelected = item == currentValue;
@@ -312,17 +369,23 @@ class _FormSpScreenState extends State<FormSpScreen> {
                     title: Text(
                       item,
                       style: TextStyle(
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                        color: isSelected ? Colors.blue.shade700 : AppColors.textPrimary,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: isSelected
+                            ? Colors.blue.shade700
+                            : AppColors.textPrimary,
                       ),
                     ),
-                    trailing: isSelected ? Icon(CupertinoIcons.checkmark_alt, color: Colors.blue.shade700) : null,
+                    trailing: isSelected
+                        ? Icon(CupertinoIcons.checkmark_alt,
+                            color: Colors.blue.shade700)
+                        : null,
                     onTap: () {
                       onSelected(item);
                       Navigator.pop(context);
                     },
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
@@ -331,7 +394,8 @@ class _FormSpScreenState extends State<FormSpScreen> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context, Function(String) onDateSelected) async {
+  Future<void> _selectDate(
+      BuildContext context, Function(String) onDateSelected) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -341,7 +405,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade700, 
+              primary: Colors.blue.shade700,
               onPrimary: Colors.white,
               onSurface: AppColors.textPrimary,
             ),

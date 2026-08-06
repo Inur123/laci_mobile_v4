@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -7,8 +9,9 @@ import 'package:laci_mobile/widgets/custom_text_field.dart';
 class FormAnggotaScreen extends StatefulWidget {
   final bool isCabang;
   final bool isEdit;
-  
-  const FormAnggotaScreen({super.key, this.isCabang = true, this.isEdit = false});
+
+  const FormAnggotaScreen(
+      {super.key, this.isCabang = true, this.isEdit = false});
 
   @override
   State<FormAnggotaScreen> createState() => _FormAnggotaScreenState();
@@ -16,9 +19,9 @@ class FormAnggotaScreen extends StatefulWidget {
 
 class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
   // State for dynamic lists
-  List<int> _perkaderanList = [];
+  List<int> _pengkaderanList = [];
   List<int> _pendidikanList = [];
-  int _perkaderanCounter = 0;
+  int _pengkaderanCounter = 0;
   int _pendidikanCounter = 0;
 
   // Form states
@@ -27,8 +30,8 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
   String? _photoFileName;
 
   // States for dynamic forms (just to store values for UI display)
-  Map<int, String> _selectedPerkaderan = {};
-  Map<int, String> _selectedTanggalPerkaderan = {};
+  Map<int, String> _selectedpengkaderan = {};
+  Map<int, String> _selectedTanggalpengkaderan = {};
   Map<int, String> _selectedPendidikan = {};
 
   @override
@@ -45,12 +48,18 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+          icon: Icon(CupertinoIcons.back,
+              color: (widget.isCabang
+                  ? AppColors.cabangPrimary
+                  : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           widget.isEdit ? 'Edit Data Anggota' : 'Tambah Anggota',
-          style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
+          style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 16),
         ),
       ),
       body: SafeArea(
@@ -71,26 +80,38 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                     width: 150,
                     height: 150,
                     decoration: BoxDecoration(
-                      color: _photoFileName != null ? Colors.blue.shade50 : Colors.grey.shade400,
+                      color: _photoFileName != null
+                          ? Colors.blue.shade50
+                          : Colors.grey.shade400,
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 4),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10),
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 10),
                       ],
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          _photoFileName != null ? CupertinoIcons.checkmark_seal_fill : CupertinoIcons.cloud_upload, 
-                          color: _photoFileName != null ? Colors.blue : Colors.white, 
-                          size: 32
-                        ),
+                            _photoFileName != null
+                                ? CupertinoIcons.checkmark_seal_fill
+                                : CupertinoIcons.cloud_upload,
+                            color: _photoFileName != null
+                                ? Colors.blue
+                                : Colors.white,
+                            size: 32),
                         const SizedBox(height: 8),
                         Text(
-                          _photoFileName != null ? 'Foto Terpilih' : 'Upload Foto', 
-                          style: TextStyle(color: _photoFileName != null ? Colors.blue : Colors.white, fontSize: 12)
-                        ),
+                            _photoFileName != null
+                                ? 'Foto Terpilih'
+                                : 'Upload Foto',
+                            style: TextStyle(
+                                color: _photoFileName != null
+                                    ? Colors.blue
+                                    : Colors.white,
+                                fontSize: 12)),
                       ],
                     ),
                   ),
@@ -98,29 +119,50 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
               ),
               const SizedBox(height: 16),
               const Center(
-                child: Text('Format: JPG, PNG. Maks 2MB.', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                child: Text('Format: JPG, PNG. Maks 2MB.',
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 12)),
               ),
-              
+
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: Divider(thickness: 1, color: Colors.black12),
               ),
-              
+
               // 2. INFORMASI PERSONAL
-              _buildSectionTitle('Informasi Personal', CupertinoIcons.person_alt),
+              _buildSectionTitle(
+                  'Informasi Personal', CupertinoIcons.person_alt),
               const SizedBox(height: 8),
-              const Text('Lengkapi data diri anggota sesuai identitas resmi.', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              const Text('Lengkapi data diri anggota sesuai identitas resmi.',
+                  style:
+                      TextStyle(color: AppColors.textSecondary, fontSize: 12)),
               const SizedBox(height: 24),
-              
-              const CustomTextField(label: 'Nama Lengkap *', icon: CupertinoIcons.person, keyboardType: TextInputType.text),
+
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Nama Lengkap *',
+                  icon: CupertinoIcons.person,
+                  keyboardType: TextInputType.text),
               const SizedBox(height: 16),
-              const CustomTextField(label: 'Email', icon: CupertinoIcons.mail, keyboardType: TextInputType.emailAddress),
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Email',
+                  icon: CupertinoIcons.mail,
+                  keyboardType: TextInputType.emailAddress),
               const SizedBox(height: 16),
-              const CustomTextField(label: 'NIK (Nomor Induk Kependudukan)', icon: CupertinoIcons.creditcard, keyboardType: TextInputType.number),
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'NIK (Nomor Induk Kependudukan)',
+                  icon: CupertinoIcons.creditcard,
+                  keyboardType: TextInputType.number),
               const SizedBox(height: 16),
-              const CustomTextField(label: 'NIA (Nomor Induk Anggota)', icon: CupertinoIcons.number_square, keyboardType: TextInputType.text),
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'NIA (Nomor Induk Anggota)',
+                  icon: CupertinoIcons.number_square,
+                  keyboardType: TextInputType.text),
               const SizedBox(height: 16),
-              
+
               _buildPremiumDropdown(
                 label: 'Jenis Kelamin *',
                 icon: CupertinoIcons.person_2,
@@ -131,17 +173,26 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                     title: 'Pilih Jenis Kelamin',
                     items: ['Laki-laki', 'Perempuan'],
                     currentValue: _selectedJenisKelamin,
-                    onSelected: (val) => setState(() => _selectedJenisKelamin = val),
+                    onSelected: (val) =>
+                        setState(() => _selectedJenisKelamin = val),
                   );
                 },
               ),
-              
+
               const SizedBox(height: 16),
-              const CustomTextField(label: 'Nomor Handphone (WA)', icon: CupertinoIcons.phone, keyboardType: TextInputType.phone),
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Nomor Handphone (WA)',
+                  icon: CupertinoIcons.phone,
+                  keyboardType: TextInputType.phone),
               const SizedBox(height: 16),
-              
+
               // Tempat Lahir & Tanggal Lahir (Dibuat vertikal agar tidak mepet)
-              const CustomTextField(label: 'Tempat Lahir', icon: CupertinoIcons.location, keyboardType: TextInputType.text),
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Tempat Lahir',
+                  icon: CupertinoIcons.location,
+                  keyboardType: TextInputType.text),
               const SizedBox(height: 16),
               _buildPremiumDropdown(
                 label: 'Tanggal Lahir',
@@ -149,39 +200,53 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                 value: _selectedTanggalLahir,
                 hint: 'Pilih tanggal',
                 onTap: () {
-                  _selectDate(context, (date) => setState(() => _selectedTanggalLahir = date));
+                  _selectDate(context,
+                      (date) => setState(() => _selectedTanggalLahir = date));
                 },
               ),
-              
+
               const SizedBox(height: 16),
-              const CustomTextField(label: 'Alamat Lengkap', icon: CupertinoIcons.map, keyboardType: TextInputType.text),
-              
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Alamat Lengkap',
+                  icon: CupertinoIcons.map,
+                  keyboardType: TextInputType.text),
+
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: Divider(thickness: 1, color: Colors.black12),
               ),
-              
-              // 3. RIWAYAT PERKADERAN (DYNAMIC)
+
+              // 3. RIWAYAT pengkaderan (DYNAMIC)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildSectionTitle('Riwayat Perkaderan', CupertinoIcons.badge_plus_radiowaves_right),
+                  _buildSectionTitle('Riwayat pengkaderan',
+                      CupertinoIcons.badge_plus_radiowaves_right),
                   InkWell(
                     onTap: () {
                       setState(() {
-                        _perkaderanCounter++;
-                        _perkaderanList.add(_perkaderanCounter);
+                        _pengkaderanCounter++;
+                        _pengkaderanList.add(_pengkaderanCounter);
                       });
                     },
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(20)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         children: const [
-                          Icon(CupertinoIcons.add, color: Colors.blue, size: 16),
+                          Icon(CupertinoIcons.add,
+                              color: Colors.blue, size: 16),
                           SizedBox(width: 4),
-                          Text('Tambah', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
+                          Text('Tambah',
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12)),
                         ],
                       ),
                     ),
@@ -189,41 +254,61 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              if (_perkaderanList.isEmpty)
+              if (_pengkaderanList.isEmpty)
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black12, style: BorderStyle.solid),
+                    border: Border.all(
+                        color: Colors.black12, style: BorderStyle.solid),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Center(
-                    child: Text('Belum ada data perkaderan.', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                    child: Text('Belum ada data pengkaderan.',
+                        style: TextStyle(
+                            color: AppColors.textSecondary, fontSize: 12)),
                   ),
                 )
               else
-                ..._perkaderanList.map((id) => _buildPerkaderanForm(id)).toList(),
-              
+                ..._pengkaderanList.map((id) => _buildpengkaderanForm(id)),
+
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: Divider(thickness: 1, color: Colors.black12),
               ),
-              
+
               // 4. INFORMASI ORGANISASI & TAMBAHAN
-              _buildSectionTitle('Informasi Organisasi & Tambahan', CupertinoIcons.building_2_fill),
+              _buildSectionTitle('Informasi Organisasi & Tambahan',
+                  CupertinoIcons.building_2_fill),
               const SizedBox(height: 24),
-              const CustomTextField(label: 'Jabatan', icon: CupertinoIcons.briefcase, keyboardType: TextInputType.text),
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Jabatan',
+                  icon: CupertinoIcons.briefcase,
+                  keyboardType: TextInputType.text),
               const SizedBox(height: 16),
-              const CustomTextField(label: 'Nomor RFID', icon: CupertinoIcons.creditcard_fill, keyboardType: TextInputType.text),
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Nomor RFID',
+                  icon: CupertinoIcons.creditcard_fill,
+                  keyboardType: TextInputType.text),
               const SizedBox(height: 16),
-              const CustomTextField(label: 'Pekerjaan', icon: CupertinoIcons.hammer, keyboardType: TextInputType.text),
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Pekerjaan',
+                  icon: CupertinoIcons.hammer,
+                  keyboardType: TextInputType.text),
               const SizedBox(height: 16),
-              const CustomTextField(label: 'Hobi / Minat Bakat', icon: CupertinoIcons.heart, keyboardType: TextInputType.text),
-              
+              CustomTextField(
+                  isCabang: widget.isCabang,
+                  label: 'Hobi / Minat Bakat',
+                  icon: CupertinoIcons.heart,
+                  keyboardType: TextInputType.text),
+
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
                 child: Divider(thickness: 1, color: Colors.black12),
               ),
-              
+
               // 5. RIWAYAT PENDIDIKAN (DYNAMIC)
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -238,13 +323,21 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                     },
                     borderRadius: BorderRadius.circular(20),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(20)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         children: const [
-                          Icon(CupertinoIcons.add, color: Colors.blue, size: 16),
+                          Icon(CupertinoIcons.add,
+                              color: Colors.blue, size: 16),
                           SizedBox(width: 4),
-                          Text('Tambah', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12)),
+                          Text('Tambah',
+                              style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12)),
                         ],
                       ),
                     ),
@@ -256,18 +349,21 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black12, style: BorderStyle.solid),
+                    border: Border.all(
+                        color: Colors.black12, style: BorderStyle.solid),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: const Center(
-                    child: Text('Belum ada data pendidikan.', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                    child: Text('Belum ada data pendidikan.',
+                        style: TextStyle(
+                            color: AppColors.textSecondary, fontSize: 12)),
                   ),
                 )
               else
-                ..._pendidikanList.map((id) => _buildPendidikanForm(id)).toList(),
-              
+                ..._pendidikanList.map((id) => _buildPendidikanForm(id)),
+
               const SizedBox(height: 40),
-              
+
               // Buttons
               Row(
                 children: [
@@ -277,9 +373,13 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text('Batal', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                      child: const Text('Batal',
+                          style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -288,12 +388,19 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700, 
+                        backgroundColor: Colors.blue.shade700,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: Text(widget.isEdit ? 'Simpan Perubahan' : 'Simpan Data Anggota', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: Text(
+                          widget.isEdit
+                              ? 'Simpan Perubahan'
+                              : 'Simpan Data Anggota',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -306,7 +413,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
     );
   }
 
-  Widget _buildPerkaderanForm(int id) {
+  Widget _buildpengkaderanForm(int id) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -314,7 +421,9 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
         color: Colors.white,
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10)],
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10)
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -322,27 +431,32 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Data Perkaderan', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              const Text('Data pengkaderan',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary)),
               InkWell(
                 onTap: () {
-                  setState(() => _perkaderanList.remove(id));
+                  setState(() => _pengkaderanList.remove(id));
                 },
-                child: const Icon(CupertinoIcons.trash, color: Colors.red, size: 20),
+                child: const Icon(CupertinoIcons.trash,
+                    color: Colors.red, size: 20),
               ),
             ],
           ),
           const SizedBox(height: 16),
           _buildPremiumDropdown(
-            label: 'Nama Perkaderan',
+            label: 'Nama pengkaderan',
             icon: CupertinoIcons.badge_plus_radiowaves_right,
-            value: _selectedPerkaderan[id],
-            hint: 'Pilih Perkaderan',
+            value: _selectedpengkaderan[id],
+            hint: 'Pilih pengkaderan',
             onTap: () {
               _showBottomSheetPicker(
-                title: 'Pilih Perkaderan',
+                title: 'Pilih pengkaderan',
                 items: ['Makesta', 'Lakmud', 'Lakut', 'Latin', 'Latpel'],
-                currentValue: _selectedPerkaderan[id],
-                onSelected: (val) => setState(() => _selectedPerkaderan[id] = val),
+                currentValue: _selectedpengkaderan[id],
+                onSelected: (val) =>
+                    setState(() => _selectedpengkaderan[id] = val),
               );
             },
           ),
@@ -350,14 +464,21 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           _buildPremiumDropdown(
             label: 'Tanggal',
             icon: CupertinoIcons.calendar,
-            value: _selectedTanggalPerkaderan[id],
+            value: _selectedTanggalpengkaderan[id],
             hint: 'Pilih tanggal',
             onTap: () {
-              _selectDate(context, (date) => setState(() => _selectedTanggalPerkaderan[id] = date));
+              _selectDate(
+                  context,
+                  (date) =>
+                      setState(() => _selectedTanggalpengkaderan[id] = date));
             },
           ),
           const SizedBox(height: 12),
-          const CustomTextField(label: 'Tempat', icon: CupertinoIcons.location, keyboardType: TextInputType.text),
+          CustomTextField(
+              isCabang: widget.isCabang,
+              label: 'Tempat',
+              icon: CupertinoIcons.location,
+              keyboardType: TextInputType.text),
         ],
       ),
     );
@@ -371,7 +492,9 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
         color: Colors.white,
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10)],
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10)
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,12 +502,16 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Data Pendidikan', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              const Text('Data Pendidikan',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary)),
               InkWell(
                 onTap: () {
                   setState(() => _pendidikanList.remove(id));
                 },
-                child: const Icon(CupertinoIcons.trash, color: Colors.red, size: 20),
+                child: const Icon(CupertinoIcons.trash,
+                    color: Colors.red, size: 20),
               ),
             ],
           ),
@@ -397,25 +524,42 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
             onTap: () {
               _showBottomSheetPicker(
                 title: 'Pilih Jenjang Pendidikan',
-                items: ['SD/MI', 'SMP/MTs', 'SMA/MA/SMK', 'D3', 'S1', 'S2', 'S3'],
+                items: [
+                  'SD/MI',
+                  'SMP/MTs',
+                  'SMA/MA/SMK',
+                  'D3',
+                  'S1',
+                  'S2',
+                  'S3'
+                ],
                 currentValue: _selectedPendidikan[id],
-                onSelected: (val) => setState(() => _selectedPendidikan[id] = val),
+                onSelected: (val) =>
+                    setState(() => _selectedPendidikan[id] = val),
               );
             },
           ),
           const SizedBox(height: 12),
-          const CustomTextField(label: 'Nama Sekolah / Kampus', icon: CupertinoIcons.building_2_fill, keyboardType: TextInputType.text),
+          CustomTextField(
+              isCabang: widget.isCabang,
+              label: 'Nama Sekolah / Kampus',
+              icon: CupertinoIcons.building_2_fill,
+              keyboardType: TextInputType.text),
         ],
       ),
     );
   }
-  
+
   Widget _buildSectionTitle(String title, IconData icon) {
     return Row(
       children: [
         Icon(icon, color: Colors.blue.shade700, size: 20),
         const SizedBox(width: 8),
-        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+        Text(title,
+            style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary)),
       ],
     );
   }
@@ -431,7 +575,11 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary)),
         const SizedBox(height: 8),
         InkWell(
           onTap: onTap,
@@ -452,14 +600,17 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                   child: Text(
                     value ?? hint,
                     style: TextStyle(
-                      color: value != null ? AppColors.textPrimary : AppColors.textSecondary,
+                      color: value != null
+                          ? AppColors.textPrimary
+                          : AppColors.textSecondary,
                       fontSize: 14,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(CupertinoIcons.chevron_down, color: AppColors.textSecondary, size: 20),
+                const Icon(CupertinoIcons.chevron_down,
+                    color: AppColors.textSecondary, size: 20),
                 const SizedBox(width: 16),
               ],
             ),
@@ -498,7 +649,11 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
                 const SizedBox(height: 16),
                 ...items.map((item) {
                   final isSelected = item == currentValue;
@@ -507,17 +662,23 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                     title: Text(
                       item,
                       style: TextStyle(
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                        color: isSelected ? Colors.blue.shade700 : AppColors.textPrimary,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: isSelected
+                            ? Colors.blue.shade700
+                            : AppColors.textPrimary,
                       ),
                     ),
-                    trailing: isSelected ? Icon(CupertinoIcons.checkmark_alt, color: Colors.blue.shade700) : null,
+                    trailing: isSelected
+                        ? Icon(CupertinoIcons.checkmark_alt,
+                            color: Colors.blue.shade700)
+                        : null,
                     onTap: () {
                       onSelected(item);
                       Navigator.pop(context);
                     },
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
@@ -526,7 +687,8 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context, Function(String) onDateSelected) async {
+  Future<void> _selectDate(
+      BuildContext context, Function(String) onDateSelected) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -536,7 +698,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade700, 
+              primary: Colors.blue.shade700,
               onPrimary: Colors.white,
               onSurface: AppColors.textPrimary,
             ),

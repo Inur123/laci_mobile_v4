@@ -70,63 +70,48 @@ class _FormPresensiScreenState extends State<FormPresensiScreen> {
                 
                 const Text('Nama Kegiatan *', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
                 const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: TextField(
-                    controller: _namaController,
-                    decoration: const InputDecoration(
-                      hintText: 'Contoh: Rapat Pleno I',
-                      hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      isDense: true,
-                    ),
+                TextField(
+                  controller: _namaController,
+                  decoration: InputDecoration(
+                    hintText: 'Contoh: Rapat Pleno I',
+                    hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: primaryColor)),
                   ),
                 ),
                 const SizedBox(height: 20),
                 
                 const Text('Penyelenggara *', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
                 const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: TextField(
-                    controller: _penyelenggaraController,
-                    decoration: const InputDecoration(
-                      hintText: 'PC IPNU IPPNU Magetan',
-                      hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      isDense: true,
-                    ),
+                TextField(
+                  controller: _penyelenggaraController,
+                  decoration: InputDecoration(
+                    hintText: 'PC IPNU IPPNU Magetan',
+                    hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: primaryColor)),
                   ),
                 ),
                 const SizedBox(height: 20),
                 
                 const Text('Lokasi / Tempat *', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
                 const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: TextField(
-                    controller: _lokasiController,
-                    decoration: const InputDecoration(
-                      hintText: 'Contoh: Aula PCNU Magetan',
-                      hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      isDense: true,
-                    ),
+                TextField(
+                  controller: _lokasiController,
+                  decoration: InputDecoration(
+                    hintText: 'Contoh: Aula PCNU Magetan',
+                    hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    isDense: true,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: primaryColor)),
                   ),
                 ),
                 const SizedBox(height: 20),

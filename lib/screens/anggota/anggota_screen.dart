@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/screens/anggota/form_anggota_screen.dart';
+import 'package:laci_mobile/screens/anggota/detail_anggota_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:toastification/toastification.dart';
@@ -16,35 +17,28 @@ class AnggotaScreen extends StatefulWidget {
 class _AnggotaScreenState extends State<AnggotaScreen> {
   @override
   Widget build(BuildContext context) {
+    final primaryColor =
+        widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Data Anggota', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 18)),
+        title: const Text('Data Anggota',
+            style: TextStyle(
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
+                fontSize: 18)),
         actions: [
           IconButton(
-            icon: const Icon(CupertinoIcons.doc_on_clipboard, color: AppColors.textSecondary, size: 22),
+            icon: const Icon(CupertinoIcons.doc_on_clipboard,
+                color: AppColors.textSecondary, size: 22),
             onPressed: () {
               _showSalinModal(context);
             },
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16, left: 4),
-            child: TextButton.icon(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => FormAnggotaScreen(isCabang: widget.isCabang)));
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary).withOpacity(0.1),
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              ),
-              icon: Icon(CupertinoIcons.add, size: 16, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
-              label: Text('Tambah', style: TextStyle(color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, fontWeight: FontWeight.bold)),
-            ),
-          )
         ],
       ),
       body: Column(
@@ -59,37 +53,52 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               physics: const BouncingScrollPhysics(),
               children: [
-                _buildStatCard('TOTAL ANGGOTA', '312', CupertinoIcons.person_2, Colors.blue),
-                _buildStatCard('LAKI-LAKI (IPNU)', '113', CupertinoIcons.person, Colors.green),
-                _buildStatCard('PEREMPUAN (IPPNU)', '199', CupertinoIcons.person, Colors.pink),
-                _buildStatCard('MAKESTA', '116', CupertinoIcons.shield, Colors.blue),
-                _buildStatCard('LAKMUD', '21', CupertinoIcons.shield_fill, Colors.indigo),
-                _buildStatCard('LATIN', '2', CupertinoIcons.rosette, Colors.orange),
+                _buildStatCard('TOTAL ANGGOTA', '312', CupertinoIcons.person_2,
+                    Colors.blue),
+                _buildStatCard('LAKI-LAKI (IPNU)', '113', CupertinoIcons.person,
+                    Colors.green),
+                _buildStatCard('PEREMPUAN (IPPNU)', '199',
+                    CupertinoIcons.person, Colors.pink),
+                _buildStatCard(
+                    'MAKESTA', '116', CupertinoIcons.shield, Colors.blue),
+                _buildStatCard(
+                    'LAKMUD', '21', CupertinoIcons.shield_fill, Colors.indigo),
+                _buildStatCard(
+                    'LATIN', '2', CupertinoIcons.rosette, Colors.orange),
               ],
             ),
           ),
-          
+
           // SEARCH & FILTER
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             color: Colors.white,
             child: Row(
               children: [
                 Expanded(
-                  child: Container(
+                  child: SizedBox(
                     height: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: const TextField(
+                    child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Cari nama, jabatan, NIK, NIA...',
-                        hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        hintStyle: const TextStyle(
+                            fontSize: 14, color: AppColors.textSecondary),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
                         isDense: true,
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade300)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide:
+                                BorderSide(color: Colors.grey.shade300)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: primaryColor)),
                       ),
                     ),
                   ),
@@ -100,11 +109,12 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                   width: 48,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: IconButton(
-                    icon: const Icon(CupertinoIcons.slider_horizontal_3, size: 18, color: AppColors.textPrimary),
+                    icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                        size: 18, color: AppColors.textPrimary),
                     onPressed: () {
                       _showFilterModal(context);
                     },
@@ -113,9 +123,9 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
               ],
             ),
           ),
-          
+
           const Divider(height: 1, thickness: 1, color: Colors.black12),
-          
+
           // LIST ANGGOTA
           Expanded(
             child: ListView.builder(
@@ -129,10 +139,24 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'anggota_fab',
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      FormAnggotaScreen(isCabang: widget.isCabang)));
+        },
+        backgroundColor:
+            widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+        child: const Icon(CupertinoIcons.add, color: Colors.white),
+      ),
     );
   }
 
-  Widget _buildStatCard(String title, String count, IconData icon, Color color) {
+  Widget _buildStatCard(
+      String title, String count, IconData icon, Color color) {
     return Container(
       width: 130,
       margin: const EdgeInsets.only(right: 12),
@@ -149,12 +173,21 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(child: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textSecondary))),
+              Expanded(
+                  child: Text(title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textSecondary))),
               const SizedBox(width: 4),
               Icon(icon, size: 14, color: color),
             ],
           ),
-          Text(count, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
+          Text(count,
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: color)),
         ],
       ),
     );
@@ -163,121 +196,217 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
   Widget _buildAnggotaCard(int index) {
     // Dummy data variations
     final isLaki = index == 2 || index == 3;
-    final nama = isLaki ? (index == 2 ? 'Dwi Agus Nur Cahyo' : 'Fauzan Nabil') : (index == 0 ? 'Chumaira Nurul Aini' : 'Desta Faizatus Zahra');
+    final nama = isLaki
+        ? (index == 2 ? 'Dwi Agus Nur Cahyo' : 'Fauzan Nabil')
+        : (index == 0 ? 'Chumaira Nurul Aini' : 'Desta Faizatus Zahra');
     final inisial = nama.split(' ').take(2).map((e) => e[0]).join();
-    
+
+    final dummyData = {
+      'nama': nama,
+      'email': '${nama.replaceAll(' ', '').toLowerCase()}@gmail.com',
+      'tempat_lahir': isLaki ? 'Magetan' : 'Madiun',
+      'tanggal_lahir': isLaki ? '12 Agustus 2005' : '01 Januari 2006',
+      'jenis_kelamin': isLaki ? 'Laki-laki' : 'Perempuan',
+      'nik': '3520123456780001',
+      'nia': isLaki ? '11.12.13.14.15' : '21.22.23.24.25',
+      'alamat': 'Jl. Manggis No. 12, Ngariboyo, Magetan',
+      'no_hp': '081234567890',
+      'jabatan': 'Anggota',
+      'rfid': 'RFID-987654321',
+      'pekerjaan': 'Mahasiswa',
+      'hobi': 'Membaca, Menulis',
+      'pengkaderan': [
+        {
+          'nama': 'Makesta',
+          'tanggal': '15 Juli 2023',
+          'tempat': 'MtsN 1 Magetan'
+        },
+        {
+          'nama': 'Lakmud',
+          'tanggal': '20 Agustus 2024',
+          'tempat': 'PCNU Magetan'
+        }
+      ],
+      'pendidikan': [
+        {'jenjang': 'SMA/MA/SMK', 'nama': 'SMAN 1 Magetan'},
+        {'jenjang': 'S1', 'nama': 'Universitas Brawijaya'}
+      ]
+    };
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.black.withOpacity(0.05)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
         ],
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Avatar
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: isLaki ? Colors.green.shade100 : Colors.pink.shade100,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                inisial,
-                style: TextStyle(
-                  color: isLaki ? Colors.green.shade700 : Colors.pink.shade700,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailAnggotaScreen(
+                  data: dummyData,
+                  isCabang: widget.isCabang,
                 ),
               ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          
-          // Info Detail
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            );
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  nama,
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                // Avatar
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color:
+                        isLaki ? Colors.green.shade100 : Colors.pink.shade100,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      inisial,
+                      style: TextStyle(
+                        color: isLaki
+                            ? Colors.green.shade700
+                            : Colors.pink.shade700,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    Icon(CupertinoIcons.person_solid, size: 12, color: isLaki ? Colors.green : Colors.pink),
-                    const SizedBox(width: 4),
-                    Text(isLaki ? 'Laki-laki (IPNU)' : 'Perempuan (IPPNU)', style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
-                  ],
+                const SizedBox(width: 16),
+
+                // Info Detail
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        nama,
+                        style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(CupertinoIcons.person_solid,
+                              size: 12,
+                              color: isLaki ? Colors.green : Colors.pink),
+                          const SizedBox(width: 4),
+                          Text(
+                              isLaki ? 'Laki-laki (IPNU)' : 'Perempuan (IPPNU)',
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.textSecondary)),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          const Icon(CupertinoIcons.building_2_fill,
+                              size: 12, color: AppColors.textSecondary),
+                          const SizedBox(width: 4),
+                          const Expanded(
+                              child: Text('PAC Ngariboyo',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.textSecondary))),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(CupertinoIcons.building_2_fill, size: 12, color: AppColors.textSecondary),
-                    const SizedBox(width: 4),
-                    const Expanded(child: Text('PAC Ngariboyo', style: TextStyle(fontSize: 12, color: AppColors.textSecondary))),
+
+                // Menu 3 Titik
+                PopupMenuButton<String>(
+                  icon: const Icon(CupertinoIcons.ellipsis,
+                      size: 20, color: AppColors.textSecondary),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  color: Colors.white,
+                  onSelected: (value) async {
+                    if (value == 'lihat') {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailAnggotaScreen(
+                            data: dummyData,
+                            isCabang: widget.isCabang,
+                          ),
+                        ),
+                      );
+                    } else if (value == 'edit') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const FormAnggotaScreen(isEdit: true)));
+                    } else if (value == 'hapus') {
+                      final result = await showOkCancelAlertDialog(
+                        context: context,
+                        title: 'Hapus Anggota',
+                        message:
+                            'Apakah Anda yakin ingin menghapus data anggota ini? Data yang sudah dihapus tidak dapat dikembalikan.',
+                        okLabel: 'Hapus',
+                        cancelLabel: 'Batal',
+                        isDestructiveAction: true,
+                      );
+                      if (result == OkCancelResult.ok) {
+                        if (context.mounted) {
+                          toastification.show(
+                            // ignore: use_build_context_synchronously
+                            context: context,
+                            type: ToastificationType.success,
+                            style: ToastificationStyle.flat,
+                            showProgressBar: false,
+                            primaryColor: Colors.white,
+                            icon: const Icon(Icons.check_circle_outline,
+                                color: Colors.green),
+                            title: const Text('Data anggota berhasil dihapus'),
+                            alignment: Alignment.topCenter,
+                            autoCloseDuration: const Duration(seconds: 3),
+                          );
+                        }
+                      }
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    _buildPopupMenuItem(
+                        'lihat', CupertinoIcons.eye, 'Lihat Detail'),
+                    _buildPopupMenuItem('edit', CupertinoIcons.pencil, 'Edit'),
+                    _buildPopupMenuItem('hapus', CupertinoIcons.trash, 'Hapus',
+                        isDestructive: true),
                   ],
                 ),
               ],
             ),
           ),
-          
-          // Menu 3 Titik
-          PopupMenuButton<String>(
-            icon: const Icon(CupertinoIcons.ellipsis, size: 20, color: AppColors.textSecondary),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            color: Colors.white,
-            onSelected: (value) async {
-              if (value == 'edit') {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const FormAnggotaScreen(isEdit: true)));
-              } else if (value == 'hapus') {
-                final result = await showOkCancelAlertDialog(
-                  context: context,
-                  title: 'Hapus Anggota',
-                  message: 'Apakah Anda yakin ingin menghapus data anggota ini? Data yang sudah dihapus tidak dapat dikembalikan.',
-                  okLabel: 'Hapus',
-                  cancelLabel: 'Batal',
-                  isDestructiveAction: true,
-                );
-                if (result == OkCancelResult.ok) {
-                  if (context.mounted) {
-                    toastification.show(
-                      context: context,
-                      type: ToastificationType.success,
-                      style: ToastificationStyle.flat,
-                      showProgressBar: false,
-                      primaryColor: Colors.white,
-                      icon: const Icon(Icons.check_circle_outline, color: Colors.green),
-                      title: const Text('Data anggota berhasil dihapus'),
-                      alignment: Alignment.topCenter,
-                      autoCloseDuration: const Duration(seconds: 3),
-                    );
-                  }
-                }
-              }
-            },
-            itemBuilder: (context) => [
-              _buildPopupMenuItem('lihat', CupertinoIcons.eye, 'Lihat Detail'),
-              _buildPopupMenuItem('edit', CupertinoIcons.pencil, 'Edit'),
-              _buildPopupMenuItem('hapus', CupertinoIcons.trash, 'Hapus', isDestructive: true),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  PopupMenuItem<String> _buildPopupMenuItem(String value, IconData icon, String text, {bool isDestructive = false}) {
+  PopupMenuItem<String> _buildPopupMenuItem(
+      String value, IconData icon, String text,
+      {bool isDestructive = false}) {
     final color = isDestructive ? Colors.red : AppColors.textPrimary;
     return PopupMenuItem<String>(
       value: value,
@@ -285,7 +414,12 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
         children: [
           Icon(icon, size: 18, color: color),
           const SizedBox(width: 12),
-          Text(text, style: TextStyle(color: color, fontSize: 14, fontWeight: isDestructive ? FontWeight.bold : FontWeight.w500)),
+          Text(text,
+              style: TextStyle(
+                  color: color,
+                  fontSize: 14,
+                  fontWeight:
+                      isDestructive ? FontWeight.bold : FontWeight.w500)),
         ],
       ),
     );
@@ -300,9 +434,11 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           title: Row(
             children: [
-              Icon(CupertinoIcons.doc_on_clipboard_fill, color: Colors.blue.shade700),
+              Icon(CupertinoIcons.doc_on_clipboard_fill,
+                  color: Colors.blue.shade700),
               const SizedBox(width: 8),
-              const Text('Salin Anggota', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              const Text('Salin Anggota',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             ],
           ),
           content: Column(
@@ -314,7 +450,11 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                 style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
               ),
               const SizedBox(height: 24),
-              const Text('PILIH PERIODE ASAL', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textSecondary)),
+              const Text('PILIH PERIODE ASAL',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textSecondary)),
               const SizedBox(height: 8),
               Container(
                 height: 50,
@@ -326,8 +466,10 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: const [
-                    Text('Pilih periode...', style: TextStyle(color: AppColors.textSecondary)),
-                    Icon(CupertinoIcons.chevron_down, size: 16, color: AppColors.textSecondary),
+                    Text('Pilih periode...',
+                        style: TextStyle(color: AppColors.textSecondary)),
+                    Icon(CupertinoIcons.chevron_down,
+                        size: 16, color: AppColors.textSecondary),
                   ],
                 ),
               ),
@@ -336,16 +478,22 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Batal', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+              child: const Text('Batal',
+                  style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold)),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue.shade300,
                 elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
               ),
-              child: const Text('Salin 0 Anggota', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: const Text('Salin 0 Anggota',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
             ),
           ],
         );
@@ -372,7 +520,8 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
       context: context,
       backgroundColor: Colors.white,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
@@ -394,35 +543,61 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Filter User', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                        const Text('Filter User',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary)),
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                          child: const Text('Batal', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                          style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size.zero,
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                          child: const Text('Batal',
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
-                    Container(
+                    SizedBox(
                       height: 48,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                      ),
                       child: TextField(
                         controller: searchController,
                         onChanged: (value) {
                           setState(() {
-                            filteredPacList = pacList.where((pac) => pac.toLowerCase().contains(value.toLowerCase())).toList();
+                            filteredPacList = pacList
+                                .where((pac) => pac
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase()))
+                                .toList();
                           });
                         },
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'Cari PAC...',
-                          hintStyle: TextStyle(fontSize: 14, color: AppColors.textSecondary),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                          hintStyle: const TextStyle(
+                              fontSize: 14, color: AppColors.textSecondary),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 14),
                           isDense: true,
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300)),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide:
+                                  BorderSide(color: Colors.grey.shade300)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: BorderSide(
+                                  color: widget.isCabang
+                                      ? AppColors.cabangPrimary
+                                      : AppColors.pacPrimary)),
                         ),
                       ),
                     ),
@@ -442,13 +617,29 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                               });
                             },
                             child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                              decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black12))),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 8),
+                              decoration: const BoxDecoration(
+                                  border: Border(
+                                      bottom:
+                                          BorderSide(color: Colors.black12))),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(pac, style: TextStyle(fontSize: 14, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, color: AppColors.textPrimary)),
-                                  if (isSelected) Icon(CupertinoIcons.checkmark_alt, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, size: 20),
+                                  Text(pac,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: isSelected
+                                              ? FontWeight.bold
+                                              : FontWeight.w500,
+                                          color: AppColors.textPrimary)),
+                                  if (isSelected)
+                                    Icon(CupertinoIcons.checkmark_alt,
+                                        color: widget.isCabang
+                                            ? AppColors.cabangPrimary
+                                            : AppColors.pacPrimary,
+                                        size: 20),
                                 ],
                               ),
                             ),
@@ -462,11 +653,17 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                       child: ElevatedButton(
                         onPressed: () => Navigator.pop(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+                          backgroundColor: widget.isCabang
+                              ? AppColors.cabangPrimary
+                              : AppColors.pacPrimary,
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
-                        child: const Text('Terapkan Filter', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        child: const Text('Terapkan Filter',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(height: 16),

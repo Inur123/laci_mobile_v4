@@ -29,7 +29,7 @@ class _MainScreenState extends State<MainScreen> {
       ArsipScreen(isCabang: widget.isCabang),
       PengajuanScreen(isCabang: widget.isCabang),
       AnggotaScreen(isCabang: widget.isCabang),
-      const ProfileScreen(),
+      ProfileScreen(isCabang: widget.isCabang),
     ];
   }
 

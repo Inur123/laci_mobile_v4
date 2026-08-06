@@ -7,8 +7,9 @@ import 'package:laci_mobile/widgets/custom_text_field.dart';
 class FormArsipSuratScreen extends StatefulWidget {
   final bool isCabang;
   final bool isEdit;
-  
-  const FormArsipSuratScreen({super.key, this.isCabang = true, this.isEdit = false});
+
+  const FormArsipSuratScreen(
+      {super.key, this.isCabang = true, this.isEdit = false});
 
   @override
   State<FormArsipSuratScreen> createState() => _FormArsipSuratScreenState();
@@ -34,12 +35,18 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+          icon: Icon(CupertinoIcons.back,
+              color: (widget.isCabang
+                  ? AppColors.cabangPrimary
+                  : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           widget.isEdit ? 'Edit Arsip Surat' : 'Tambah Arsip Surat',
-          style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
+          style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 16),
         ),
       ),
       body: SafeArea(
@@ -55,7 +62,6 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                 keyboardType: TextInputType.text,
               ),
               const SizedBox(height: 16),
-              
               _buildPremiumDropdown(
                 label: 'Jenis Surat *',
                 icon: CupertinoIcons.doc_text,
@@ -64,14 +70,19 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                 onTap: () {
                   _showBottomSheetPicker(
                     title: 'Pilih Jenis Surat',
-                    items: ['Surat Masuk', 'Surat Keluar', 'Surat Keputusan', 'Surat Tugas'],
+                    items: [
+                      'Surat Masuk',
+                      'Surat Keluar',
+                      'Surat Keputusan',
+                      'Surat Tugas'
+                    ],
                     currentValue: _selectedJenisSurat,
-                    onSelected: (val) => setState(() => _selectedJenisSurat = val),
+                    onSelected: (val) =>
+                        setState(() => _selectedJenisSurat = val),
                   );
                 },
               ),
               const SizedBox(height: 16),
-              
               _buildPremiumDropdown(
                 label: 'Organisasi *',
                 icon: CupertinoIcons.building_2_fill,
@@ -82,74 +93,84 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                     title: 'Pilih Organisasi',
                     items: ['PAC IPNU', 'PAC IPPNU', 'PR IPNU', 'PR IPPNU'],
                     currentValue: _selectedOrganisasi,
-                    onSelected: (val) => setState(() => _selectedOrganisasi = val),
+                    onSelected: (val) =>
+                        setState(() => _selectedOrganisasi = val),
                   );
                 },
               ),
               const SizedBox(height: 16),
-              
               _buildPremiumDropdown(
                 label: 'Tanggal Surat *',
                 icon: CupertinoIcons.calendar,
                 value: _selectedTanggal,
                 hint: 'Pilih tanggal surat',
                 onTap: () {
-                  _selectDate(context, (date) => setState(() => _selectedTanggal = date));
+                  _selectDate(context,
+                      (date) => setState(() => _selectedTanggal = date));
                 },
               ),
               const SizedBox(height: 16),
-              
               const CustomTextField(
                 label: 'Pengirim/Penerima *',
                 icon: CupertinoIcons.person_2,
                 keyboardType: TextInputType.text,
               ),
               const SizedBox(height: 16),
-              
               const CustomTextField(
                 label: 'Perihal *',
                 icon: CupertinoIcons.info,
                 keyboardType: TextInputType.text,
               ),
               const SizedBox(height: 16),
-              
               const Text(
                 'Deskripsi',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary),
               ),
               const SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                child: const TextField(
-                  maxLines: 4,
-                  decoration: InputDecoration(
-                    hintText: 'Deskripsi singkat mengenai surat (opsional)',
-                    hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                    border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16),
-                  ),
+              TextField(
+                maxLines: 4,
+                decoration: InputDecoration(
+                  hintText: 'Deskripsi singkat mengenai surat (opsional)',
+                  hintStyle: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 14),
+                  contentPadding: const EdgeInsets.all(16),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300)),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.grey.shade300)),
+                  focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                          color: widget.isCabang
+                              ? AppColors.cabangPrimary
+                              : AppColors.pacPrimary)),
                 ),
               ),
               const SizedBox(height: 24),
-              
-              const Text('File Surat', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              const Text('File Surat',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary)),
               const SizedBox(height: 8),
               InkWell(
                 onTap: _pickFile,
                 borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                   decoration: BoxDecoration(
                     color: Colors.blue.withOpacity(0.05),
                     borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.blue.withOpacity(0.3), style: BorderStyle.solid),
+                    border: Border.all(
+                        color: Colors.blue.withOpacity(0.3),
+                        style: BorderStyle.solid),
                   ),
                   child: Column(
                     children: [
@@ -158,31 +179,41 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10)
+                          ],
                         ),
                         child: Icon(
-                          _fileName != null ? CupertinoIcons.doc_fill : CupertinoIcons.cloud_upload, 
-                          color: Colors.blue, 
+                          _fileName != null
+                              ? CupertinoIcons.doc_fill
+                              : CupertinoIcons.cloud_upload,
+                          color: Colors.blue,
                           size: 28,
                         ),
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        _fileName ?? 'Klik untuk upload', 
-                        style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.bold),
+                        _fileName ?? 'Klik untuk upload',
+                        style: TextStyle(
+                            color: Colors.blue.shade700,
+                            fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                       if (_fileName == null) ...[
                         const SizedBox(height: 8),
-                        const Text('Maksimal 2MB. Format: PDF, Word, atau Gambar', textAlign: TextAlign.center, style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                        const Text(
+                            'Maksimal 2MB. Format: PDF, Word, atau Gambar',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: AppColors.textSecondary, fontSize: 12)),
                       ],
                     ],
                   ),
                 ),
               ),
-              
               const SizedBox(height: 32),
-              
               Row(
                 children: [
                   Expanded(
@@ -191,9 +222,13 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text('Batal', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                      child: const Text('Batal',
+                          style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -201,12 +236,18 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700, // Tombol biru seperti di web
+                        backgroundColor:
+                            Colors.blue.shade700, // Tombol biru seperti di web
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: Text(widget.isEdit ? 'Simpan Perubahan' : 'Simpan Surat', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: Text(
+                          widget.isEdit ? 'Simpan Perubahan' : 'Simpan Surat',
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -218,7 +259,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
       ),
     );
   }
-  
+
   Widget _buildPremiumDropdown({
     required String label,
     required IconData icon,
@@ -229,7 +270,11 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary)),
         const SizedBox(height: 8),
         InkWell(
           onTap: onTap,
@@ -239,7 +284,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
             decoration: BoxDecoration(
               color: AppColors.inputFill,
               borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.transparent),
+              border: Border.all(color: Colors.transparent),
             ),
             child: Row(
               children: [
@@ -250,14 +295,17 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                   child: Text(
                     value ?? hint,
                     style: TextStyle(
-                      color: value != null ? AppColors.textPrimary : AppColors.textSecondary,
+                      color: value != null
+                          ? AppColors.textPrimary
+                          : AppColors.textSecondary,
                       fontSize: 14,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(CupertinoIcons.chevron_down, color: AppColors.textSecondary, size: 20),
+                const Icon(CupertinoIcons.chevron_down,
+                    color: AppColors.textSecondary, size: 20),
                 const SizedBox(width: 16),
               ],
             ),
@@ -296,7 +344,11 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                Text(title,
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary)),
                 const SizedBox(height: 16),
                 ...items.map((item) {
                   final isSelected = item == currentValue;
@@ -305,17 +357,23 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                     title: Text(
                       item,
                       style: TextStyle(
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                        color: isSelected ? Colors.blue.shade700 : AppColors.textPrimary,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: isSelected
+                            ? Colors.blue.shade700
+                            : AppColors.textPrimary,
                       ),
                     ),
-                    trailing: isSelected ? Icon(CupertinoIcons.checkmark_alt, color: Colors.blue.shade700) : null,
+                    trailing: isSelected
+                        ? Icon(CupertinoIcons.checkmark_alt,
+                            color: Colors.blue.shade700)
+                        : null,
                     onTap: () {
                       onSelected(item);
                       Navigator.pop(context);
                     },
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),
@@ -324,7 +382,8 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context, Function(String) onDateSelected) async {
+  Future<void> _selectDate(
+      BuildContext context, Function(String) onDateSelected) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -334,7 +393,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade700, 
+              primary: Colors.blue.shade700,
               onPrimary: Colors.white,
               onSurface: AppColors.textPrimary,
             ),

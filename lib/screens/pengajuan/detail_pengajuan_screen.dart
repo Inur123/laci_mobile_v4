@@ -61,7 +61,8 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(CupertinoIcons.xmark_circle_fill, color: Colors.black26),
+                    icon: const Icon(CupertinoIcons.xmark_circle_fill,
+                        color: Colors.black26),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
@@ -111,10 +112,13 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade700,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                   ),
-                  child: const Text('Kirim Penolakan', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  child: const Text('Kirim Penolakan',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(height: 32),
@@ -139,6 +143,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
           _status = 'Diterima';
         });
         toastification.show(
+          // ignore: use_build_context_synchronously
           context: context,
           type: ToastificationType.success,
           style: ToastificationStyle.flat,
@@ -180,12 +185,18 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
+          icon: Icon(CupertinoIcons.back,
+              color: widget.isCabang
+                  ? AppColors.cabangPrimary
+                  : AppColors.pacPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Detail Pengajuan Surat',
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
+          style: TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 16),
         ),
       ),
       body: SafeArea(
@@ -198,25 +209,37 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Informasi Pengajuan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  const Text('Informasi Pengajuan',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
                       color: statusBg,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       _status,
-                      style: TextStyle(color: statusColor, fontSize: 12, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: statusColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              _buildInfoRow(CupertinoIcons.doc_text, 'Nomor Surat', widget.data['no_surat']),
-              _buildInfoRow(CupertinoIcons.person_2, 'Penerima', widget.data['penerima']),
-              _buildInfoRow(CupertinoIcons.calendar, 'Tanggal Surat', widget.data['tanggal']),
-              _buildInfoRow(CupertinoIcons.doc_plaintext, 'Keperluan', widget.data['keperluan']),
+              _buildInfoRow(CupertinoIcons.doc_text, 'Nomor Surat',
+                  widget.data['no_surat']),
+              _buildInfoRow(
+                  CupertinoIcons.person_2, 'Penerima', widget.data['penerima']),
+              _buildInfoRow(CupertinoIcons.calendar, 'Tanggal Surat',
+                  widget.data['tanggal']),
+              _buildInfoRow(CupertinoIcons.doc_plaintext, 'Keperluan',
+                  widget.data['keperluan']),
 
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 24),
@@ -224,7 +247,11 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
               ),
 
               // Informasi Pengaju
-              const Text('Informasi Pengaju', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              const Text('Informasi Pengaju',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary)),
               const SizedBox(height: 16),
               Row(
                 children: [
@@ -235,16 +262,23 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                       color: Colors.grey.shade200,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(CupertinoIcons.person, color: Colors.grey),
+                    child:
+                        const Icon(CupertinoIcons.person, color: Colors.grey),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(widget.data['pengaju'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.textPrimary)),
+                        Text(widget.data['pengaju'],
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                color: AppColors.textPrimary)),
                         const SizedBox(height: 2),
-                        const Text('pelajarnupanekan@gmail.com', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                        const Text('pelajarnupanekan@gmail.com',
+                            style: TextStyle(
+                                fontSize: 12, color: AppColors.textSecondary)),
                       ],
                     ),
                   )
@@ -253,8 +287,12 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  Expanded(child: _buildInfoRow(null, 'Periode PAC', widget.data['periode'])),
-                  Expanded(child: _buildInfoRow(null, 'Periode Cabang', '2025-2027')),
+                  Expanded(
+                      child: _buildInfoRow(
+                          null, 'Periode PAC', widget.data['periode'])),
+                  Expanded(
+                      child:
+                          _buildInfoRow(null, 'Periode Cabang', '2025-2027')),
                 ],
               ),
 
@@ -264,7 +302,11 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
               ),
 
               // File Lampiran
-              const Text('File Lampiran', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              const Text('File Lampiran',
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary)),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(16),
@@ -280,24 +322,29 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                         color: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(CupertinoIcons.doc_on_doc_fill, color: Colors.blue),
+                      child: const Icon(CupertinoIcons.doc_on_doc_fill,
+                          color: Colors.blue),
                     ),
                     const SizedBox(width: 12),
                     const Expanded(
-                      child: Text('File Surat (Terenkripsi)', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                      child: Text('File Surat (Terenkripsi)',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 14)),
                     ),
                     IconButton(
-                      icon: const Icon(CupertinoIcons.eye, color: AppColors.textSecondary),
+                      icon: const Icon(CupertinoIcons.eye,
+                          color: AppColors.textSecondary),
                       onPressed: () {},
                     ),
                     IconButton(
-                      icon: Icon(CupertinoIcons.cloud_download, color: Colors.blue.shade700),
+                      icon: Icon(CupertinoIcons.cloud_download,
+                          color: Colors.blue.shade700),
                       onPressed: () {},
                     ),
                   ],
                 ),
               ),
-              
+
               const SizedBox(height: 16),
               // Dummy Image Preview
               Container(
@@ -306,15 +353,17 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                 decoration: BoxDecoration(
                   color: Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.black12),
+                  border: Border.all(color: Colors.black12),
                 ),
                 child: const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(CupertinoIcons.photo, color: Colors.black26, size: 48),
+                      Icon(CupertinoIcons.photo,
+                          color: Colors.black26, size: 48),
                       SizedBox(height: 8),
-                      Text('Pratinjau Gambar / Dokumen', style: TextStyle(color: Colors.black38)),
+                      Text('Pratinjau Gambar / Dokumen',
+                          style: TextStyle(color: Colors.black38)),
                     ],
                   ),
                 ),
@@ -330,7 +379,10 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, -4)),
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, -4)),
                 ],
               ),
               child: SafeArea(
@@ -342,9 +394,13 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           side: BorderSide(color: Colors.red.shade700),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
-                        child: Text('Tolak', style: TextStyle(color: Colors.red.shade700, fontWeight: FontWeight.bold)),
+                        child: Text('Tolak',
+                            style: TextStyle(
+                                color: Colors.red.shade700,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -356,9 +412,13 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                           backgroundColor: Colors.green.shade700,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
                         ),
-                        child: const Text('Terima Pengajuan', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                        child: const Text('Terima Pengajuan',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],
@@ -381,11 +441,17 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                 Icon(icon, size: 14, color: AppColors.textSecondary),
                 const SizedBox(width: 6),
               ],
-              Text(label, style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+              Text(label,
+                  style: const TextStyle(
+                      fontSize: 12, color: AppColors.textSecondary)),
             ],
           ),
           const SizedBox(height: 4),
-          Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+          Text(value,
+              style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary)),
         ],
       ),
     );

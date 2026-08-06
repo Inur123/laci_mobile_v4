@@ -213,20 +213,19 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: Container(
+                      child: SizedBox(
                         height: 44,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade300),
-                        ),
-                        child: const TextField(
+                        child: TextField(
                           decoration: InputDecoration(
                             hintText: 'Cari nama, organisasi...',
-                            hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 13),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                            hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                             isDense: true,
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: primaryColor)),
                           ),
                         ),
                       ),

@@ -49,20 +49,19 @@ class _PresensiScreenState extends State<PresensiScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: Container(
+                  child: SizedBox(
                     height: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: const TextField(
+                    child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Cari nama, tempat, atau penyelenggara...',
-                        hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                        hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                         isDense: true,
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: primaryColor)),
                       ),
                     ),
                   ),

@@ -5,7 +5,8 @@ import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/widgets/custom_text_field.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  final bool isCabang;
+  const ProfileScreen({super.key, this.isCabang = true});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -19,6 +20,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
@@ -67,7 +70,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: 'Informasi Pribadi',
                 icon: CupertinoIcons.person,
                 children: [
-                  const CustomTextField(
+                  CustomTextField(
+                    isCabang: widget.isCabang,
                     label: 'Nama Pimpinan',
                     icon: CupertinoIcons.person_fill,
                     keyboardType: TextInputType.text,
@@ -78,27 +82,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Bagian Email Khusus (Ada Status Verifikasi)
                   const Text('Alamat Email', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
                   const SizedBox(height: 8),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.inputFill,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: _isEmailVerified ? Colors.transparent : Colors.orange.shade300),
-                    ),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 16),
-                        const Icon(CupertinoIcons.mail_solid, color: AppColors.textSecondary, size: 20),
-                        const SizedBox(width: 12),
-                        const Expanded(
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'lacipelajarnumagetan@gmail.com',
-                              hintStyle: TextStyle(color: AppColors.textPrimary, fontSize: 14),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ],
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: 'lacipelajarnumagetan@gmail.com',
+                      hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
+                      prefixIcon: const Icon(CupertinoIcons.mail_solid, color: Colors.black45, size: 20),
+                      filled: false,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: _isEmailVerified ? Colors.grey.shade300 : Colors.orange.shade300)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: _isEmailVerified ? Colors.grey.shade300 : Colors.orange.shade300)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: primaryColor)),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -185,63 +178,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 16),
                   
                   // Password Baru
-                  const Text('Password Baru', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 56,
-                    decoration: BoxDecoration(color: AppColors.inputFill, borderRadius: BorderRadius.circular(16)),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 16),
-                        const Icon(CupertinoIcons.lock_fill, color: AppColors.textSecondary, size: 20),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: TextField(
-                            obscureText: _obscurePassword,
-                            decoration: const InputDecoration(
-                              hintText: 'Kosongkan jika tidak diubah',
-                              hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(_obscurePassword ? CupertinoIcons.eye_slash : CupertinoIcons.eye, color: AppColors.textSecondary, size: 20),
-                          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                        ),
-                      ],
-                    ),
+                  CustomTextField(
+                    label: 'Password Baru',
+                    icon: CupertinoIcons.lock_fill,
+                    hintText: 'Kosongkan jika tidak diubah',
+                    isPassword: true,
+                    obscureText: _obscurePassword,
+                    onTogglePassword: () => setState(() => _obscurePassword = !_obscurePassword),
+                    isCabang: widget.isCabang,
                   ),
                   
                   const SizedBox(height: 16),
                   
                   // Konfirmasi Password
-                  const Text('Konfirmasi Password', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-                  const SizedBox(height: 8),
-                  Container(
-                    height: 56,
-                    decoration: BoxDecoration(color: AppColors.inputFill, borderRadius: BorderRadius.circular(16)),
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 16),
-                        const Icon(CupertinoIcons.lock_fill, color: AppColors.textSecondary, size: 20),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: TextField(
-                            obscureText: _obscureConfirmPassword,
-                            decoration: const InputDecoration(
-                              hintText: 'Konfirmasi password baru',
-                              hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(_obscureConfirmPassword ? CupertinoIcons.eye_slash : CupertinoIcons.eye, color: AppColors.textSecondary, size: 20),
-                          onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
-                        ),
-                      ],
-                    ),
+                  CustomTextField(
+                    label: 'Konfirmasi Password',
+                    icon: CupertinoIcons.lock_fill,
+                    hintText: 'Konfirmasi password baru',
+                    isPassword: true,
+                    obscureText: _obscureConfirmPassword,
+                    onTogglePassword: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                    isCabang: widget.isCabang,
                   ),
                 ],
               ),
@@ -256,29 +213,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onPressed: () {},
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: const BorderSide(color: Colors.black12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text('Batal', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    flex: 2,
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue.shade700, 
-                        elevation: 0,
+                        backgroundColor: primaryColor,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text('Perbarui Profil', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
+              
+              const SizedBox(height: 24),
+              
+              // 5. TOMBOL LOGOUT
+              SizedBox(
+                width: double.infinity,
+                child: TextButton.icon(
+                  onPressed: () {
+                    // TODO: Implementasi logika logout
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.red.withOpacity(0.1),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  icon: const Icon(CupertinoIcons.square_arrow_right, color: Colors.red),
+                  label: const Text('Keluar dari Akun', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                ),
+              ),
+
+              const SizedBox(height: 80),
             ],
           ),
         ),

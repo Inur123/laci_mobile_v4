@@ -1,227 +1,230 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:laci_mobile/screens/pengajuan/pengajuan_screen.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:laci_mobile/screens/agenda/agenda_screen.dart';
 import 'package:laci_mobile/screens/pengguna/pengguna_screen.dart';
 import 'package:laci_mobile/screens/presensi/presensi_screen.dart';
 import 'package:laci_mobile/screens/lainnya_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final bool isCabang;
-  
   const HomeScreen({super.key, this.isCabang = true});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade50,
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        body: Column(
           children: [
-            // 1. PREMIUM GREEN HEADER
+            _buildHeader(primaryColor),
             Container(
-              padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 40),
-              decoration: BoxDecoration(
-                color: isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              color: Colors.white,
+              child: Column(
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Hai, Pengurus!',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Laci Cabang',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: -0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'CABANG',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                  TabBar(
+                    indicatorColor: primaryColor,
+                    labelColor: primaryColor,
+                    unselectedLabelColor: AppColors.textSecondary,
+                    indicatorWeight: 3,
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                    tabs: const [
+                      Tab(text: 'Data Saya'),
+                      Tab(text: 'Monitoring Wilayah'),
                     ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(2),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
+                  Container(height: 1, color: Colors.black.withOpacity(0.05)),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                physics: const BouncingScrollPhysics(),
+                children: [
+                  // TAB 1: Data Saya
+                  SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildGridMenu(),
+                        const SizedBox(height: 24),
+                        _buildDataSayaStatsScroll(primaryColor),
+                        const SizedBox(height: 24),
+                        _buildStatistikDataChart(),
+                        const SizedBox(height: 24),
+                        _buildTrenKeaktifanChart(primaryColor),
+                      ],
                     ),
-                    child: CircleAvatar(
-                      radius: 26,
-                      backgroundColor: Colors.white,
-                      child: Icon(CupertinoIcons.person_solid, color: isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, size: 30),
+                  ),
+
+                  // TAB 2: Monitoring Wilayah
+                  SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 40),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        _buildMonitoringStatsScroll(primaryColor),
+                        const SizedBox(height: 24),
+                        _buildPengkaderanBadges(),
+                        const SizedBox(height: 24),
+                        _buildTopPacChart(primaryColor),
+                        const SizedBox(height: 24),
+                        _buildSebaranDataChart(primaryColor),
+                        const SizedBox(height: 24),
+                        _buildRincianKlasemenTable(),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
 
-            // Transform up slightly to overlap the green header
-            Transform.translate(
-              offset: const Offset(0, -20),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 2. GRID MENU
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(24),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Menu Utama',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          GridView.count(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.zero,
-                            physics: const NeverScrollableScrollPhysics(),
-                            crossAxisCount: 4,
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 8,
-                            childAspectRatio: 0.8, // Fix for bottom overflow
-                            children: [
-                              _buildMenuButton(
-                                CupertinoIcons.person_3_fill, 
-                                'Pengguna', 
-                                Colors.blue.shade100, 
-                                Colors.blue.shade700,
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PenggunaScreen(isCabang: isCabang)));
-                                },
-                              ),
-                              _buildMenuButton(
-                                CupertinoIcons.calendar_today, 
-                                'Agenda', 
-                                Colors.orange.shade100, 
-                                Colors.orange.shade700,
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => AgendaScreen(isCabang: isCabang)));
-                                },
-                              ),
-                              _buildMenuButton(
-                                CupertinoIcons.qrcode_viewfinder, 
-                                'Presensi', 
-                                Colors.green.shade100, 
-                                Colors.green.shade700,
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PresensiScreen(isCabang: isCabang)));
-                                },
-                              ),
-                              _buildMenuButton(
-                                CupertinoIcons.square_grid_2x2_fill, 
-                                'Lainnya', 
-                                Colors.purple.shade100, 
-                                Colors.purple.shade700,
-                                onTap: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => LainnyaScreen(isCabang: isCabang)));
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // 3. DASHBOARD WIDGET
-                    const Text(
-                      'Aktivitas Terbaru',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(32),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.grey.shade200),
-                      ),
-                      child: Column(
-                        children: [
-                          Icon(CupertinoIcons.doc_text_search, size: 48, color: Colors.grey.shade300),
-                          const SizedBox(height: 16),
-                          const Text(
-                            'Belum ada aktivitas',
-                            style: TextStyle(
-                              color: AppColors.textPrimary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Aktivitas organisasi akan muncul di sini',
-                            style: TextStyle(
-                              color: Colors.grey.shade500,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 40), // Bottom padding for fab
-                  ],
+  Widget _buildHeader(Color primaryColor) {
+    return Container(
+      padding: const EdgeInsets.only(top: 60, left: 24, right: 24, bottom: 30),
+      decoration: BoxDecoration(
+        color: primaryColor,
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Hai, Pengurus!',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white70,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
+              const SizedBox(height: 4),
+              const Text(
+                'Laci Cabang',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  widget.isCabang ? 'CABANG' : 'PAC',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+            child: CircleAvatar(
+              radius: 26,
+              backgroundColor: Colors.white,
+              child: Icon(CupertinoIcons.person_solid, color: primaryColor, size: 30),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ==========================================
+  // TAB 1: DATA SAYA COMPONENTS
+  // ==========================================
+
+  Widget _buildGridMenu() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Menu Utama',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildMenuButton(
+                  CupertinoIcons.person_3_fill,
+                  'Pengguna',
+                  Colors.blue.shade100,
+                  Colors.blue.shade700,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PenggunaScreen(isCabang: widget.isCabang))),
+                ),
+                _buildMenuButton(
+                  CupertinoIcons.calendar_today,
+                  'Agenda',
+                  Colors.orange.shade100,
+                  Colors.orange.shade700,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AgendaScreen(isCabang: widget.isCabang))),
+                ),
+                _buildMenuButton(
+                  CupertinoIcons.qrcode_viewfinder,
+                  'Presensi',
+                  Colors.green.shade100,
+                  Colors.green.shade700,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PresensiScreen(isCabang: widget.isCabang))),
+                ),
+                _buildMenuButton(
+                  CupertinoIcons.square_grid_2x2_fill,
+                  'Lainnya',
+                  Colors.purple.shade100,
+                  Colors.purple.shade700,
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LainnyaScreen(isCabang: widget.isCabang))),
+                ),
+              ],
             ),
           ],
         ),
@@ -236,27 +239,569 @@ class HomeScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            height: 52,
-            width: 52,
+            height: 48,
+            width: 48,
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(icon, color: iconColor, size: 26),
+            child: Icon(icon, color: iconColor, size: 24),
           ),
           const SizedBox(height: 8),
           Text(
             label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 12,
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-            ),
+            style: const TextStyle(fontSize: 11, color: AppColors.textPrimary, fontWeight: FontWeight.w600),
             maxLines: 1,
-            overflow: TextOverflow.ellipsis,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDataSayaStatsScroll(Color primaryColor) {
+    final stats = [
+      {'title': 'TOTAL ANGGOTA', 'val': '1', 'color': Colors.blue},
+      {'title': 'ARSIP SURAT', 'val': '254', 'color': Colors.orange},
+      {'title': 'BERKAS SP', 'val': '15', 'color': Colors.purple},
+      {'title': 'BERKAS PIMPINAN', 'val': '8', 'color': Colors.pink},
+      {'title': 'VERIFIKASI PENGAJUAN', 'val': '28', 'color': Colors.green},
+    ];
+
+    return SizedBox(
+      height: 90,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: stats.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final item = stats[index];
+          final col = item['color'] as Color;
+          return Container(
+            width: 140,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.grey.shade200),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(item['title'] as String, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: col), maxLines: 1, overflow: TextOverflow.ellipsis),
+                const SizedBox(height: 8),
+                Text(item['val'] as String, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: col)),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildStatistikDataChart() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Statistik Data', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 200,
+              child: BarChart(
+                BarChartData(
+                  alignment: BarChartAlignment.spaceAround,
+                  maxY: 300,
+                  barTouchData: BarTouchData(enabled: false),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        getTitlesWidget: (double value, TitleMeta meta) {
+                          const titles = ['Anggota', 'Surat', 'SP', 'Pimpinan', 'Pengajuan'];
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(titles[value.toInt()], style: const TextStyle(color: AppColors.textSecondary, fontSize: 9, fontWeight: FontWeight.bold)),
+                          );
+                        },
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: true, reservedSize: 30, interval: 100, getTitlesWidget: (value, meta) => Text(value.toInt().toString(), style: const TextStyle(color: AppColors.textSecondary, fontSize: 10))),
+                    ),
+                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  ),
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: 100,
+                    getDrawingHorizontalLine: (value) => FlLine(color: Colors.grey.shade200, strokeWidth: 1, dashArray: [5, 5]),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  barGroups: [
+                    BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 1, color: Colors.blue, width: 20, borderRadius: BorderRadius.circular(4))]),
+                    BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 254, color: Colors.orange, width: 20, borderRadius: BorderRadius.circular(4))]),
+                    BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 15, color: Colors.indigo, width: 20, borderRadius: BorderRadius.circular(4))]),
+                    BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 8, color: Colors.purple, width: 20, borderRadius: BorderRadius.circular(4))]),
+                    BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 28, color: Colors.green, width: 20, borderRadius: BorderRadius.circular(4))]),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTrenKeaktifanChart(Color primaryColor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(CupertinoIcons.arrow_up_right, size: 18, color: primaryColor),
+                const SizedBox(width: 8),
+                const Text('Tren Keaktifan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              ],
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 200,
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: 55,
+                    getDrawingHorizontalLine: (value) => FlLine(color: Colors.grey.shade200, strokeWidth: 1, dashArray: [5, 5]),
+                  ),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 22,
+                        interval: 1,
+                        getTitlesWidget: (value, meta) {
+                          const months = ['Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu'];
+                          if (value.toInt() >= 0 && value.toInt() < months.length) {
+                            return Text(months[value.toInt()], style: const TextStyle(color: AppColors.textSecondary, fontSize: 10, fontWeight: FontWeight.bold));
+                          }
+                          return const Text('');
+                        },
+                      ),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: 55,
+                        reservedSize: 28,
+                        getTitlesWidget: (value, meta) => Text(value.toInt().toString(), style: const TextStyle(color: AppColors.textSecondary, fontSize: 10)),
+                      ),
+                    ),
+                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  minX: 0,
+                  maxX: 5,
+                  minY: 0,
+                  maxY: 220,
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: const [
+                        FlSpot(0, 0),
+                        FlSpot(1, 215),
+                        FlSpot(2, 25),
+                        FlSpot(3, 5),
+                        FlSpot(4, 10),
+                        FlSpot(5, 0),
+                      ],
+                      isCurved: true,
+                      color: primaryColor,
+                      barWidth: 3,
+                      isStrokeCapRound: true,
+                      dotData: const FlDotData(show: true),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: primaryColor.withOpacity(0.1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ==========================================
+  // TAB 2: MONITORING WILAYAH COMPONENTS
+  // ==========================================
+
+  Widget _buildMonitoringStatsScroll(Color primaryColor) {
+    final stats = [
+      {'title': 'TOTAL ANGGOTA', 'val': '442', 'color': Colors.blue},
+      {'title': 'TOTAL ADMINISTRASI', 'val': '429', 'color': Colors.cyan},
+      {'title': 'PAC AKTIF', 'val': '20', 'color': Colors.deepPurple},
+      {'title': 'VALID / PENDING', 'val': '1', 'color': Colors.red},
+    ];
+
+    return SizedBox(
+      height: 90,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: stats.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final item = stats[index];
+          final col = item['color'] as Color;
+          return Container(
+            width: 150,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(item['title'] as String, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: col), maxLines: 1),
+                const SizedBox(height: 8),
+                Text(item['val'] as String, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: col)),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPengkaderanBadges() {
+    final kader = [
+      {'title': 'MAKESTA', 'val': '172', 'c': Colors.pink},
+      {'title': 'LAKMUD', 'val': '35', 'c': Colors.green},
+      {'title': 'LATIH', 'val': '2', 'c': Colors.blue},
+      {'title': 'LATPEL', 'val': '5', 'c': Colors.teal},
+      {'title': 'LAKUT', 'val': '1', 'c': Colors.purple},
+      {'title': 'DIKLATAMA', 'val': '16', 'c': Colors.orange},
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Row(
+            children: [
+              Icon(CupertinoIcons.layers_alt_fill, size: 16, color: Colors.blue.shade700),
+              const SizedBox(width: 8),
+              const Text('Total Pengkaderan Wilayah', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 60,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: kader.length,
+            separatorBuilder: (context, index) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final k = kader[index];
+              final col = k['c'] as Color;
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: col.withOpacity(0.3)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(CupertinoIcons.star_fill, size: 10, color: col),
+                        const SizedBox(width: 4),
+                        Text(k['title'] as String, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: col)),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text('${k['val']} Anggota', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTopPacChart(Color primaryColor) {
+    final data = [
+      {'name': 'PAC IPNU IPPNU PANEKAN', 'val': 173},
+      {'name': 'PAC KAWEDANAN', 'val': 83},
+      {'name': 'PAC Ngariboyo', 'val': 68},
+      {'name': 'PAC Parang', 'val': 63},
+      {'name': 'PAC IPNU IPPNU SUKOMORO', 'val': 51},
+    ];
+    final maxVal = 173.0;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(CupertinoIcons.rosette, size: 18, color: Colors.orange),
+                const SizedBox(width: 8),
+                const Text('Top 5 PAC Paling Aktif', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              ],
+            ),
+            const SizedBox(height: 24),
+            ...data.map((item) {
+              final val = (item['val'] as int).toDouble();
+              final proportion = val / maxVal;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item['name'] as String,
+                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textSecondary),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              FractionallySizedBox(
+                                widthFactor: proportion,
+                                child: Container(
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        SizedBox(
+                          width: 24,
+                          child: Text(
+                            '${item['val']}',
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSebaranDataChart(Color primaryColor) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(CupertinoIcons.chart_pie, size: 18, color: Colors.blue),
+                const SizedBox(width: 8),
+                const Text('Sebaran Data', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              ],
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 180,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  PieChart(
+                    PieChartData(
+                      sectionsSpace: 4,
+                      centerSpaceRadius: 60,
+                      sections: [
+                        PieChartSectionData(color: Colors.blue, value: 442, title: '', radius: 24),
+                        PieChartSectionData(color: Colors.orange, value: 429, title: '', radius: 24),
+                        PieChartSectionData(color: Colors.cyan, value: 200, title: '', radius: 24), // PAC (*10 for visibility)
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildLegendItem('Anggota', Colors.blue),
+                const SizedBox(width: 16),
+                _buildLegendItem('Administrasi', Colors.orange),
+                const SizedBox(width: 16),
+                _buildLegendItem('PAC', Colors.cyan),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLegendItem(String title, Color color) {
+    return Row(
+      children: [
+        Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+        const SizedBox(width: 4),
+        Text(title, style: const TextStyle(fontSize: 10, color: AppColors.textSecondary, fontWeight: FontWeight.bold)),
+      ],
+    );
+  }
+
+  Widget _buildRincianKlasemenTable() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(20),
+              child: Text('Rincian Klasemen Lengkap', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+            ),
+            const Divider(height: 1, thickness: 1, color: Colors.black12),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                headingRowHeight: 40,
+                dataRowMinHeight: 48,
+                dataRowMaxHeight: 48,
+                horizontalMargin: 20,
+                columnSpacing: 24,
+                headingTextStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textSecondary),
+                dataTextStyle: const TextStyle(fontSize: 12, color: AppColors.textPrimary, fontWeight: FontWeight.w600),
+                columns: const [
+                  DataColumn(label: Text('#')),
+                  DataColumn(label: Text('NAMA PAC')),
+                  DataColumn(label: Text('ANGGOTA')),
+                  DataColumn(label: Text('ARSIP SURAT')),
+                  DataColumn(label: Text('SKOR')),
+                ],
+                rows: [
+                  DataRow(
+                    color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) => Colors.orange.shade50),
+                    cells: const [
+                      DataCell(Icon(CupertinoIcons.rosette, color: Colors.orange, size: 16)),
+                      DataCell(Text('PAC IPNU IPPNU PANEKAN')),
+                      DataCell(Text('82')),
+                      DataCell(Text('82')),
+                      DataCell(Text('173', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold))),
+                    ]
+                  ),
+                  const DataRow(
+                    cells: [
+                      DataCell(Text('2', style: TextStyle(color: Colors.grey))),
+                      DataCell(Text('PAC KAWEDANAN')),
+                      DataCell(Text('49')),
+                      DataCell(Text('27')),
+                      DataCell(Text('83')),
+                    ]
+                  ),
+                  const DataRow(
+                    cells: [
+                      DataCell(Text('3', style: TextStyle(color: Colors.grey))),
+                      DataCell(Text('PAC Ngariboyo')),
+                      DataCell(Text('66')),
+                      DataCell(Text('1')),
+                      DataCell(Text('68')),
+                    ]
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+        ),
       ),
     );
   }

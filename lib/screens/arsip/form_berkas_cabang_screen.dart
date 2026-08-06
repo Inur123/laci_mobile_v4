@@ -76,22 +76,15 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
 
                 const Text('Catatan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
                 const SizedBox(height: 8),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey.shade300),
-                  ),
-                  child: const TextField(
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      hintText: 'Catatan tambahan (opsional)',
-                      hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.all(16),
-                    ),
+                TextField(
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    hintText: 'Catatan tambahan (opsional)',
+                    hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    contentPadding: const EdgeInsets.all(16),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: Colors.grey.shade300)),
+                    focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
                   ),
                 ),
                 const SizedBox(height: 16),
