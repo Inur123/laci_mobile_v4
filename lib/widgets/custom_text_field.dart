@@ -10,6 +10,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final TextEditingController? controller;
   final String? hintText;
+  final String? errorText;
   final bool isCabang;
 
   const CustomTextField({
@@ -22,6 +23,7 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType,
     this.controller,
     this.hintText,
+    this.errorText,
     this.isCabang = true,
   });
 
@@ -46,6 +48,7 @@ class CustomTextField extends StatelessWidget {
           decoration: InputDecoration(
             hintText: hintText ?? 'Masukkan $label',
             hintStyle: const TextStyle(color: Colors.black38),
+            errorText: errorText,
             prefixIcon: Icon(icon, color: Colors.black45),
             suffixIcon: isPassword
                 ? IconButton(

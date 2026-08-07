@@ -56,9 +56,10 @@ class _FormSpScreenState extends State<FormSpScreen> {
               padding: const EdgeInsets.all(20),
               physics: const BouncingScrollPhysics(),
               children: [
-                const CustomTextField(
+                CustomTextField(
                   label: 'Nama Pimpinan *',
                   icon: CupertinoIcons.person_3_fill,
+                  isCabang: widget.isCabang,
                 ),
                 const SizedBox(height: 16),
 
@@ -156,10 +157,10 @@ class _FormSpScreenState extends State<FormSpScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 24),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.05),
+                      color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary).withOpacity(0.05),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                          color: Colors.blue.withOpacity(0.3),
+                          color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary).withOpacity(0.3),
                           style: BorderStyle.solid),
                     ),
                     child: Column(
@@ -179,7 +180,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
                             _fileName != null
                                 ? CupertinoIcons.doc_fill
                                 : CupertinoIcons.cloud_upload,
-                            color: Colors.blue,
+                            color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                             size: 28,
                           ),
                         ),
@@ -187,7 +188,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
                         Text(
                           _fileName ?? 'Klik untuk upload',
                           style: TextStyle(
-                              color: Colors.blue.shade700,
+                              color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                               fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
@@ -253,7 +254,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
+                      backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -372,13 +373,13 @@ class _FormSpScreenState extends State<FormSpScreen> {
                         fontWeight:
                             isSelected ? FontWeight.bold : FontWeight.w500,
                         color: isSelected
-                            ? Colors.blue.shade700
+                            ? (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)
                             : AppColors.textPrimary,
                       ),
                     ),
                     trailing: isSelected
                         ? Icon(CupertinoIcons.checkmark_alt,
-                            color: Colors.blue.shade700)
+                            color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)
                         : null,
                     onTap: () {
                       onSelected(item);
@@ -405,7 +406,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade700,
+              primary: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
               onPrimary: Colors.white,
               onSurface: AppColors.textPrimary,
             ),

@@ -4,6 +4,7 @@ import 'package:laci_mobile/screens/pengajuan/detail_pengajuan_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:toastification/toastification.dart';
+import 'package:laci_mobile/screens/pengajuan/form_pengajuan_screen.dart';
 
 class PengajuanScreen extends StatefulWidget {
   final bool isCabang;
@@ -77,14 +78,14 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               physics: const BouncingScrollPhysics(),
               children: [
-                _buildStatCard(
-                    'TOTAL', '28', CupertinoIcons.doc_text, Colors.blue),
-                _buildStatCard(
-                    'PENDING', '0', CupertinoIcons.clock, Colors.orange),
-                _buildStatCard('DITERIMA', '28',
-                    CupertinoIcons.checkmark_shield, Colors.green),
-                _buildStatCard(
-                    'DITOLAK', '0', CupertinoIcons.xmark_shield, Colors.red),
+                _buildStatCard('TOTAL', '0', CupertinoIcons.doc_text, Colors.blue),
+                _buildStatCard('IPNU', '0', CupertinoIcons.shield, Colors.green),
+                _buildStatCard('IPPNU', '0', CupertinoIcons.shield, Colors.red),
+                _buildStatCard('BERSAMA', '0', CupertinoIcons.person_2_fill, Colors.blue),
+                _buildStatCard('CBP KPP', '0', CupertinoIcons.shield, Colors.orange),
+                _buildStatCard('PENDING', '0', CupertinoIcons.clock, Colors.orange),
+                _buildStatCard('DITERIMA', '0', CupertinoIcons.checkmark_shield, Colors.green),
+                _buildStatCard('DITOLAK', '0', CupertinoIcons.xmark_shield, Colors.red),
               ],
             ),
           ),
@@ -162,13 +163,19 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
       ),
       floatingActionButton: widget.isCabang
           ? null
-          : FloatingActionButton.extended(
-              onPressed: () {},
+          : FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => FormPengajuanScreen(
+                      isCabang: widget.isCabang,
+                    ),
+                  ),
+                );
+              },
               backgroundColor: AppColors.pacPrimary,
-              icon: const Icon(CupertinoIcons.add, color: Colors.white),
-              label: const Text('Buat Pengajuan',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+              child: const Icon(CupertinoIcons.add, color: Colors.white),
             ),
     );
   }
@@ -313,6 +320,16 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                                 ),
                               ),
                             );
+                          } else if (value == 'edit') {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FormPengajuanScreen(
+                                  isCabang: widget.isCabang,
+                                  data: item,
+                                ),
+                              ),
+                            );
                           } else if (value == 'hapus') {
                             _showDeleteDialog(context);
                           }
@@ -320,6 +337,9 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                         itemBuilder: (context) => [
                           _buildPopupMenuItem(
                               'lihat', CupertinoIcons.eye, 'Lihat Detail'),
+                          if (!widget.isCabang && item['status'] == 'Pending')
+                            _buildPopupMenuItem(
+                                'edit', CupertinoIcons.pencil, 'Edit'),
                           _buildPopupMenuItem(
                               'hapus', CupertinoIcons.trash, 'Hapus',
                               isDestructive: true),

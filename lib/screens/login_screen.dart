@@ -4,20 +4,67 @@ import 'package:laci_mobile/screens/main_screen.dart';
 import 'package:laci_mobile/screens/register_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/widgets/custom_text_field.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toastification/toastification.dart';
+import 'package:laci_mobile/providers/auth_provider.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  bool _isCabang = true; // State untuk toggle Role
+  String? _emailError;
+  String? _passwordError;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    setState(() {
+      _emailError = null;
+      _passwordError = null;
+    });
+
+    if (email.isEmpty) {
+      setState(() => _emailError = 'Email tidak boleh kosong');
+    }
+    if (password.isEmpty) {
+      setState(() => _passwordError = 'Password tidak boleh kosong');
+    }
+    if (email.isEmpty || password.isEmpty) return;
+
+    final success = await ref.read(authProvider.notifier).login(email, password);
+
+    if (success && mounted) {
+      // Get role from user object if needed, but for now we fallback to _isCabang switch
+      final user = ref.read(authProvider).user;
+      final role = user?['role'] as String?;
+      final isCabang = role == 'SEKRETARIS_CABANG' || role == 'ADMIN_CABANG';
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen(isCabang: isCabang)),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -61,18 +108,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 32),
 
                   // Form Fields
-                  const CustomTextField(
+                  CustomTextField(
+                    controller: _emailController,
                     label: 'Email',
                     icon: CupertinoIcons.mail,
                     keyboardType: TextInputType.emailAddress,
+                    errorText: _emailError,
+                    isCabang: false,
                   ),
                   const SizedBox(height: 16),
                   
                   CustomTextField(
+                    controller: _passwordController,
                     label: 'Password',
                     icon: CupertinoIcons.lock,
                     isPassword: true,
                     obscureText: _obscurePassword,
+                    errorText: _passwordError ?? (authState.errorMessage != null && !authState.isLoading ? authState.errorMessage : null),
+                    isCabang: false,
                     onTogglePassword: () {
                       setState(() {
                         _obscurePassword = !_obscurePassword;
@@ -80,73 +133,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
 
-                  const SizedBox(height: 24),
-                  
-                  // Role Selector
-                  const Text('Masuk Sebagai:', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => setState(() => _isCabang = true),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: _isCabang ? AppColors.cabangPrimary.withOpacity(0.1) : Colors.transparent,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: _isCabang ? AppColors.cabangPrimary : Colors.black12, width: 2),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(CupertinoIcons.building_2_fill, color: _isCabang ? AppColors.cabangPrimary : Colors.grey, size: 20),
-                                const SizedBox(width: 8),
-                                Text('Cabang', style: TextStyle(color: _isCabang ? AppColors.cabangPrimary : Colors.grey, fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => setState(() => _isCabang = false),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: !_isCabang ? AppColors.pacPrimary.withOpacity(0.1) : Colors.transparent,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: !_isCabang ? AppColors.pacPrimary : Colors.black12, width: 2),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(CupertinoIcons.person_3_fill, color: !_isCabang ? AppColors.pacPrimary : Colors.grey, size: 20),
-                                const SizedBox(width: 8),
-                                Text('PAC', style: TextStyle(color: !_isCabang ? AppColors.pacPrimary : Colors.grey, fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
                   const SizedBox(height: 32),
 
                   // Login Button
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainScreen(isCabang: _isCabang)),
-                      );
-                    },
+                    onPressed: authState.isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+                      backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -154,13 +147,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
-                    child: const Text(
-                      'Masuk',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: authState.isLoading 
+                      ? const SizedBox(
+                          height: 20, 
+                          width: 20, 
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)
+                        )
+                      : const Text(
+                          'Masuk',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                   ),
 
                   const SizedBox(height: 24),

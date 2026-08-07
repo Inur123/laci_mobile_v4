@@ -50,16 +50,20 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const CustomTextField(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+              CustomTextField(
                 label: 'Nomor Surat *',
                 icon: CupertinoIcons.number,
                 keyboardType: TextInputType.text,
+                isCabang: widget.isCabang,
               ),
               const SizedBox(height: 16),
               _buildPremiumDropdown(
@@ -110,16 +114,18 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              const CustomTextField(
+              CustomTextField(
                 label: 'Pengirim/Penerima *',
                 icon: CupertinoIcons.person_2,
                 keyboardType: TextInputType.text,
+                isCabang: widget.isCabang,
               ),
               const SizedBox(height: 16),
-              const CustomTextField(
+              CustomTextField(
                 label: 'Perihal *',
-                icon: CupertinoIcons.info,
+                icon: CupertinoIcons.info_circle,
                 keyboardType: TextInputType.text,
+                isCabang: widget.isCabang,
               ),
               const SizedBox(height: 16),
               const Text(
@@ -166,10 +172,10 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.05),
+                    color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary).withOpacity(0.05),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                        color: Colors.blue.withOpacity(0.3),
+                        color: (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary).withOpacity(0.3),
                         style: BorderStyle.solid),
                   ),
                   child: Column(
@@ -189,7 +195,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                           _fileName != null
                               ? CupertinoIcons.doc_fill
                               : CupertinoIcons.cloud_upload,
-                          color: Colors.blue,
+                          color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                           size: 28,
                         ),
                       ),
@@ -197,7 +203,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                       Text(
                         _fileName ?? 'Klik untuk upload',
                         style: TextStyle(
-                            color: Colors.blue.shade700,
+                            color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                             fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
@@ -214,7 +220,18 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                 ),
               ),
               const SizedBox(height: 32),
-              Row(
+            ],
+          ),
+        ),
+            ),
+            // Action Buttons
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(top: BorderSide(color: Colors.grey.shade200)),
+              ),
+              child: Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
@@ -233,11 +250,11 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                   ),
                   const SizedBox(width: 16),
                   Expanded(
+                    flex: 2,
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.blue.shade700, // Tombol biru seperti di web
+                        backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
@@ -252,9 +269,8 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -360,13 +376,13 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                         fontWeight:
                             isSelected ? FontWeight.bold : FontWeight.w500,
                         color: isSelected
-                            ? Colors.blue.shade700
+                            ? (widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)
                             : AppColors.textPrimary,
                       ),
                     ),
                     trailing: isSelected
                         ? Icon(CupertinoIcons.checkmark_alt,
-                            color: Colors.blue.shade700)
+                            color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)
                         : null,
                     onTap: () {
                       onSelected(item);
@@ -393,7 +409,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: Colors.blue.shade700,
+              primary: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
               onPrimary: Colors.white,
               onSurface: AppColors.textPrimary,
             ),

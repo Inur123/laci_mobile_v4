@@ -27,71 +27,95 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Column(
           children: [
             _buildHeader(primaryColor),
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  TabBar(
-                    indicatorColor: primaryColor,
-                    labelColor: primaryColor,
-                    unselectedLabelColor: AppColors.textSecondary,
-                    indicatorWeight: 3,
-                    labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                    unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
-                    tabs: const [
-                      Tab(text: 'Data Saya'),
-                      Tab(text: 'Monitoring Wilayah'),
+            if (widget.isCabang) ...[
+              Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    TabBar(
+                      indicatorColor: primaryColor,
+                      labelColor: primaryColor,
+                      unselectedLabelColor: AppColors.textSecondary,
+                      indicatorWeight: 3,
+                      labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                      tabs: const [
+                        Tab(text: 'Data Saya'),
+                        Tab(text: 'Monitoring Wilayah'),
+                      ],
+                    ),
+                    Container(height: 1, color: Colors.black.withOpacity(0.05)),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: TabBarView(
+                  physics: const BouncingScrollPhysics(),
+                  children: [
+                    // TAB 1: Data Saya
+                    SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.only(bottom: 40),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildGridMenu(),
+                          const SizedBox(height: 24),
+                          _buildDataSayaStatsScroll(primaryColor),
+                          const SizedBox(height: 24),
+                          _buildStatistikDataChart(),
+                          const SizedBox(height: 24),
+                          _buildTrenKeaktifanChart(primaryColor),
+                        ],
+                      ),
+                    ),
+
+                    // TAB 2: Monitoring Wilayah
+                    SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.only(bottom: 40),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+                          _buildMonitoringStatsScroll(primaryColor),
+                          const SizedBox(height: 24),
+                          _buildPengkaderanBadges(),
+                          const SizedBox(height: 24),
+                          _buildTopPacChart(primaryColor),
+                          const SizedBox(height: 24),
+                          _buildSebaranDataChart(primaryColor),
+                          const SizedBox(height: 24),
+                          _buildRincianKlasemenTable(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Adding a small padding top to compensate for the missing TabBar height
+                      // so the layout doesn't jump too much compared to the Cabang view
+                      const SizedBox(height: 12),
+                      _buildGridMenu(),
+                      const SizedBox(height: 24),
+                      _buildDataSayaStatsScroll(primaryColor),
+                      const SizedBox(height: 24),
+                      _buildStatistikDataChart(),
+                      const SizedBox(height: 24),
+                      _buildTrenKeaktifanChart(primaryColor),
                     ],
                   ),
-                  Container(height: 1, color: Colors.black.withOpacity(0.05)),
-                ],
+                ),
               ),
-            ),
-            Expanded(
-              child: TabBarView(
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  // TAB 1: Data Saya
-                  SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildGridMenu(),
-                        const SizedBox(height: 24),
-                        _buildDataSayaStatsScroll(primaryColor),
-                        const SizedBox(height: 24),
-                        _buildStatistikDataChart(),
-                        const SizedBox(height: 24),
-                        _buildTrenKeaktifanChart(primaryColor),
-                      ],
-                    ),
-                  ),
-
-                  // TAB 2: Monitoring Wilayah
-                  SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.only(bottom: 40),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 16),
-                        _buildMonitoringStatsScroll(primaryColor),
-                        const SizedBox(height: 24),
-                        _buildPengkaderanBadges(),
-                        const SizedBox(height: 24),
-                        _buildTopPacChart(primaryColor),
-                        const SizedBox(height: 24),
-                        _buildSebaranDataChart(primaryColor),
-                        const SizedBox(height: 24),
-                        _buildRincianKlasemenTable(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            ],
           ],
         ),
       ),
@@ -137,13 +161,20 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    )
+                  ],
                 ),
                 child: Text(
                   widget.isCabang ? 'CABANG' : 'PAC',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: primaryColor,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -196,13 +227,21 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildMenuButton(
-                  CupertinoIcons.person_3_fill,
-                  'Pengguna',
-                  Colors.blue.shade100,
-                  Colors.blue.shade700,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PenggunaScreen(isCabang: widget.isCabang))),
-                ),
+                widget.isCabang
+                    ? _buildMenuButton(
+                        CupertinoIcons.person_3_fill,
+                        'Pengguna',
+                        Colors.blue.shade100,
+                        Colors.blue.shade700,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PenggunaScreen(isCabang: widget.isCabang))),
+                      )
+                    : _buildMenuButton(
+                        CupertinoIcons.layers_alt,
+                        'Periode',
+                        Colors.blue.shade100,
+                        Colors.blue.shade700,
+                        onTap: () {}, // Tambahkan rute periode jika ada
+                      ),
                 _buildMenuButton(
                   CupertinoIcons.calendar_today,
                   'Agenda',
@@ -217,13 +256,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   Colors.green.shade700,
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PresensiScreen(isCabang: widget.isCabang))),
                 ),
-                _buildMenuButton(
-                  CupertinoIcons.square_grid_2x2_fill,
-                  'Lainnya',
-                  Colors.purple.shade100,
-                  Colors.purple.shade700,
-                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LainnyaScreen(isCabang: widget.isCabang))),
-                ),
+                widget.isCabang
+                    ? _buildMenuButton(
+                        CupertinoIcons.square_grid_2x2_fill,
+                        'Lainnya',
+                        Colors.purple.shade100,
+                        Colors.purple.shade700,
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LainnyaScreen(isCabang: widget.isCabang))),
+                      )
+                    : _buildMenuButton(
+                        CupertinoIcons.chart_bar_alt_fill,
+                        'Aktivitas',
+                        Colors.purple.shade100,
+                        Colors.purple.shade700,
+                        onTap: () {}, // Tambahkan rute aktivitas jika ada
+                      ),
               ],
             ),
           ],
@@ -239,19 +286,19 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            height: 48,
-            width: 48,
+            height: 64,
+            width: 64,
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, color: iconColor, size: 24),
+            child: Icon(icon, color: iconColor, size: 30),
           ),
           const SizedBox(height: 8),
           Text(
             label,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 11, color: AppColors.textPrimary, fontWeight: FontWeight.w600),
+            style: const TextStyle(fontSize: 12, color: AppColors.textPrimary, fontWeight: FontWeight.w600),
             maxLines: 1,
           ),
         ],
@@ -260,12 +307,24 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildDataSayaStatsScroll(Color primaryColor) {
-    final stats = [
+    final stats = widget.isCabang ? [
       {'title': 'TOTAL ANGGOTA', 'val': '1', 'color': Colors.blue},
       {'title': 'ARSIP SURAT', 'val': '254', 'color': Colors.orange},
       {'title': 'BERKAS SP', 'val': '15', 'color': Colors.purple},
       {'title': 'BERKAS PIMPINAN', 'val': '8', 'color': Colors.pink},
-      {'title': 'VERIFIKASI PENGAJUAN', 'val': '28', 'color': Colors.green},
+      {'title': 'VERIFIKASI PENGAJUAN', 'val': '29', 'color': Colors.green},
+      {'title': 'AGENDA KEGIATAN', 'val': '36', 'color': Colors.red},
+      {'title': 'MANAJEMEN USER', 'val': '20', 'color': Colors.blueGrey},
+      {'title': 'DATA ANGGOTA', 'val': '1', 'color': Colors.cyan},
+      {'title': 'PERIODE', 'val': '1', 'color': Colors.blue},
+      {'title': 'PRESENSI', 'val': '2', 'color': Colors.pink},
+    ] : [
+      {'title': 'TOTAL ANGGOTA', 'val': '0', 'color': Colors.blue},
+      {'title': 'ARSIP SURAT', 'val': '0', 'color': Colors.orange},
+      {'title': 'ARSIP PIMPINAN', 'val': '0', 'color': Colors.purple},
+      {'title': 'PENGAJUAN BERKAS', 'val': '1', 'color': Colors.green},
+      {'title': 'PERIODE', 'val': '1', 'color': Colors.cyan},
+      {'title': 'PRESENSI', 'val': '0', 'color': Colors.pink},
     ];
 
     return SizedBox(

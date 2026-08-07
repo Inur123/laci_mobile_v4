@@ -69,57 +69,76 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Berikan alasan mengapa pengajuan surat ini ditolak.',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                'Alasan Penolakan *',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
               TextField(
                 controller: reasonController,
                 maxLines: 4,
                 decoration: InputDecoration(
-                  hintText: 'Tulis alasan penolakan di sini...',
-                  hintStyle: const TextStyle(color: Colors.black38),
+                  hintText: 'Jelaskan alasan penolakan...',
+                  hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
                   filled: true,
                   fillColor: AppColors.inputFill,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide.none,
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Logic penolakan
-                    Navigator.pop(context);
-                    setState(() {
-                      _status = 'Ditolak';
-                    });
-                    toastification.show(
-                      context: context,
-                      type: ToastificationType.error,
-                      style: ToastificationStyle.flat,
-                      showProgressBar: false,
-                      primaryColor: Colors.white,
-                      icon: const Icon(Icons.error_outline, color: Colors.red),
-                      title: const Text('Pengajuan berhasil ditolak'),
-                      alignment: Alignment.topCenter,
-                      autoCloseDuration: const Duration(seconds: 3),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade700,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    elevation: 0,
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade200,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                      ),
+                      child: const Text('Batal',
+                          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                  child: const Text('Kirim Penolakan',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
-                ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Logic penolakan
+                        Navigator.pop(context);
+                        setState(() {
+                          _status = 'Ditolak';
+                        });
+                        toastification.show(
+                          context: context,
+                          type: ToastificationType.error,
+                          style: ToastificationStyle.flat,
+                          showProgressBar: false,
+                          primaryColor: Colors.white,
+                          icon: const Icon(Icons.error_outline, color: Colors.red),
+                          title: const Text('Pengajuan berhasil ditolak'),
+                          alignment: Alignment.topCenter,
+                          autoCloseDuration: const Duration(seconds: 3),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade400,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                      ),
+                      child: const Text('Konfirmasi Penolakan',
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 32),
             ],

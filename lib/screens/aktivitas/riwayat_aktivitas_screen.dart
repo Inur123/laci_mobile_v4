@@ -2,21 +2,91 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laci_mobile/providers/activity_provider.dart';
+import 'package:laci_mobile/models/activity_filter_model.dart';
 import 'package:laci_mobile/screens/aktivitas/detail_riwayat_aktivitas_screen.dart';
+import 'package:shimmer/shimmer.dart';
 
-class RiwayatAktivitasScreen extends StatefulWidget {
+class RiwayatAktivitasScreen extends ConsumerStatefulWidget {
   final bool isCabang;
   const RiwayatAktivitasScreen({super.key, this.isCabang = true});
 
   @override
-  State<RiwayatAktivitasScreen> createState() => _RiwayatAktivitasScreenState();
+  ConsumerState<RiwayatAktivitasScreen> createState() =>
+      _RiwayatAktivitasScreenState();
 }
 
-class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
+class _RiwayatAktivitasScreenState
+    extends ConsumerState<RiwayatAktivitasScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Widget _buildShimmerLoading() {
+    return Expanded(
+      child: ListView.separated(
+        padding: const EdgeInsets.all(16),
+        itemCount: 6,
+        physics: const NeverScrollableScrollPhysics(),
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          return Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              height: 120,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.black.withOpacity(0.05)),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final primaryColor =
         widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+
+    if (!widget.isCabang) {
+      return Scaffold(
+        backgroundColor: Colors.grey.shade50,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(CupertinoIcons.back, color: primaryColor),
+            onPressed: () => Navigator.pop(context),
+          ),
+          title: const Text(
+            'Riwayat Aktivitas',
+            style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+        body: Column(
+          children: [
+            _buildStatsHorizontalScroll(false),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: _buildFilterSection(primaryColor, false),
+            ),
+            const Divider(height: 1, thickness: 1, color: Colors.black12),
+            _buildActivityList(false),
+          ],
+        ),
+      );
+    }
 
     return DefaultTabController(
       length: 2,
@@ -35,8 +105,8 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
             'Riwayat Aktivitas',
             style: TextStyle(
                 color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
-                fontSize: 16),
+                fontSize: 16,
+                fontWeight: FontWeight.bold),
           ),
           bottom: TabBar(
             labelColor: primaryColor,
@@ -48,14 +118,13 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
             unselectedLabelStyle:
                 const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
             tabs: const [
-              Tab(text: 'Personal'),
-              Tab(text: 'Global'),
+              Tab(text: 'Aktivitas Saya'),
+              Tab(text: 'Aktivitas Global'),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            // TAB 1: Personal
             Column(
               children: [
                 _buildStatsHorizontalScroll(false),
@@ -89,143 +158,81 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
   // Removed _buildHeader
 
   Widget _buildStatsHorizontalScroll(bool isGlobal) {
-    final stats = !isGlobal
-        ? [
-            {
-              'title': 'SEMUA',
-              'value': '621',
-              'icon': CupertinoIcons.waveform_path_ecg,
-              'color': Colors.green
-            },
-            {
-              'title': 'ARSIP SURAT',
-              'value': '52',
-              'icon': CupertinoIcons.doc_text,
-              'color': Colors.blue
-            },
-            {
-              'title': 'ANGGOTA',
-              'value': '1',
-              'icon': CupertinoIcons.person_2,
-              'color': Colors.green
-            },
-            {
-              'title': 'BERKAS PIMPINAN',
-              'value': '9',
-              'icon': CupertinoIcons.folder,
-              'color': Colors.purple
-            },
-            {
-              'title': 'BERKAS SP',
-              'value': '16',
-              'icon': CupertinoIcons.doc_plaintext,
-              'color': Colors.purple.shade300
-            },
-            {
-              'title': 'KEGIATAN',
-              'value': '54',
-              'icon': CupertinoIcons.calendar,
-              'color': Colors.orange
-            },
-            {
-              'title': 'PENGAJUAN PAC',
-              'value': '41',
-              'icon': CupertinoIcons.paperplane,
-              'color': Colors.red
-            },
-            {
-              'title': 'PERIODE',
-              'value': '10',
-              'icon': CupertinoIcons.layers_alt,
-              'color': Colors.blue
-            },
-            {
-              'title': 'AUTENTIKASI',
-              'value': '361',
-              'icon': CupertinoIcons.lock,
-              'color': Colors.grey
-            },
-            {
-              'title': 'UPDATE PROFIL',
-              'value': '77',
-              'icon': CupertinoIcons.person_crop_circle,
-              'color': Colors.grey
-            },
-            {
-              'title': 'PRESENSI',
-              'value': '0',
-              'icon': CupertinoIcons.waveform_path,
-              'color': Colors.grey
-            },
-          ]
-        : [
-            {
-              'title': 'SEMUA',
-              'value': '1,7 rb',
-              'icon': CupertinoIcons.waveform_path_ecg,
-              'color': Colors.blue
-            },
-            {
-              'title': 'ARSIP SURAT',
-              'value': '236',
-              'icon': CupertinoIcons.doc_text,
-              'color': Colors.blue
-            },
-            {
-              'title': 'ANGGOTA',
-              'value': '586',
-              'icon': CupertinoIcons.person_2,
-              'color': Colors.green
-            },
-            {
-              'title': 'BERKAS PIMPINAN',
-              'value': '10',
-              'icon': CupertinoIcons.folder,
-              'color': Colors.purple
-            },
-            {
-              'title': 'BERKAS SP',
-              'value': '16',
-              'icon': CupertinoIcons.doc_plaintext,
-              'color': Colors.purple.shade300
-            },
-            {
-              'title': 'KEGIATAN',
-              'value': '95',
-              'icon': CupertinoIcons.calendar,
-              'color': Colors.orange
-            },
-            {
-              'title': 'PENGAJUAN PAC',
-              'value': '97',
-              'icon': CupertinoIcons.paperplane,
-              'color': Colors.red
-            },
-            {
-              'title': 'PERIODE',
-              'value': '37',
-              'icon': CupertinoIcons.layers_alt,
-              'color': Colors.blue
-            },
-            {
-              'title': 'AUTENTIKASI',
-              'value': '514',
-              'icon': CupertinoIcons.lock,
-              'color': Colors.grey
-            },
-            {
-              'title': 'UPDATE PROFIL',
-              'value': '86',
-              'icon': CupertinoIcons.person_crop_circle,
-              'color': Colors.grey
-            },
-            {
-              'title': 'PRESENSI',
-              'value': '0',
-              'icon': CupertinoIcons.waveform_path,
-              'color': Colors.grey
-            },
-          ];
+    final type = isGlobal ? 'global' : 'personal';
+    final filter = ref.watch(activityFilterProvider(type));
+    final activityState = ref.watch(activityProvider(filter));
+
+    final totalSemua = activityState.value?.total ?? 0;
+    final statsMap = activityState.value?.stats ?? {};
+
+    final uiConfig = [
+      {
+        'title': 'SEMUA',
+        'key': 'SEMUA',
+        'icon': CupertinoIcons.waveform_path_ecg,
+        'color': isGlobal ? Colors.blue : Colors.green
+      },
+      {
+        'title': 'PERIODE',
+        'key': 'PERIODE',
+        'icon': CupertinoIcons.layers_alt,
+        'color': Colors.blue
+      },
+      {
+        'title': 'AUTENTIKASI',
+        'key': 'AUTH',
+        'icon': CupertinoIcons.lock,
+        'color': Colors.grey
+      },
+      {
+        'title': 'UPDATE PROFIL',
+        'key': 'USER',
+        'icon': CupertinoIcons.person_crop_circle,
+        'color': Colors.grey
+      },
+      {
+        'title': 'ARSIP SURAT',
+        'key': 'ARSIP_SURAT',
+        'icon': CupertinoIcons.doc_text,
+        'color': Colors.blue
+      },
+      {
+        'title': 'ANGGOTA',
+        'key': 'ANGGOTA',
+        'icon': CupertinoIcons.person_2,
+        'color': Colors.green
+      },
+      {
+        'title': 'BERKAS PIMPINAN',
+        'key': 'BERKAS_PIMPINAN',
+        'icon': CupertinoIcons.folder,
+        'color': Colors.purple
+      },
+      {
+        'title': 'BERKAS SP',
+        'key': 'BERKAS_SP',
+        'icon': CupertinoIcons.doc_plaintext,
+        'color': Colors.purple.shade300
+      },
+      {
+        'title': 'KEGIATAN',
+        'key': 'AGENDA_KEGIATAN',
+        'icon': CupertinoIcons.calendar,
+        'color': Colors.orange
+      },
+      {
+        'title': 'PENGAJUAN PAC',
+        'key': 'PENGAJUAN_BERKAS',
+        'icon': CupertinoIcons.paperplane,
+        'color': Colors.red
+      },
+      {
+        'title': 'PRESENSI',
+        'key': 'PRESENSI',
+        'icon': CupertinoIcons.waveform_path,
+        'color': Colors.grey
+      },
+    ];
 
     return Container(
       height: 110,
@@ -234,10 +241,13 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: stats.length,
+        itemCount: uiConfig.length,
         separatorBuilder: (context, index) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
-          final stat = stats[index];
+          final stat = uiConfig[index];
+          final key = stat['key'] as String;
+          final value = key == 'SEMUA' ? totalSemua : (statsMap[key] ?? 0);
+
           return Container(
             width: 140,
             padding: const EdgeInsets.all(12),
@@ -275,7 +285,7 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  stat['value'] as String,
+                  value.toString(),
                   style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -519,6 +529,7 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
   }
 
   Widget _buildFilterSection(Color primaryColor, bool isGlobal) {
+    final type = isGlobal ? 'global' : 'personal';
     return Container(
       color: Colors.white,
       child: Row(
@@ -527,6 +538,11 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
             child: SizedBox(
               height: 48,
               child: TextField(
+                onSubmitted: (value) {
+                  ref
+                      .read(activityFilterProvider(type).notifier)
+                      .update((state) => state.copyWith(search: value));
+                },
                 decoration: InputDecoration(
                   hintText: 'Cari aktivitas, entitas, modul...',
                   hintStyle: const TextStyle(
@@ -572,175 +588,187 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
   }
 
   Widget _buildActivityList(bool isGlobal) {
-    final activities = [
-      {
-        'waktu': '6 Agustus 2026 - 09.19.49',
-        'user': 'Sekretaris Cabang',
-        'entitas': 'Login',
-        'entitasColor': Colors.green,
-        'modul': 'Autentikasi',
-        'aktivitas': 'User login ke sistem: Sekretaris Cabang'
-      },
-      {
-        'waktu': '5 Agustus 2026 - 15.45.45',
-        'user': 'Sekretaris Cabang',
-        'entitas': 'Hapus',
-        'entitasColor': Colors.red,
-        'modul': 'Periode',
-        'aktivitas': 'Menghapus periode: 2027-2029'
-      },
-      {
-        'waktu': '5 Agustus 2026 - 15.44.48',
-        'user': 'Sekretaris Cabang',
-        'entitas': 'Tambah',
-        'entitasColor': Colors.green,
-        'modul': 'Periode',
-        'aktivitas': 'Membuat periode baru: 2027-2029'
-      },
-      {
-        'waktu': '5 Agustus 2026 - 14.47.20',
-        'user': 'Sekretaris Cabang',
-        'entitas': 'Update',
-        'entitasColor': Colors.blue,
-        'modul': 'Kegiatan',
-        'aktivitas': 'Memperbarui kegiatan presensi: Raker'
-      },
-      {
-        'waktu': '5 Agustus 2026 - 14.47.14',
-        'user': 'Sekretaris Cabang',
-        'entitas': 'Tambah',
-        'entitasColor': Colors.green,
-        'modul': 'Kegiatan',
-        'aktivitas': 'Membuat kegiatan presensi baru: Raker'
-      },
-      {
-        'waktu': '5 Agustus 2026 - 12.49.04',
-        'user': 'Sekretaris Cabang',
-        'entitas': 'Logout',
-        'entitasColor': Colors.orange,
-        'modul': 'Autentikasi',
-        'aktivitas': 'User logout dari sistem: Sekretaris Cabang'
-      },
-    ];
+    final type = isGlobal ? 'global' : 'personal';
+    final filter = ref.watch(activityFilterProvider(type));
+    final activityState = ref.watch(activityProvider(filter));
 
-    return Expanded(
-      child: ListView.separated(
-        padding: const EdgeInsets.all(16),
-        physics: const BouncingScrollPhysics(),
-        itemCount: activities.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          final item = activities[index];
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DetailRiwayatAktivitasScreen(
-                          data: item, isCabang: widget.isCabang)));
-            },
-            borderRadius: BorderRadius.circular(16),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.black.withOpacity(0.05)),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black.withOpacity(0.02),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4))
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(item['waktu'] as String,
-                          style: const TextStyle(
-                              fontSize: 11,
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.bold)),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color:
-                              (item['entitasColor'] as Color).withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(item['entitas'] as String,
-                            style: TextStyle(
-                                color: item['entitasColor'] as Color,
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  if (isGlobal) ...[
-                    Row(
-                      children: [
-                        const Icon(CupertinoIcons.person_solid,
-                            size: 14, color: AppColors.textSecondary),
-                        const SizedBox(width: 6),
-                        Text(item['user'] as String,
-                            style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary)),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(CupertinoIcons.square_list,
-                            size: 16, color: Colors.blue),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(item['modul'] as String,
-                                style: const TextStyle(
-                                    fontSize: 11,
-                                    color: AppColors.textSecondary)),
-                            const SizedBox(height: 4),
-                            Text(item['aktivitas'] as String,
-                                style: const TextStyle(
-                                    fontSize: 13,
-                                    color: AppColors.textPrimary,
-                                    height: 1.4)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+    return activityState.when(
+      loading: () => _buildShimmerLoading(),
+      error: (err, stack) => Expanded(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              err.toString(),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
+      data: (response) {
+        final activities = response.data;
+
+        if (activities.isEmpty) {
+          return const Expanded(
+            child: Center(
+              child: Text('Belum ada riwayat aktivitas.',
+                  style: TextStyle(color: AppColors.textSecondary)),
+            ),
+          );
+        }
+
+        return Expanded(
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (ScrollNotification scrollInfo) {
+              if (response.hasMore &&
+                  scrollInfo.metrics.pixels ==
+                      scrollInfo.metrics.maxScrollExtent) {
+                ref.read(activityProvider(filter).notifier).loadMore();
+              }
+              return true;
+            },
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16),
+              physics: const BouncingScrollPhysics(),
+              itemCount: activities.length + (response.hasMore ? 1 : 0),
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                if (index == activities.length) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      height: 120,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  );
+                }
+
+                final item = activities[index];
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailRiwayatAktivitasScreen(
+                                data: item, isCabang: widget.isCabang)));
+                  },
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.black.withOpacity(0.05)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.02),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4))
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(item.formattedDate,
+                                style: const TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.textSecondary,
+                                    fontWeight: FontWeight.bold)),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: item.actionColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(item.action,
+                                  style: TextStyle(
+                                      color: item.actionColor,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        if (isGlobal) ...[
+                          Row(
+                            children: [
+                              const Icon(CupertinoIcons.person_solid,
+                                  size: 14, color: AppColors.textSecondary),
+                              const SizedBox(width: 6),
+                              Text(item.userName,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.textPrimary)),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(CupertinoIcons.square_list,
+                                  size: 16, color: Colors.blue),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(item.module,
+                                      style: const TextStyle(
+                                          fontSize: 11,
+                                          color: AppColors.textSecondary)),
+                                  const SizedBox(height: 4),
+                                  Text(item.description,
+                                      style: const TextStyle(
+                                          fontSize: 13,
+                                          color: AppColors.textPrimary,
+                                          height: 1.4)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 
   void _showFilterModal(BuildContext context, bool isGlobal) {
-    String selectedModul = 'Semua Modul';
-    String selectedEntitas = 'Semua Entitas';
-    String selectedUser = 'Semua User';
+    final type = isGlobal ? 'global' : 'personal';
+    final currentFilter = ref.read(activityFilterProvider(type));
+
+    String selectedModul = currentFilter.module ?? 'Semua Modul';
+    String selectedEntitas = currentFilter.action ?? 'Semua Entitas';
+    String selectedUserId = currentFilter.userId ?? 'Semua User';
 
     showModalBottomSheet(
       context: context,
@@ -829,38 +857,130 @@ class _RiwayatAktivitasScreenState extends State<RiwayatAktivitasScreen> {
                               fontWeight: FontWeight.bold,
                               color: AppColors.textPrimary)),
                       const SizedBox(height: 8),
-                      _buildDropdown(
-                        value: selectedUser,
-                        items: [
-                          'Semua User',
-                          'Ketua Cabang',
-                          'Sekretaris Cabang',
-                          'Ketua PAC',
-                          'Sekretaris PAC'
-                        ],
-                        onChanged: (val) {
-                          if (val != null) setState(() => selectedUser = val);
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final usersAsync = ref.watch(filterUsersProvider);
+                          return usersAsync.when(
+                            loading: () => const Center(
+                                child: CircularProgressIndicator()),
+                            error: (err, stack) => Text('Error: $err',
+                                style: const TextStyle(color: Colors.red)),
+                            data: (users) {
+                              final List<DropdownMenuItem<String>>
+                                  dropdownItems = [
+                                const DropdownMenuItem(
+                                    value: 'Semua User',
+                                    child: Text('Semua User',
+                                        style: TextStyle(fontSize: 14))),
+                              ];
+
+                              for (var u in users) {
+                                dropdownItems.add(DropdownMenuItem(
+                                  value: u.id,
+                                  child: Text(
+                                      '${u.name} (${u.role.replaceAll("_", " ")})',
+                                      style: const TextStyle(fontSize: 14)),
+                                ));
+                              }
+
+                              return Container(
+                                height: 50,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
+                                ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value:
+                                        users.any((u) => u.id == selectedUserId)
+                                            ? selectedUserId
+                                            : 'Semua User',
+                                    isExpanded: true,
+                                    icon: const Icon(
+                                        CupertinoIcons.chevron_down,
+                                        size: 16),
+                                    items: dropdownItems,
+                                    onChanged: (val) {
+                                      if (val != null)
+                                        setState(() => selectedUserId = val);
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                          );
                         },
                       ),
                     ],
                     const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: widget.isCabang
-                              ? AppColors.cabangPrimary
-                              : AppColors.pacPrimary,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              ref
+                                  .read(activityFilterProvider(type).notifier)
+                                  .update((state) => ActivityFilterModel(
+                                        type: state.type,
+                                        search: state.search, // Preserve search text
+                                        module: null,
+                                        action: null,
+                                        userId: null,
+                                      ));
+                              Navigator.pop(context);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(color: Colors.red),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            child: const Text('Reset',
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold)),
+                          ),
                         ),
-                        child: const Text('Terapkan Filter',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
-                      ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {
+                              ref
+                                  .read(activityFilterProvider(type).notifier)
+                                  .update((state) => ActivityFilterModel(
+                                        type: state.type,
+                                        search: state.search,
+                                        module: selectedModul == 'Semua Modul'
+                                            ? null
+                                            : selectedModul,
+                                        action: selectedEntitas == 'Semua Entitas'
+                                            ? null
+                                            : selectedEntitas,
+                                        userId: selectedUserId == 'Semua User'
+                                            ? null
+                                            : selectedUserId,
+                                      ));
+                              Navigator.pop(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: widget.isCabang
+                                  ? AppColors.cabangPrimary
+                                  : AppColors.pacPrimary,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            child: const Text('Terapkan',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
                   ],

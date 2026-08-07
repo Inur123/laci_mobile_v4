@@ -56,6 +56,7 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
                       child: CustomTextField(
                         label: 'Nama *',
                         icon: CupertinoIcons.doc_text_fill,
+                        isCabang: widget.isCabang,
                       ),
                     ),
                     const SizedBox(width: 16),

@@ -4,23 +4,61 @@ import 'package:file_picker/file_picker.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/widgets/custom_text_field.dart';
 
-class ProfileScreen extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laci_mobile/providers/auth_provider.dart';
+import 'package:laci_mobile/screens/login_screen.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:toastification/toastification.dart';
+
+class ProfileScreen extends ConsumerStatefulWidget {
   final bool isCabang;
   const ProfileScreen({super.key, this.isCabang = true});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  bool _isEmailVerified = true;
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _obscureCurrentPassword = true;
+  bool _isSaving = false;
   String? _photoFileName;
+
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _currentPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  bool _isInitialized = false;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _initControllers(Map<String, dynamic>? user) {
+    if (!_isInitialized && user != null) {
+      _nameController.text = user['name'] ?? '';
+      _emailController.text = user['email'] ?? '';
+      _isInitialized = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+    final primaryColor =
+        widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+    final user = ref.watch(authProvider).user;
+
+    // Initialize controllers with user data once
+    _initControllers(user);
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
@@ -35,34 +73,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         title: const Text(
           'Profil Saya',
-          style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
+          style: TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+              fontSize: 16),
         ),
-        actions: [
-          // Tombol sementara untuk melihat perbedaan UI saat verif/belum
-          IconButton(
-            icon: Icon(
-              _isEmailVerified ? CupertinoIcons.checkmark_seal_fill : CupertinoIcons.exclamationmark_triangle_fill,
-              color: _isEmailVerified ? Colors.green : Colors.orange,
-            ),
-            tooltip: 'Toggle Status Verifikasi (Demo)',
-            onPressed: () {
-              setState(() {
-                _isEmailVerified = !_isEmailVerified;
-              });
-            },
-          ),
-        ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // 1. BAGIAN FOTO DAN INFO AKUN
-              const SizedBox(height: 16),
-              _buildProfileHeader(),
+        child: _buildBodyContent(primaryColor, user),
+      ),
+    );
+  }
+
+  Widget _buildBodyContent(Color primaryColor, Map<String, dynamic>? user) {
+    final authState = ref.watch(authProvider);
+    final isLoading = authState.isLoading || user == null;
+    final isEmailVerified = user?['emailVerified'] == true;
+
+    Widget content = SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // 1. BAGIAN FOTO DAN INFO AKUN
+          const SizedBox(height: 16),
+              _buildProfileHeader(user),
               const SizedBox(height: 32),
 
               // 2. BAGIAN INFORMASI PRIBADI
@@ -70,100 +106,207 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: 'Informasi Pribadi',
                 icon: CupertinoIcons.person,
                 children: [
-                  CustomTextField(
-                    isCabang: widget.isCabang,
-                    label: 'Nama Pimpinan',
-                    icon: CupertinoIcons.person_fill,
-                    keyboardType: TextInputType.text,
-                    // Di dunia nyata ini diisi initialValue controller
-                  ),
-                  const SizedBox(height: 16),
-                  
-                  // Bagian Email Khusus (Ada Status Verifikasi)
-                  const Text('Alamat Email', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  // Field Nama
+                  const Text('Nama Pimpinan',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
                   const SizedBox(height: 8),
                   TextField(
+                    controller: _nameController,
                     decoration: InputDecoration(
-                      hintText: 'lacipelajarnumagetan@gmail.com',
-                      hintStyle: const TextStyle(color: Colors.black38, fontSize: 14),
-                      prefixIcon: const Icon(CupertinoIcons.mail_solid, color: Colors.black45, size: 20),
+                      hintText: 'Masukkan Nama Pimpinan',
+                      hintStyle:
+                          const TextStyle(color: Colors.black38, fontSize: 14),
+                      prefixIcon: const Icon(CupertinoIcons.person_fill,
+                          color: Colors.black45, size: 20),
                       filled: false,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: _isEmailVerified ? Colors.grey.shade300 : Colors.orange.shade300)),
-                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: _isEmailVerified ? Colors.grey.shade300 : Colors.orange.shade300)),
-                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: primaryColor)),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: primaryColor)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Bagian Email
+                  const Text('Alamat Email',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      hintText: 'Masukkan email baru',
+                      hintStyle:
+                          const TextStyle(color: Colors.black38, fontSize: 14),
+                      prefixIcon: const Icon(CupertinoIcons.mail_solid,
+                          color: Colors.black45, size: 20),
+                      filled: false,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                              color: isEmailVerified
+                                  ? Colors.grey.shade300
+                                  : Colors.orange.shade300)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                              color: isEmailVerified
+                                  ? Colors.grey.shade300
+                                  : Colors.orange.shade300)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: primaryColor)),
                     ),
                   ),
                   const SizedBox(height: 8),
-                  
-                  // Badge Status Pindah ke Bawah (Sesuai Desain Web)
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: _isEmailVerified ? Colors.green.shade50 : Colors.orange.shade50,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: _isEmailVerified ? Colors.green.shade200 : Colors.orange.shade200),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              _isEmailVerified ? CupertinoIcons.checkmark_seal_fill : CupertinoIcons.exclamationmark_triangle_fill,
-                              color: _isEmailVerified ? Colors.green : Colors.orange,
-                              size: 14,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              _isEmailVerified ? 'Terverifikasi' : 'Belum Verifikasi',
-                              style: TextStyle(
-                                color: _isEmailVerified ? Colors.green.shade700 : Colors.orange.shade800,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  
-                  // Jika belum verif, tampilkan peringatan & tombol kirim ulang
-                  if (!_isEmailVerified) ...[
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.orange.shade50,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
+
+                  // Badge Status Verifikasi
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _emailController,
+                    builder: (context, value, child) {
+                      final currentEmail = user?['email'] ?? '';
+                      final isEmailChanged = value.text.trim().toLowerCase() != currentEmail.toLowerCase();
+                      
+                      bool showVerified = isEmailVerified && !isEmailChanged;
+                      String badgeText = showVerified ? 'Terverifikasi' : (isEmailChanged ? 'Perlu Disimpan & Verifikasi' : 'Belum Verifikasi');
+                      Color badgeColor = showVerified ? Colors.green : Colors.orange;
+                      IconData badgeIcon = showVerified ? CupertinoIcons.checkmark_seal_fill : CupertinoIcons.exclamationmark_triangle_fill;
+
+                      return Row(
                         children: [
-                          const Icon(CupertinoIcons.info_circle_fill, color: Colors.orange, size: 20),
-                          const SizedBox(width: 12),
-                          const Expanded(
-                            child: Text(
-                              'Email Anda belum diverifikasi. Beberapa fitur mungkin dibatasi.',
-                              style: TextStyle(fontSize: 12, color: Colors.black87),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: showVerified
+                                  ? Colors.green.shade50
+                                  : Colors.orange.shade50,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color: showVerified
+                                      ? Colors.green.shade200
+                                      : Colors.orange.shade200),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  badgeIcon,
+                                  color: badgeColor,
+                                  size: 14,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  badgeText,
+                                  style: TextStyle(
+                                    color: showVerified
+                                        ? Colors.green.shade700
+                                        : Colors.orange.shade800,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                              minimumSize: Size.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: const Text('Kirim Ulang', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold, fontSize: 12)),
-                          )
                         ],
-                      ),
+                      );
+                    },
+                  ),
+
+                  // Peringatan jika belum verif (hanya tampil jika email tidak sedang diubah)
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: _emailController,
+                    builder: (context, value, child) {
+                      final currentEmail = user?['email'] ?? '';
+                      final isEmailChanged = value.text.trim().toLowerCase() != currentEmail.toLowerCase();
+                      
+                      if (!isEmailVerified && !isEmailChanged) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(CupertinoIcons.info_circle_fill,
+                                    color: Colors.orange, size: 20),
+                                const SizedBox(width: 12),
+                                const Expanded(
+                                  child: Text(
+                                    'Email Anda belum diverifikasi. Beberapa fitur mungkin dibatasi.',
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.black87),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 0),
+                                    minimumSize: Size.zero,
+                                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                  child: const Text('Kirim Ulang',
+                                      style: TextStyle(
+                                          color: Colors.orange,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12)),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+
+                  // Info jika email diubah
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ]
+                    child: Row(
+                      children: [
+                        Icon(CupertinoIcons.info_circle_fill,
+                            color: primaryColor, size: 18),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Jika email diubah, link verifikasi akan dikirim ke email baru. Email lama tetap aktif sampai verifikasi selesai.',
+                            style: TextStyle(
+                                fontSize: 11, color: Colors.black54),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              
+
               const SizedBox(height: 24),
 
               // 3. BAGIAN KEAMANAN (UBAH PASSWORD)
@@ -173,96 +316,458 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   const Text(
                     'Minimal 6 karakter untuk keamanan ekstra. Kosongkan jika tidak ingin mengubah password.',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                    style:
+                        TextStyle(color: AppColors.textSecondary, fontSize: 12),
                   ),
                   const SizedBox(height: 16),
-                  
+
+                  // Password Saat Ini
+                  const Text('Password Saat Ini',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _currentPasswordController,
+                    obscureText: _obscureCurrentPassword,
+                    decoration: InputDecoration(
+                      hintText: 'Masukkan password saat ini',
+                      hintStyle:
+                          const TextStyle(color: Colors.black38, fontSize: 14),
+                      prefixIcon: const Icon(CupertinoIcons.lock_fill,
+                          color: Colors.black45, size: 20),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureCurrentPassword
+                              ? CupertinoIcons.eye_slash_fill
+                              : CupertinoIcons.eye_fill,
+                          color: Colors.black45,
+                          size: 20,
+                        ),
+                        onPressed: () => setState(() =>
+                            _obscureCurrentPassword =
+                                !_obscureCurrentPassword),
+                      ),
+                      filled: false,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: primaryColor)),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
                   // Password Baru
-                  CustomTextField(
-                    label: 'Password Baru',
-                    icon: CupertinoIcons.lock_fill,
-                    hintText: 'Kosongkan jika tidak diubah',
-                    isPassword: true,
+                  const Text('Password Baru',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _newPasswordController,
                     obscureText: _obscurePassword,
-                    onTogglePassword: () => setState(() => _obscurePassword = !_obscurePassword),
-                    isCabang: widget.isCabang,
+                    decoration: InputDecoration(
+                      hintText: 'Masukkan password baru',
+                      hintStyle:
+                          const TextStyle(color: Colors.black38, fontSize: 14),
+                      prefixIcon: const Icon(CupertinoIcons.lock_fill,
+                          color: Colors.black45, size: 20),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? CupertinoIcons.eye_slash_fill
+                              : CupertinoIcons.eye_fill,
+                          color: Colors.black45,
+                          size: 20,
+                        ),
+                        onPressed: () => setState(
+                            () => _obscurePassword = !_obscurePassword),
+                      ),
+                      filled: false,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: primaryColor)),
+                    ),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Konfirmasi Password
-                  CustomTextField(
-                    label: 'Konfirmasi Password',
-                    icon: CupertinoIcons.lock_fill,
-                    hintText: 'Konfirmasi password baru',
-                    isPassword: true,
+                  const Text('Konfirmasi Password',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary)),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: _confirmPasswordController,
                     obscureText: _obscureConfirmPassword,
-                    onTogglePassword: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
-                    isCabang: widget.isCabang,
+                    decoration: InputDecoration(
+                      hintText: 'Konfirmasi password baru',
+                      hintStyle:
+                          const TextStyle(color: Colors.black38, fontSize: 14),
+                      prefixIcon: const Icon(CupertinoIcons.lock_fill,
+                          color: Colors.black45, size: 20),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? CupertinoIcons.eye_slash_fill
+                              : CupertinoIcons.eye_fill,
+                          color: Colors.black45,
+                          size: 20,
+                        ),
+                        onPressed: () => setState(() =>
+                            _obscureConfirmPassword =
+                                !_obscureConfirmPassword),
+                      ),
+                      filled: false,
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300)),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide:
+                              BorderSide(color: Colors.grey.shade300)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: primaryColor)),
+                    ),
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 32),
-              
+
               // 4. TOMBOL AKSI
               Row(
                 children: [
                   Expanded(
                     child: OutlinedButton(
-                      onPressed: () {},
+                      onPressed: _isSaving
+                          ? null
+                          : () {
+                              // Reset ke data awal
+                              final user = ref.read(authProvider).user;
+                              _nameController.text = user?['name'] ?? '';
+                              _emailController.text = user?['email'] ?? '';
+                              _currentPasswordController.clear();
+                              _newPasswordController.clear();
+                              _confirmPasswordController.clear();
+                            },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text('Batal', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold)),
+                      child: const Text('Batal',
+                          style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: _isSaving ? null : _handleSubmit,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
-                      child: const Text('Perbarui Profil', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: _isSaving
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: Colors.white),
+                            )
+                          : const Text('Perbarui Profil',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // 5. TOMBOL LOGOUT
               SizedBox(
                 width: double.infinity,
                 child: TextButton.icon(
-                  onPressed: () {
-                    // TODO: Implementasi logika logout
+                  onPressed: () async {
+                    await ref.read(authProvider.notifier).logout();
+                    if (context.mounted) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                        (route) => false,
+                      );
+                    }
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: Colors.red.withOpacity(0.1),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
-                  icon: const Icon(CupertinoIcons.square_arrow_right, color: Colors.red),
-                  label: const Text('Keluar dari Akun', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+                  icon: const Icon(CupertinoIcons.square_arrow_right,
+                      color: Colors.red),
+                  label: const Text('Keluar dari Akun',
+                      style: TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold)),
                 ),
               ),
 
               const SizedBox(height: 80),
             ],
           ),
+      );
+    
+    if (isLoading && !_isSaving) {
+      return Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: IgnorePointer(child: content),
+      );
+    }
+    
+    return content;
+  }
+
+  // ============================================
+  // SUBMIT HANDLER
+  // ============================================
+  Future<void> _handleSubmit() async {
+    final user = ref.read(authProvider).user;
+    if (user == null) return;
+
+    final currentName = user['name'] ?? '';
+    final currentEmail = user['email'] ?? '';
+    final newName = _nameController.text.trim();
+    final newEmail = _emailController.text.trim();
+    final currentPassword = _currentPasswordController.text;
+    final newPassword = _newPasswordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    final nameChanged = newName != currentName;
+    final emailChanged =
+        newEmail.toLowerCase() != currentEmail.toLowerCase();
+    final passwordFilled = newPassword.isNotEmpty;
+
+    if (!nameChanged && !emailChanged && !passwordFilled) {
+      _showToast('Tidak ada perubahan yang dilakukan.', isError: true);
+      return;
+    }
+
+    // Validasi nama
+    if (nameChanged && newName.length < 3) {
+      _showToast('Nama harus diisi minimal 3 karakter.', isError: true);
+      return;
+    }
+
+    // Validasi email
+    if (emailChanged && !newEmail.contains('@')) {
+      _showToast('Format email tidak valid.', isError: true);
+      return;
+    }
+
+    // Validasi password
+    if (passwordFilled) {
+      if (currentPassword.isEmpty) {
+        _showToast('Password saat ini wajib diisi.', isError: true);
+        return;
+      }
+      if (newPassword.length < 6) {
+        _showToast('Password baru minimal 6 karakter.', isError: true);
+        return;
+      }
+      if (newPassword != confirmPassword) {
+        _showToast('Konfirmasi password tidak cocok.', isError: true);
+        return;
+      }
+    }
+
+    setState(() => _isSaving = true);
+
+    try {
+      final notifier = ref.read(authProvider.notifier);
+      List<String> successMessages = [];
+      bool hasError = false;
+
+      // 1. Update nama
+      if (nameChanged) {
+        final result = await notifier.updateProfile(newName);
+        if (result['success'] == true) {
+          successMessages.add('Nama berhasil diperbarui');
+        } else {
+          _showToast(result['message'] ?? 'Gagal memperbarui nama.',
+              isError: true);
+          hasError = true;
+        }
+      }
+
+      // 2. Update password
+      if (passwordFilled && !hasError) {
+        final result =
+            await notifier.updatePassword(currentPassword, newPassword);
+        if (result['success'] == true) {
+          successMessages.add('Password berhasil diperbarui');
+          _currentPasswordController.clear();
+          _newPasswordController.clear();
+          _confirmPasswordController.clear();
+        } else {
+          _showToast(result['message'] ?? 'Gagal memperbarui password.',
+              isError: true);
+          hasError = true;
+        }
+      }
+
+      // 3. Request email change
+      if (emailChanged && !hasError) {
+        final result = await notifier.requestEmailChange(newEmail);
+        if (result['success'] == true) {
+          successMessages
+              .add('Link verifikasi dikirim ke $newEmail');
+          // Reset email field ke email lama karena belum berubah
+          _emailController.text = currentEmail;
+
+          // Tampilkan dialog info
+          if (mounted) {
+            _showEmailChangeDialog(newEmail);
+          }
+        } else {
+          _showToast(
+              result['message'] ?? 'Gagal mengirim verifikasi email.',
+              isError: true);
+          _emailController.text = currentEmail;
+          hasError = true;
+        }
+      }
+
+      if (successMessages.isNotEmpty && !hasError) {
+        _showToast(successMessages.join('. ') + '.', isError: false);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isSaving = false);
+      }
+    }
+  }
+
+  void _showEmailChangeDialog(String newEmail) {
+    final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: [
+            Icon(CupertinoIcons.mail_solid, color: primaryColor),
+            const SizedBox(width: 10),
+            const Expanded(
+                child: Text('Verifikasi Email',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+          ],
         ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Link verifikasi telah dikirim ke:',
+              style: TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                newEmail,
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Silakan buka email tersebut dan klik link verifikasi untuk mengkonfirmasi perubahan. Email lama Anda tetap aktif sampai verifikasi selesai.',
+              style: TextStyle(fontSize: 13, color: Colors.black54),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Mengerti',
+                style: TextStyle(fontWeight: FontWeight.bold, color: primaryColor)),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildProfileHeader() {
+  void _showToast(String message, {bool isError = false}) {
+    toastification.show(
+      context: context,
+      title: Text(message),
+      type: isError ? ToastificationType.error : ToastificationType.success,
+      autoCloseDuration: const Duration(seconds: 3),
+      style: ToastificationStyle.fillColored,
+    );
+  }
+
+  Widget _buildProfileHeader(Map<String, dynamic>? user) {
+    final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+    final userName = user?['name'] ?? 'Pengurus';
+    final role = user?['role'] as String? ?? '';
+    final userId = user?['id'] ?? 'ipnuippnu-admin-cabang';
+
+    final imageUrl = user?['image'] ??
+        'https://ui-avatars.com/api/?name=${Uri.encodeComponent(userName)}&background=1565C0&color=fff&size=256';
+
+    String roleLabel = 'PENGURUS';
+    if (role.contains('CABANG'))
+      roleLabel = 'CABANG';
+    else if (role.contains('PAC'))
+      roleLabel = 'PAC';
+    else if (role.contains('WILAYAH')) roleLabel = 'WILAYAH';
+
     return Column(
       children: [
         Stack(
@@ -274,9 +779,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 4),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
-                image: const DecorationImage(
-                  image: NetworkImage('https://ui-avatars.com/api/?name=Sekretaris+Cabang&background=1565C0&color=fff&size=256'),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4))
+                ],
+                image: DecorationImage(
+                  image: NetworkImage(imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -287,31 +797,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade600,
+                  color: primaryColor,
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 3),
                 ),
-                child: const Icon(CupertinoIcons.camera_fill, color: Colors.white, size: 16),
+                child: const Icon(CupertinoIcons.camera_fill,
+                    color: Colors.white, size: 16),
               ),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        const Text(
-          'Sekretaris Cabang',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+        Text(
+          userName,
+          style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary),
         ),
         const SizedBox(height: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.blue.shade50,
+            color: primaryColor.withOpacity(0.1),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.blue.shade200),
+            border: Border.all(color: primaryColor.withOpacity(0.3)),
           ),
           child: Text(
-            'SEKRETARIS CABANG',
-            style: TextStyle(color: Colors.blue.shade700, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+            roleLabel,
+            style: TextStyle(
+                color: primaryColor,
+                fontSize: 10,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5),
           ),
         ),
         const SizedBox(height: 12),
@@ -321,30 +839,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Colors.grey.shade100,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Text(
-            'ID: ipnuippnu-admin-cabang',
-            style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontFamily: 'monospace'),
+          child: Text(
+            'ID: $userId',
+            style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+                fontFamily: 'monospace'),
           ),
         ),
         const SizedBox(height: 12),
         Text(
           _photoFileName ?? 'Klik ikon kamera untuk ganti foto baru. Maks 2MB.',
-          style: TextStyle(color: _photoFileName != null ? Colors.blue.shade700 : Colors.grey, fontSize: 11, fontWeight: _photoFileName != null ? FontWeight.bold : FontWeight.normal),
+          style: TextStyle(
+              color:
+                  _photoFileName != null ? primaryColor : Colors.grey,
+              fontSize: 11,
+              fontWeight:
+                  _photoFileName != null ? FontWeight.bold : FontWeight.normal),
           textAlign: TextAlign.center,
         ),
       ],
     );
   }
 
-  Widget _buildSectionCard({required String title, required IconData icon, required List<Widget> children}) {
+  Widget _buildSectionCard({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+  }) {
+    final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -352,9 +886,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Row(
             children: [
-              Icon(icon, color: Colors.blue.shade700, size: 22),
+              Icon(icon, color: primaryColor, size: 22),
               const SizedBox(width: 8),
-              Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+              Text(title,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary)),
             ],
           ),
           const SizedBox(height: 16),

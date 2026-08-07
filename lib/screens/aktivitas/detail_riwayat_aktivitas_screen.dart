@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
+import 'package:laci_mobile/models/activity_model.dart';
 
 class DetailRiwayatAktivitasScreen extends StatelessWidget {
-  final Map<String, dynamic> data;
+  final ActivityModel data;
   final bool isCabang;
 
   const DetailRiwayatAktivitasScreen({
@@ -95,7 +96,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
-              data['aktivitas'] ?? '-',
+              data.description,
               style: const TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w500),
             ),
           ),
@@ -122,7 +123,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
                         border: Border.all(color: Colors.orange.withOpacity(0.2)),
                       ),
                       child: Text(
-                        data['modul'] ?? '-',
+                        data.module,
                         style: const TextStyle(color: Colors.orange, fontSize: 10, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -144,12 +145,12 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: (data['entitasColor'] ?? Colors.blue).withOpacity(0.1),
+                        color: data.actionColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        data['entitas'] ?? '-',
-                        style: TextStyle(color: data['entitasColor'] ?? Colors.blue, fontSize: 10, fontWeight: FontWeight.bold),
+                        data.action,
+                        style: TextStyle(color: data.actionColor, fontSize: 10, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -172,7 +173,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 6),
-                    const Text('2025-2027', style: TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.bold)),
+                    Text(data.periodeName, style: const TextStyle(color: AppColors.textPrimary, fontSize: 13, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -194,7 +195,12 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: const Text('cnqj7dxu70001wq...', style: TextStyle(fontSize: 10, color: AppColors.textSecondary, fontFamily: 'monospace')),
+                      child: Text(
+                        data.id.length > 15 
+                          ? '${data.id.substring(0, 15)}...' 
+                          : data.id,
+                        style: const TextStyle(fontSize: 10, color: AppColors.textSecondary, fontFamily: 'monospace'),
+                      ),
                     ),
                   ],
                 ),
@@ -216,7 +222,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
             icon: CupertinoIcons.person,
             iconColor: Colors.blue,
             title: 'USER AKUN',
-            subtitle: data['user'] ?? 'Sekretaris Cabang',
+            subtitle: data.userName,
             subtitleBold: true,
           ),
           const Divider(height: 16),
@@ -224,7 +230,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
             icon: CupertinoIcons.calendar,
             iconColor: Colors.green,
             title: 'TANGGAL KEJADIAN',
-            subtitle: (data['waktu'] as String).split(' - ')[0],
+            subtitle: data.formattedDateOnly,
             subtitleBold: true,
           ),
           const Divider(height: 16),
@@ -232,7 +238,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
             icon: CupertinoIcons.clock,
             iconColor: Colors.orange,
             title: 'WAKTU PRESISI',
-            subtitle: '${(data['waktu'] as String).split(' - ')[1]} WIB',
+            subtitle: data.formattedTimeOnly,
             subtitleBold: true,
           ),
         ],
@@ -253,15 +259,15 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
             subtitleWidget: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(color: Colors.blue.withOpacity(0.05), borderRadius: BorderRadius.circular(4)),
-              child: const Text('103.184.180.186', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.textPrimary)),
+              child: Text(data.ipAddress ?? 'Unknown', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.textPrimary)),
             ),
           ),
           const Divider(height: 16),
           _buildListTile(
             icon: CupertinoIcons.globe,
             iconColor: Colors.green,
-            title: 'BROWSER',
-            subtitle: 'Google Chrome',
+            title: 'BROWSER / KLIEN',
+            subtitle: data.userAgent ?? 'Unknown Client',
             subtitleBold: true,
           ),
           const Divider(height: 16),
@@ -269,34 +275,21 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
             icon: CupertinoIcons.device_desktop,
             iconColor: Colors.orange,
             title: 'PERANGKAT',
-            subtitle: 'Desktop - macOS',
+            subtitle: data.device ?? 'Unknown Device',
             subtitleBold: true,
           ),
           const Divider(height: 16),
           _buildListTile(
             icon: CupertinoIcons.location_solid,
             iconColor: Colors.red,
-            title: 'LOKASI',
-            subtitle: 'Tambran, Kec. Magetan',
+            title: 'LOKASI PRESISI (GPS)',
+            subtitle: data.location ?? 'Tidak ada data lokasi',
             subtitleBold: true,
             trailingWidget: const Padding(
               padding: EdgeInsets.only(top: 4.0),
               child: Text(
-                'Kab. Magetan, Jawa Timur',
+                'Akurasi Tinggi',
                 style: TextStyle(fontSize: 10, color: AppColors.textSecondary),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 48, top: 4),
-            child: GestureDetector(
-              onTap: () {},
-              child: const Row(
-                children: [
-                  Text('Lihat di Google Maps', style: TextStyle(fontSize: 10, color: Colors.red, fontWeight: FontWeight.bold)),
-                  SizedBox(width: 4),
-                  Icon(CupertinoIcons.arrow_right, size: 10, color: Colors.red),
-                ],
               ),
             ),
           ),

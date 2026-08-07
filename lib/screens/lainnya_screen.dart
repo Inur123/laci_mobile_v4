@@ -65,7 +65,7 @@ class LainnyaScreen extends StatelessWidget {
                 title: 'Log Email',
                 subtitle: 'Cek riwayat pengiriman email sistem',
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LogEmailScreen(isCabang: isCabang)));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const LogEmailScreen()));
                 },
               ),
               _buildMenuItem(
