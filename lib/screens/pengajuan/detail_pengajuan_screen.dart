@@ -179,6 +179,8 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+
     Color statusColor;
     Color statusBg;
     if (_status == 'Diterima') {
@@ -204,10 +206,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back,
-              color: widget.isCabang
-                  ? AppColors.cabangPrimary
-                  : AppColors.pacPrimary),
+          icon: Icon(CupertinoIcons.back, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -338,11 +337,11 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
+                        color: primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(CupertinoIcons.doc_on_doc_fill,
-                          color: Colors.blue),
+                      child: Icon(CupertinoIcons.doc_on_doc_fill,
+                          color: primaryColor),
                     ),
                     const SizedBox(width: 12),
                     const Expanded(
@@ -357,7 +356,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                     ),
                     IconButton(
                       icon: Icon(CupertinoIcons.cloud_download,
-                          color: Colors.blue.shade700),
+                          color: primaryColor),
                       onPressed: () {},
                     ),
                   ],
@@ -428,7 +427,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                       child: ElevatedButton(
                         onPressed: _acceptPengajuan,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.shade700,
+                          backgroundColor: primaryColor,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(

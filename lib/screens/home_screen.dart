@@ -5,7 +5,10 @@ import 'package:laci_mobile/screens/agenda/agenda_screen.dart';
 import 'package:laci_mobile/screens/pengguna/pengguna_screen.dart';
 import 'package:laci_mobile/screens/presensi/presensi_screen.dart';
 import 'package:laci_mobile/screens/lainnya_screen.dart';
+import 'package:laci_mobile/screens/periode/periode_screen.dart';
+import 'package:laci_mobile/screens/aktivitas/riwayat_aktivitas_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
+import 'package:laci_mobile/widgets/custom_refresh_control.dart';
 
 class HomeScreen extends StatefulWidget {
   final bool isCabang;
@@ -16,6 +19,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<void> _onRefresh() async {
+    // TODO: Nanti ganti dengan panggilan API untuk refresh data dari server
+    await Future.delayed(const Duration(milliseconds: 1500));
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
@@ -53,66 +62,85 @@ class _HomeScreenState extends State<HomeScreen> {
                   physics: const BouncingScrollPhysics(),
                   children: [
                     // TAB 1: Data Saya
-                    SingleChildScrollView(
+                    CustomScrollView(
                       physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.only(bottom: 40),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildGridMenu(),
-                          const SizedBox(height: 24),
-                          _buildDataSayaStatsScroll(primaryColor),
-                          const SizedBox(height: 24),
-                          _buildStatistikDataChart(),
-                          const SizedBox(height: 24),
-                          _buildTrenKeaktifanChart(primaryColor),
-                        ],
-                      ),
+                      slivers: [
+                        CustomRefreshControl(onRefresh: _onRefresh, primaryColor: primaryColor),
+                        SliverPadding(
+                          padding: const EdgeInsets.only(bottom: 40),
+                          sliver: SliverToBoxAdapter(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildGridMenu(),
+                                const SizedBox(height: 24),
+                                _buildDataSayaStatsScroll(primaryColor),
+                                const SizedBox(height: 24),
+                                _buildStatistikDataChart(),
+                                const SizedBox(height: 24),
+                                _buildTrenKeaktifanChart(primaryColor),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
 
                     // TAB 2: Monitoring Wilayah
-                    SingleChildScrollView(
+                    CustomScrollView(
                       physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.only(bottom: 40),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 16),
-                          _buildMonitoringStatsScroll(primaryColor),
-                          const SizedBox(height: 24),
-                          _buildPengkaderanBadges(),
-                          const SizedBox(height: 24),
-                          _buildTopPacChart(primaryColor),
-                          const SizedBox(height: 24),
-                          _buildSebaranDataChart(primaryColor),
-                          const SizedBox(height: 24),
-                          _buildRincianKlasemenTable(),
-                        ],
-                      ),
+                      slivers: [
+                        CustomRefreshControl(onRefresh: _onRefresh, primaryColor: primaryColor),
+                        SliverPadding(
+                          padding: const EdgeInsets.only(bottom: 40),
+                          sliver: SliverToBoxAdapter(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 16),
+                                _buildMonitoringStatsScroll(primaryColor),
+                                const SizedBox(height: 24),
+                                _buildPengkaderanBadges(),
+                                const SizedBox(height: 24),
+                                _buildTopPacChart(primaryColor),
+                                const SizedBox(height: 24),
+                                _buildSebaranDataChart(primaryColor),
+                                const SizedBox(height: 24),
+                                _buildRincianKlasemenTable(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
             ] else ...[
               Expanded(
-                child: SingleChildScrollView(
+                child: CustomScrollView(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(bottom: 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Adding a small padding top to compensate for the missing TabBar height
-                      // so the layout doesn't jump too much compared to the Cabang view
-                      const SizedBox(height: 12),
-                      _buildGridMenu(),
-                      const SizedBox(height: 24),
-                      _buildDataSayaStatsScroll(primaryColor),
-                      const SizedBox(height: 24),
-                      _buildStatistikDataChart(),
-                      const SizedBox(height: 24),
-                      _buildTrenKeaktifanChart(primaryColor),
-                    ],
-                  ),
+                  slivers: [
+                    CustomRefreshControl(onRefresh: _onRefresh, primaryColor: primaryColor),
+                    SliverPadding(
+                      padding: const EdgeInsets.only(bottom: 40),
+                      sliver: SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 12),
+                            _buildGridMenu(),
+                            const SizedBox(height: 24),
+                            _buildDataSayaStatsScroll(primaryColor),
+                            const SizedBox(height: 24),
+                            _buildStatistikDataChart(),
+                            const SizedBox(height: 24),
+                            _buildTrenKeaktifanChart(primaryColor),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -240,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Periode',
                         Colors.blue.shade100,
                         Colors.blue.shade700,
-                        onTap: () {}, // Tambahkan rute periode jika ada
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PeriodeScreen(isCabang: widget.isCabang))),
                       ),
                 _buildMenuButton(
                   CupertinoIcons.calendar_today,
@@ -269,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Aktivitas',
                         Colors.purple.shade100,
                         Colors.purple.shade700,
-                        onTap: () {}, // Tambahkan rute aktivitas jika ada
+                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RiwayatAktivitasScreen(isCabang: widget.isCabang))),
                       ),
               ],
             ),
@@ -865,3 +893,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+

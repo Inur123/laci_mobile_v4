@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/widgets/custom_text_field.dart';
+import 'package:laci_mobile/widgets/custom_refresh_control.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laci_mobile/providers/auth_provider.dart';
@@ -23,6 +24,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   bool _obscureConfirmPassword = true;
   bool _obscureCurrentPassword = true;
   bool _isSaving = false;
+  bool _isLoggingOut = false;
   String? _photoFileName;
 
   final _nameController = TextEditingController();
@@ -90,14 +92,23 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final isLoading = authState.isLoading || user == null;
     final isEmailVerified = user?['emailVerified'] == true;
 
-    Widget content = SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // 1. BAGIAN FOTO DAN INFO AKUN
-          const SizedBox(height: 16),
+    Widget content = CustomScrollView(
+      physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      slivers: [
+        CustomRefreshControl(
+          onRefresh: () async {
+            await ref.read(authProvider.notifier).fetchProfile();
+          },
+          primaryColor: primaryColor,
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // 1. BAGIAN FOTO DAN INFO AKUN
+                const SizedBox(height: 16),
               _buildProfileHeader(user),
               const SizedBox(height: 32),
 
@@ -524,27 +535,40 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               SizedBox(
                 width: double.infinity,
                 child: TextButton.icon(
-                  onPressed: () async {
-                    await ref.read(authProvider.notifier).logout();
-                    if (context.mounted) {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
-                        (route) => false,
-                      );
-                    }
-                  },
+                  onPressed: _isLoggingOut
+                      ? null
+                      : () async {
+                          setState(() => _isLoggingOut = true);
+                          await ref.read(authProvider.notifier).logout();
+                          if (context.mounted) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginScreen()),
+                              (route) => false,
+                            );
+                          }
+                        },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     backgroundColor: Colors.red.withOpacity(0.1),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                   ),
-                  icon: const Icon(CupertinoIcons.square_arrow_right,
-                      color: Colors.red),
-                  label: const Text('Keluar dari Akun',
-                      style: TextStyle(
+                  icon: _isLoggingOut
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.red,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Icon(CupertinoIcons.square_arrow_right,
+                          color: Colors.red),
+                  label: Text(
+                      _isLoggingOut ? 'Sedang keluar...' : 'Keluar dari Akun',
+                      style: const TextStyle(
                           color: Colors.red, fontWeight: FontWeight.bold)),
                 ),
               ),
@@ -552,13 +576,124 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               const SizedBox(height: 80),
             ],
           ),
-      );
+        ),
+        ),
+      ],
+    );
     
-    if (isLoading && !_isSaving) {
-      return Shimmer.fromColors(
-        baseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade100,
-        child: IgnorePointer(child: content),
+    if (isLoading && !_isSaving && !_isLoggingOut) {
+      return CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+        slivers: [
+          CustomRefreshControl(
+            onRefresh: () async {
+              await ref.read(authProvider.notifier).fetchProfile();
+            },
+            primaryColor: primaryColor,
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 16),
+                  // Header skeleton
+                  Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Column(
+                      children: [
+                        Container(width: 80, height: 80, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
+                        const SizedBox(height: 16),
+                        Container(width: 150, height: 20, color: Colors.white),
+                        const SizedBox(height: 8),
+                        Container(width: 100, height: 14, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  
+                  // Section 1 skeleton
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.black.withOpacity(0.05)),
+                    ),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(width: 20, height: 20, color: Colors.white),
+                              const SizedBox(width: 12),
+                              Container(width: 120, height: 16, color: Colors.white),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          Container(width: 100, height: 14, color: Colors.white),
+                          const SizedBox(height: 8),
+                          Container(width: double.infinity, height: 48, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8))),
+                          const SizedBox(height: 16),
+                          Container(width: 100, height: 14, color: Colors.white),
+                          const SizedBox(height: 8),
+                          Container(width: double.infinity, height: 48, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8))),
+                        ],
+                      ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Section 2 skeleton
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.black.withOpacity(0.05)),
+                    ),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(width: 20, height: 20, color: Colors.white),
+                              const SizedBox(width: 12),
+                              Container(width: 120, height: 16, color: Colors.white),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          Container(width: 100, height: 14, color: Colors.white),
+                          const SizedBox(height: 8),
+                          Container(width: double.infinity, height: 48, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8))),
+                          const SizedBox(height: 16),
+                          Container(width: 100, height: 14, color: Colors.white),
+                          const SizedBox(height: 8),
+                          Container(width: double.infinity, height: 48, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8))),
+                          const SizedBox(height: 16),
+                          Container(width: 100, height: 14, color: Colors.white),
+                          const SizedBox(height: 8),
+                          Container(width: double.infinity, height: 48, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8))),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       );
     }
     

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/models/activity_model.dart';
+import 'package:laci_mobile/widgets/custom_refresh_control.dart';
 
 class DetailRiwayatAktivitasScreen extends StatelessWidget {
   final ActivityModel data;
@@ -37,19 +38,32 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
           style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16),
         ),
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildInformasiAktivitas(primaryColor),
-            const SizedBox(height: 16),
-            _buildPelakuWaktu(primaryColor),
-            const SizedBox(height: 16),
-            _buildInformasiPerangkat(primaryColor),
-          ],
-        ),
+      body: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+        slivers: [
+          CustomRefreshControl(
+            onRefresh: () async {
+              // Dummy refresh for detail screen
+              await Future.delayed(const Duration(milliseconds: 1500));
+            },
+            primaryColor: primaryColor,
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildInformasiAktivitas(primaryColor),
+                  const SizedBox(height: 16),
+                  _buildPelakuWaktu(primaryColor),
+                  const SizedBox(height: 16),
+                  _buildInformasiPerangkat(primaryColor),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

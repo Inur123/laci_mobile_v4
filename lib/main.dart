@@ -6,16 +6,17 @@ import 'package:toastification/toastification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:app_links/app_links.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:laci_mobile/screens/login_screen.dart';
 import 'package:laci_mobile/screens/onboarding_screen.dart';
 import 'package:laci_mobile/screens/main_screen.dart';
-import 'package:laci_mobile/screens/splash_screen.dart';
 import 'package:laci_mobile/providers/auth_provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:laci_mobile/services/location_service.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   
   await dotenv.load(fileName: ".env");
 
@@ -52,11 +53,13 @@ class MyApp extends ConsumerStatefulWidget {
 
 class _MyAppState extends ConsumerState<MyApp> {
   late final AppLinks _appLinks;
+  late final Future<void> _locationFuture;
 
   @override
   void initState() {
     super.initState();
     _initDeepLinks();
+    _locationFuture = LocationService().requireLocation();
   }
 
   Future<void> _initDeepLinks() async {
@@ -116,16 +119,17 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   Widget _getHomeWidget(AuthState authState, bool showHome) {
     if (authState.isInitializing) {
-      return const SplashScreen();
+      return const Scaffold(backgroundColor: Colors.white, body: SizedBox.shrink());
     }
 
     return FutureBuilder(
-      future: LocationService().requireLocation(),
+      future: _locationFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SplashScreen();
+          return const Scaffold(backgroundColor: Colors.white, body: SizedBox.shrink());
         }
         if (snapshot.hasError) {
+          FlutterNativeSplash.remove();
           return Scaffold(
             backgroundColor: Colors.white,
             body: Center(
@@ -160,6 +164,9 @@ class _MyAppState extends ConsumerState<MyApp> {
             ),
           );
         }
+
+        // App is ready, remove the native splash screen
+        FlutterNativeSplash.remove();
 
         if (authState.isAuthenticated && authState.user != null) {
           final role = authState.user?['role'] as String? ?? '';

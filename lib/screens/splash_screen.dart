@@ -13,8 +13,8 @@ class SplashScreen extends StatelessWidget {
         // sehingga menghasilkan ilusi 1 layar yang tidak berubah
         child: Image.asset(
           'assets/images/logo.png',
-          width: 180,
-          height: 180,
+          width: 300,
+          height: 300,
           fit: BoxFit.contain,
         ),
       ),

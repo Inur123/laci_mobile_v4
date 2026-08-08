@@ -9,6 +9,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:toastification/toastification.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart';
+import 'package:laci_mobile/widgets/custom_refresh_control.dart';
 
 class PeriodeScreen extends ConsumerStatefulWidget {
   final bool isCabang;
@@ -61,14 +62,23 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
               ),
             );
           }
-          return RefreshIndicator(
-            onRefresh: () => ref.read(periodesProvider.notifier).refresh(),
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-              itemCount: periodes.length,
-              itemBuilder: (context, index) => _buildPeriodeCard(periodes[index], periodes, viewedPeriode, primaryColor),
-            ),
+          return CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            slivers: [
+              CustomRefreshControl(
+                onRefresh: () async => ref.read(periodesProvider.notifier).refresh(),
+                primaryColor: primaryColor,
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => _buildPeriodeCard(periodes[index], periodes, viewedPeriode, primaryColor),
+                    childCount: periodes.length,
+                  ),
+                ),
+              ),
+            ],
           );
         },
         loading: () => _buildShimmerLoading(),

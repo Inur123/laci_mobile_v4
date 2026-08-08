@@ -36,7 +36,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
             icon: const Icon(CupertinoIcons.doc_on_clipboard,
                 color: AppColors.textSecondary, size: 22),
             onPressed: () {
-              _showSalinModal(context);
+              _showSalinModal(context, primaryColor);
             },
           ),
         ],
@@ -54,7 +54,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
               physics: const BouncingScrollPhysics(),
               children: [
                 _buildStatCard('TOTAL ANGGOTA', '312', CupertinoIcons.person_2,
-                    Colors.blue),
+                    primaryColor),
                 _buildStatCard('LAKI-LAKI (IPNU)', '113', CupertinoIcons.person,
                     Colors.green),
                 _buildStatCard('PEREMPUAN (IPPNU)', '199',
@@ -425,7 +425,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
     );
   }
 
-  void _showSalinModal(BuildContext context) {
+  void _showSalinModal(BuildContext context, Color primaryColor) {
     showDialog(
       context: context,
       builder: (context) {
@@ -435,7 +435,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
           title: Row(
             children: [
               Icon(CupertinoIcons.doc_on_clipboard_fill,
-                  color: Colors.blue.shade700),
+                  color: primaryColor),
               const SizedBox(width: 8),
               const Text('Salin Anggota',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
@@ -486,7 +486,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue.shade300,
+                backgroundColor: primaryColor,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8)),

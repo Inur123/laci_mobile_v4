@@ -7,6 +7,7 @@ import 'package:laci_mobile/providers/activity_provider.dart';
 import 'package:laci_mobile/models/activity_filter_model.dart';
 import 'package:laci_mobile/screens/aktivitas/detail_riwayat_aktivitas_screen.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:laci_mobile/widgets/custom_refresh_control.dart';
 
 class RiwayatAktivitasScreen extends ConsumerStatefulWidget {
   final bool isCabang;
@@ -32,15 +33,58 @@ class _RiwayatAktivitasScreenState
         physics: const NeverScrollableScrollPhysics(),
         separatorBuilder: (context, index) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
-          return Shimmer.fromColors(
-            baseColor: Colors.grey.shade300,
-            highlightColor: Colors.grey.shade100,
-            child: Container(
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.black.withOpacity(0.05)),
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.black.withOpacity(0.05)),
+            ),
+            child: Shimmer.fromColors(
+              baseColor: Colors.grey.shade300,
+              highlightColor: Colors.grey.shade100,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(width: 100, height: 12, color: Colors.white),
+                      Container(width: 60, height: 20, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      const Icon(CupertinoIcons.person_solid, size: 14, color: Colors.white),
+                      const SizedBox(width: 6),
+                      Container(width: 150, height: 14, color: Colors.white),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 32, height: 32,
+                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(width: 80, height: 12, color: Colors.white),
+                            const SizedBox(height: 8),
+                            Container(width: double.infinity, height: 14, color: Colors.white),
+                            const SizedBox(height: 4),
+                            Container(width: 200, height: 14, color: Colors.white),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           );
@@ -161,6 +205,8 @@ class _RiwayatAktivitasScreenState
     final type = isGlobal ? 'global' : 'personal';
     final filter = ref.watch(activityFilterProvider(type));
     final activityState = ref.watch(activityProvider(filter));
+    
+    final isLoading = activityState.isLoading && !activityState.hasValue;
 
     final totalSemua = activityState.value?.total ?? 0;
     final statsMap = activityState.value?.stats ?? {};
@@ -262,37 +308,57 @@ class _RiwayatAktivitasScreenState
                     offset: const Offset(0, 2))
               ],
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        stat['title'] as String,
-                        style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textSecondary),
-                        overflow: TextOverflow.ellipsis,
-                      ),
+            child: isLoading
+                ? Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(width: 60, height: 12, color: Colors.white),
+                            Container(width: 14, height: 14, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Container(width: 30, height: 20, color: Colors.white),
+                      ],
                     ),
-                    Icon(stat['icon'] as IconData,
-                        size: 14, color: stat['color'] as Color),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  value.toString(),
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary),
-                ),
-              ],
-            ),
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              stat['title'] as String,
+                              style: const TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textSecondary),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Icon(stat['icon'] as IconData,
+                              size: 14, color: stat['color'] as Color),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        value.toString(),
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary),
+                      ),
+                    ],
+                  ),
           );
         },
       ),
@@ -530,6 +596,10 @@ class _RiwayatAktivitasScreenState
 
   Widget _buildFilterSection(Color primaryColor, bool isGlobal) {
     final type = isGlobal ? 'global' : 'personal';
+    final filter = ref.watch(activityFilterProvider(type));
+    final activityState = ref.watch(activityProvider(filter));
+    final isLoading = activityState.isLoading && !activityState.hasValue;
+
     return Container(
       color: Colors.white,
       child: Row(
@@ -537,32 +607,44 @@ class _RiwayatAktivitasScreenState
           Expanded(
             child: SizedBox(
               height: 48,
-              child: TextField(
-                onSubmitted: (value) {
-                  ref
-                      .read(activityFilterProvider(type).notifier)
-                      .update((state) => state.copyWith(search: value));
-                },
-                decoration: InputDecoration(
-                  hintText: 'Cari aktivitas, entitas, modul...',
-                  hintStyle: const TextStyle(
-                      fontSize: 14, color: AppColors.textSecondary),
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  isDense: true,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300)),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300)),
-                  focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: primaryColor)),
-                ),
-              ),
+              child: isLoading
+                  ? Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                      ),
+                    )
+                  : TextField(
+                      onSubmitted: (value) {
+                        ref
+                            .read(activityFilterProvider(type).notifier)
+                            .update((state) => state.copyWith(search: value));
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Cari aktivitas, entitas, modul...',
+                        hintStyle: const TextStyle(
+                            fontSize: 14, color: AppColors.textSecondary),
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        isDense: true,
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade300)),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: Colors.grey.shade300)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(color: primaryColor)),
+                      ),
+                    ),
             ),
           ),
           const SizedBox(width: 12),
@@ -574,13 +656,24 @@ class _RiwayatAktivitasScreenState
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.grey.shade300),
             ),
-            child: IconButton(
-              icon: const Icon(CupertinoIcons.slider_horizontal_3,
-                  size: 18, color: AppColors.textPrimary),
-              onPressed: () {
-                _showFilterModal(context, isGlobal);
-              },
-            ),
+            child: isLoading
+                ? Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  )
+                : IconButton(
+                    icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                        size: 18, color: AppColors.textPrimary),
+                    onPressed: () {
+                      _showFilterModal(context, isGlobal);
+                    },
+                  ),
           ),
         ],
       ),
@@ -612,72 +705,122 @@ class _RiwayatAktivitasScreenState
       ),
       data: (response) {
         final activities = response.data;
-
-        if (activities.isEmpty) {
-          return const Expanded(
-            child: Center(
-              child: Text('Belum ada riwayat aktivitas.',
-                  style: TextStyle(color: AppColors.textSecondary)),
-            ),
-          );
-        }
+        final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
 
         return Expanded(
           child: NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scrollInfo) {
-              if (response.hasMore &&
-                  scrollInfo.metrics.pixels ==
-                      scrollInfo.metrics.maxScrollExtent) {
+              if (response.hasMore && scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
                 ref.read(activityProvider(filter).notifier).loadMore();
               }
               return true;
             },
-            child: ListView.separated(
-              padding: const EdgeInsets.all(16),
-              physics: const BouncingScrollPhysics(),
-              itemCount: activities.length + (response.hasMore ? 1 : 0),
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                if (index == activities.length) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
-                    child: Container(
-                      height: 120,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+              slivers: [
+                CustomRefreshControl(
+                  onRefresh: () async => ref.refresh(activityProvider(filter).future),
+                  primaryColor: primaryColor,
+                ),
+                if (activities.isEmpty)
+                  const SliverFillRemaining(
+                    child: Center(
+                      child: Text('Belum ada riwayat aktivitas.', style: TextStyle(color: AppColors.textSecondary)),
                     ),
-                  );
-                }
-
-                final item = activities[index];
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => DetailRiwayatAktivitasScreen(
-                                data: item, isCabang: widget.isCabang)));
-                  },
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
+                  )
+                else
+                  SliverPadding(
                     padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.black.withOpacity(0.05)),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.02),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4))
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          if (index.isOdd) return const SizedBox(height: 12);
+                          final itemIndex = index ~/ 2;
+
+                          if (itemIndex == activities.length) {
+                            return Container(
+                              padding: const EdgeInsets.all(16),
+                              margin: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Colors.black.withOpacity(0.05)),
+                              ),
+                              child: Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(width: 100, height: 12, color: Colors.white),
+                                        Container(width: 60, height: 20, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      children: [
+                                        const Icon(CupertinoIcons.person_solid, size: 14, color: Colors.white),
+                                        const SizedBox(width: 6),
+                                        Container(width: 150, height: 14, color: Colors.white),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: 32, height: 32,
+                                          decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(width: 80, height: 12, color: Colors.white),
+                                              const SizedBox(height: 8),
+                                              Container(width: double.infinity, height: 14, color: Colors.white),
+                                              const SizedBox(height: 4),
+                                              Container(width: 200, height: 14, color: Colors.white),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+
+                          final item = activities[itemIndex];
+                          return InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DetailRiwayatAktivitasScreen(
+                                          data: item, isCabang: widget.isCabang)));
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Colors.black.withOpacity(0.05)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.02),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4))
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -755,9 +898,14 @@ class _RiwayatAktivitasScreenState
                   ),
                 );
               },
+              childCount: (activities.length + (response.hasMore ? 1 : 0)) * 2 - (activities.isEmpty && !response.hasMore ? 0 : 1),
             ),
           ),
-        );
+        ),
+      ],
+    ),
+  ),
+);
       },
     );
   }

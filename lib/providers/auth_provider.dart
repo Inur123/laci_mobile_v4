@@ -57,6 +57,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isInitializing: false, isAuthenticated: false);
   }
 
+  Future<void> fetchProfile() async {
+    state = state.copyWith(isLoading: true);
+    final token = await _authService.getToken();
+    if (token != null && token.isNotEmpty) {
+      final user = await _authService.getSession();
+      if (user != null) {
+        state = state.copyWith(user: user, isLoading: false);
+        return;
+      }
+    }
+    state = state.copyWith(isLoading: false);
+  }
+
   Future<bool> login(String email, String password) async {
     state = state.copyWith(isLoading: true, errorMessage: null);
     
