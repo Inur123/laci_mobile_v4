@@ -69,7 +69,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -174,7 +174,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
                     child: Center(
                       child: Column(
                         children: [
-                          Icon(CupertinoIcons.calendar_badge_minus,
+                          Icon(Icons.event_busy,
                               size: 48, color: Colors.grey.shade300),
                           const SizedBox(height: 16),
                           Text('Tidak ada kegiatan',
@@ -222,7 +222,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
                                   const SizedBox(height: 4),
                                   Row(
                                     children: [
-                                      Icon(CupertinoIcons.clock,
+                                      Icon(Icons.access_time,
                                           size: 14,
                                           color: Colors.grey.shade500),
                                       const SizedBox(width: 4),
@@ -231,7 +231,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
                                               color: Colors.grey.shade500,
                                               fontSize: 12)),
                                       const SizedBox(width: 12),
-                                      Icon(CupertinoIcons.location,
+                                      Icon(Icons.location_on_outlined,
                                           size: 14,
                                           color: Colors.grey.shade500),
                                       const SizedBox(width: 4),
@@ -289,7 +289,7 @@ class _AgendaScreenState extends State<AgendaScreen> {
           );
         },
         backgroundColor: primaryColor,
-        child: const Icon(CupertinoIcons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

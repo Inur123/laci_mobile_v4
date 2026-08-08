@@ -101,7 +101,7 @@ class _LogEmailScreenState extends ConsumerState<LogEmailScreen> {
                     child: _StatCard(
                       title: 'HARI INI',
                       value: response.stats.today.toString(),
-                      icon: CupertinoIcons.calendar,
+                      icon: Icons.calendar_today,
                       color: Colors.blue.shade600,
                     ),
                   ),
@@ -110,7 +110,7 @@ class _LogEmailScreenState extends ConsumerState<LogEmailScreen> {
                     child: _StatCard(
                       title: 'TOTAL',
                       value: response.stats.total.toString(),
-                      icon: CupertinoIcons.envelope,
+                      icon: Icons.mail_outline,
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -395,7 +395,7 @@ class _EmailCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(CupertinoIcons.mail_solid,
+              const Icon(Icons.mail,
                   color: Colors.blue, size: 20),
               const SizedBox(width: 8),
               Expanded(
@@ -422,8 +422,8 @@ class _EmailCard extends StatelessWidget {
                   children: [
                     Icon(
                       isSent
-                          ? CupertinoIcons.check_mark_circled_solid
-                          : CupertinoIcons.clear_circled_solid,
+                          ? Icons.check_circle
+                          : Icons.cancel,
                       size: 12,
                       color: isSent ? AppColors.pacPrimary : Colors.red,
                     ),
@@ -474,7 +474,7 @@ class _EmailCard extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Icon(CupertinoIcons.time,
+                  Icon(Icons.access_time,
                       size: 12, color: Colors.grey.shade500),
                   const SizedBox(width: 4),
                   Text(

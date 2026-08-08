@@ -58,7 +58,7 @@ class _FormPengajuanScreenState extends State<FormPengajuanScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -81,7 +81,7 @@ class _FormPengajuanScreenState extends State<FormPengajuanScreen> {
                   children: [
                     CustomTextField(
                       label: 'Nomor Surat *',
-                      icon: CupertinoIcons.number,
+                      icon: Icons.tag,
                       controller: _noSuratController,
                       hintText: 'Contoh: 001/PAC/I/2026',
                       isCabang: widget.isCabang,
@@ -89,7 +89,7 @@ class _FormPengajuanScreenState extends State<FormPengajuanScreen> {
                     const SizedBox(height: 16),
                     _buildPremiumDropdown(
                       label: 'Penerima *',
-                      icon: CupertinoIcons.person_2,
+                      icon: Icons.people_outline,
                       value: _selectedPenerima,
                       hint: 'Pilih Penerima',
                       onTap: () {
@@ -105,7 +105,7 @@ class _FormPengajuanScreenState extends State<FormPengajuanScreen> {
                     const SizedBox(height: 16),
                     _buildPremiumDropdown(
                       label: 'Tanggal *',
-                      icon: CupertinoIcons.calendar,
+                      icon: Icons.calendar_today,
                       value: _selectedTanggal,
                       hint: 'Pilih tanggal',
                       onTap: () {
@@ -116,7 +116,7 @@ class _FormPengajuanScreenState extends State<FormPengajuanScreen> {
                     const SizedBox(height: 16),
                     CustomTextField(
                       label: 'Keperluan *',
-                      icon: CupertinoIcons.doc_text,
+                      icon: Icons.description,
                       controller: _keperluanController,
                       hintText: 'Contoh: Permohonan Izin Kegiatan',
                       isCabang: widget.isCabang,
@@ -185,8 +185,8 @@ class _FormPengajuanScreenState extends State<FormPengajuanScreen> {
                               ),
                               child: Icon(
                                 _fileName != null
-                                    ? CupertinoIcons.doc_fill
-                                    : CupertinoIcons.cloud_upload,
+                                    ? Icons.description
+                                    : Icons.cloud_upload,
                                 color: primaryColor,
                                 size: 28,
                               ),
@@ -315,7 +315,7 @@ class _FormPengajuanScreenState extends State<FormPengajuanScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(CupertinoIcons.chevron_down,
+                const Icon(Icons.expand_more,
                     color: AppColors.textSecondary, size: 20),
                 const SizedBox(width: 16),
               ],
@@ -376,7 +376,7 @@ class _FormPengajuanScreenState extends State<FormPengajuanScreen> {
                       ),
                     ),
                     trailing: isSelected
-                        ? Icon(CupertinoIcons.checkmark_alt,
+                        ? Icon(Icons.check,
                             color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)
                         : null,
                     onTap: () {

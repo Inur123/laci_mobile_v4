@@ -111,7 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   CustomTextField(
                     controller: _emailController,
                     label: 'Email',
-                    icon: CupertinoIcons.mail,
+                    icon: Icons.mail,
                     keyboardType: TextInputType.emailAddress,
                     errorText: _emailError,
                     isCabang: false,
@@ -121,7 +121,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   CustomTextField(
                     controller: _passwordController,
                     label: 'Password',
-                    icon: CupertinoIcons.lock,
+                    icon: Icons.lock_outline,
                     isPassword: true,
                     obscureText: _obscurePassword,
                     errorText: _passwordError ?? (authState.errorMessage != null && !authState.isLoading ? authState.errorMessage : null),

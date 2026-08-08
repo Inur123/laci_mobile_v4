@@ -1,30 +1,45 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:toastification/toastification.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:laci_mobile/providers/pengguna_provider.dart';
+import 'package:laci_mobile/widgets/custom_refresh_control.dart';
+import 'package:intl/intl.dart';
 
-class DetailPenggunaScreen extends StatefulWidget {
+class DetailPenggunaScreen extends ConsumerStatefulWidget {
   final bool isCabang;
+  final String userId;
   final String userName;
   final String initials;
 
   const DetailPenggunaScreen({
     super.key,
     required this.isCabang,
+    required this.userId,
     required this.userName,
     required this.initials,
   });
 
   @override
-  State<DetailPenggunaScreen> createState() => _DetailPenggunaScreenState();
+  ConsumerState<DetailPenggunaScreen> createState() => _DetailPenggunaScreenState();
 }
 
-class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
+class _DetailPenggunaScreenState extends ConsumerState<DetailPenggunaScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(penggunaProvider.notifier).fetchDetail(widget.userId);
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    final primaryColor =
-        widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+    final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+    final state = ref.watch(penggunaProvider);
+    final detail = state.currentDetail;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -34,7 +49,7 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -49,11 +64,20 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        physics: const BouncingScrollPhysics(),
-        children: [
-          // Profile Section
+      body: state.isDetailLoading || detail == null
+          ? _buildShimmerLoading()
+          : CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+              slivers: [
+                CustomRefreshControl(
+                  onRefresh: () async => ref.read(penggunaProvider.notifier).fetchDetail(widget.userId),
+                  primaryColor: primaryColor,
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      // Profile Section
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -89,7 +113,7 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  widget.userName,
+                  detail.user.name,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -97,14 +121,13 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
                 ),
                 const SizedBox(height: 4),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.blue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
-                    'SEKRETARIS PAC',
+                    detail.user.role == 'SEKRETARIS_PAC' ? 'SEKRETARIS PAC' : 'SEKRETARIS CABANG',
                     style: TextStyle(
                         fontSize: 12,
                         color: Colors.blue.shade700,
@@ -113,26 +136,25 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
                 ),
                 const SizedBox(height: 12),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
+                    color: detail.user.isActive ? Colors.green.withOpacity(0.1) : Colors.red.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.green.withOpacity(0.3)),
+                    border: Border.all(color: detail.user.isActive ? Colors.green.withOpacity(0.3) : Colors.red.withOpacity(0.3)),
                   ),
                   child: Text(
-                    'Aktif',
+                    detail.user.isActive ? 'Aktif' : 'Nonaktif',
                     style: TextStyle(
                         fontSize: 12,
-                        color: Colors.green.shade700,
+                        color: detail.user.isActive ? Colors.green.shade700 : Colors.red.shade700,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'ID USER: RXUL4CV389HM5OZ\nYBK5DGDOM15U4KD5A',
+                Text(
+                  'ID USER: ${detail.user.id}',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 10,
                       letterSpacing: 1.5,
@@ -145,25 +167,25 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
           const SizedBox(height: 24),
 
           // Informasi Akun
-          _buildSectionTitle(CupertinoIcons.person, 'Informasi Akun'),
+          _buildSectionTitle(Icons.person_outline, 'Informasi Akun'),
           const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
                 child: _buildInfoCard(
                   'ALAMAT EMAIL',
-                  'ipnuippnubarat@gmail.com',
-                  badgeText: 'Terverifikasi',
-                  badgeColor: Colors.green,
-                  icon: CupertinoIcons.mail,
+                  detail.user.email,
+                  badgeText: detail.user.emailVerified ? 'Terverifikasi' : 'Belum Verifikasi',
+                  badgeColor: detail.user.emailVerified ? Colors.green : Colors.orange,
+                  icon: Icons.mail,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: _buildInfoCard(
                   'TANGGAL TERDAFTAR',
-                  '24 Mei 2026',
-                  icon: CupertinoIcons.calendar,
+                  detail.user.createdAt != null ? DateFormat('dd MMM yyyy').format(detail.user.createdAt!) : '-',
+                  icon: Icons.calendar_today,
                 ),
               ),
             ],
@@ -172,7 +194,7 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
           const SizedBox(height: 32),
 
           // Statistik Aktivitas
-          _buildSectionTitle(CupertinoIcons.timer, 'Statistik Aktivitas'),
+          _buildSectionTitle(Icons.timer, 'Statistik Aktivitas'),
           const SizedBox(height: 12),
           GridView.count(
             crossAxisCount: 2,
@@ -182,37 +204,31 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
             physics: const NeverScrollableScrollPhysics(),
             childAspectRatio: 2.2,
             children: [
-              _buildStatCard('PERIODE AKTIF', '2025-2027',
-                  CupertinoIcons.calendar, Colors.blue),
-              _buildStatCard('ARSIP SURAT', '0 Surat', CupertinoIcons.doc_text,
+              _buildStatCard('PERIODE AKTIF', detail.user.periodeAktifName ?? 'Tidak Ada',
+                  Icons.calendar_today, Colors.blue),
+              _buildStatCard('ARSIP SURAT', '${detail.statsAktivitas['arsipSurat'] ?? 0} Surat', Icons.description,
                   Colors.green),
-              _buildStatCard('PENGAJUAN PAC', '6 Pengajuan',
-                  CupertinoIcons.doc_person, Colors.purple),
-              _buildStatCard('DATA ANGGOTA', '0 Anggota',
-                  CupertinoIcons.person_2, Colors.blue),
-              _buildStatCard('BERKAS PIMPINAN', '0 Berkas',
-                  CupertinoIcons.folder, Colors.orange),
-              _buildStatCard('RIWAYAT LOG', '14 Aktivitas',
-                  CupertinoIcons.clock, Colors.red),
+              _buildStatCard('PENGAJUAN PAC', '${detail.statsAktivitas['pengajuanPac'] ?? 0} Pengajuan',
+                  Icons.assignment_ind, Colors.purple),
+              _buildStatCard('DATA ANGGOTA', '${detail.statsAktivitas['dataAnggota'] ?? 0} Anggota',
+                  Icons.people_outline, Colors.blue),
+              _buildStatCard('BERKAS PIMPINAN', '${detail.statsAktivitas['berkasPimpinan'] ?? 0} Berkas',
+                  Icons.folder, Colors.orange),
+              _buildStatCard('RIWAYAT LOG', '${detail.statsAktivitas['riwayatLog'] ?? 0} Aktivitas',
+                  Icons.access_time, Colors.red),
             ],
           ),
 
           const SizedBox(height: 32),
 
           // Statistik pengkaderan
-          _buildSectionTitle(CupertinoIcons.book, 'Statistik pengkaderan'),
+          _buildSectionTitle(Icons.menu_book, 'Statistik pengkaderan'),
           const SizedBox(height: 12),
           Wrap(
             spacing: 12,
             runSpacing: 12,
             children: [
-              _buildSmallStatCard('MAKESTA', '0 Anggota', Colors.purple),
-              _buildSmallStatCard('LAKMUD', '0 Anggota', Colors.green),
-              _buildSmallStatCard('LATIN', '0 Anggota', Colors.blue),
-              _buildSmallStatCard('LATPEL', '0 Anggota', Colors.teal),
-              _buildSmallStatCard('LAKUT', '0 Anggota', Colors.indigo),
-              _buildSmallStatCard('DIKLATAMA', '0 Anggota', Colors.orange),
-              _buildSmallStatCard('DIKLATMAD', '0 Anggota', Colors.red),
+              ...detail.statsPengkaderan.map((p) => _buildSmallStatCard(p['namaPerkaderan'], '${p['count']} Anggota', Colors.blue)),
             ],
           ),
 
@@ -220,20 +236,13 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
 
           // Statistik Pendidikan
           _buildSectionTitle(
-              CupertinoIcons.building_2_fill, 'Statistik Pendidikan'),
+              Icons.business, 'Statistik Pendidikan'),
           const SizedBox(height: 12),
           Wrap(
             spacing: 12,
             runSpacing: 12,
             children: [
-              _buildSmallStatCard('SD', '0', Colors.grey),
-              _buildSmallStatCard('MI', '0', Colors.lightBlue),
-              _buildSmallStatCard('SMP', '0', Colors.orange),
-              _buildSmallStatCard('MTS', '0', Colors.orangeAccent),
-              _buildSmallStatCard('SMA', '0', Colors.green),
-              _buildSmallStatCard('SMK', '0', Colors.teal),
-              _buildSmallStatCard('MA', '0', Colors.cyan),
-              _buildSmallStatCard('KULIAH', '0', Colors.purple),
+              ...detail.statsPendidikan.map((p) => _buildSmallStatCard(p['jenjang'], '${p['count']} Orang', Colors.orange)),
             ],
           ),
 
@@ -241,7 +250,7 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
 
           // Kontrol Keamanan & Status
           _buildSectionTitle(
-              CupertinoIcons.shield_lefthalf_fill, 'Kontrol Keamanan & Status',
+              Icons.security, 'Kontrol Keamanan & Status',
               color: Colors.blue.shade700),
           const SizedBox(height: 12),
           Container(
@@ -254,7 +263,7 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(CupertinoIcons.exclamationmark_shield_fill,
+                Icon(Icons.gpp_maybe,
                     color: Colors.orange.shade700, size: 20),
                 const SizedBox(width: 12),
                 const Expanded(
@@ -282,17 +291,17 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => _showDeactivateDialog(context),
+                  onPressed: () => _showDeactivateDialog(context, detail.user.isActive),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: BorderSide(color: Colors.orange.shade300),
+                    side: BorderSide(color: detail.user.isActive ? Colors.orange.shade300 : Colors.green.shade300),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8)),
                     backgroundColor: Colors.white,
                   ),
-                  child: Text('Nonaktifkan Akun',
+                  child: Text(detail.user.isActive ? 'Nonaktifkan Akun' : 'Aktifkan Akun',
                       style: TextStyle(
-                          color: Colors.orange.shade800,
+                          color: detail.user.isActive ? Colors.orange.shade800 : Colors.green.shade800,
                           fontWeight: FontWeight.bold,
                           fontSize: 13)),
                 ),
@@ -345,8 +354,11 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
             ),
           ),
           const SizedBox(height: 32),
-        ],
-      ),
+                    ]),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 
@@ -415,7 +427,7 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(CupertinoIcons.checkmark_shield_fill,
+                  Icon(Icons.gpp_good,
                       size: 12, color: badgeColor),
                   const SizedBox(width: 4),
                   Text(badgeText,
@@ -493,7 +505,7 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(CupertinoIcons.square_fill, size: 10, color: color),
+              Icon(Icons.square, size: 10, color: color),
               const SizedBox(width: 4),
               Text(label,
                   style: TextStyle(
@@ -515,28 +527,32 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
     );
   }
 
-  Future<void> _showDeactivateDialog(BuildContext context) async {
+  Future<void> _showDeactivateDialog(BuildContext context, bool currentStatus) async {
     final result = await showOkCancelAlertDialog(
       context: context,
-      title: 'Nonaktifkan Akun',
-      message:
-          'Apakah Anda yakin ingin menonaktifkan akun ini? Pengguna tidak akan bisa login sampai akun diaktifkan kembali.',
-      okLabel: 'Nonaktifkan',
+      title: currentStatus ? 'Nonaktifkan Akun' : 'Aktifkan Akun',
+      message: currentStatus 
+          ? 'Apakah Anda yakin ingin menonaktifkan akun ini? Pengguna tidak akan bisa login sampai akun diaktifkan kembali.'
+          : 'Apakah Anda yakin ingin mengaktifkan akun ini? Pengguna akan bisa login kembali.',
+      okLabel: currentStatus ? 'Nonaktifkan' : 'Aktifkan',
       cancelLabel: 'Batal',
-      isDestructiveAction: true,
+      isDestructiveAction: currentStatus,
     );
     if (result == OkCancelResult.ok && context.mounted) {
-      toastification.show(
-        context: context,
-        type: ToastificationType.success,
-        style: ToastificationStyle.flat,
-        showProgressBar: false,
-        primaryColor: Colors.white,
-        icon: const Icon(Icons.check_circle_outline, color: Colors.orange),
-        title: const Text('Akun berhasil dinonaktifkan'),
-        alignment: Alignment.topCenter,
-        autoCloseDuration: const Duration(seconds: 3),
-      );
+      final success = await ref.read(penggunaProvider.notifier).updateUserStatus(widget.userId, !currentStatus);
+      if (success && context.mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.success,
+          style: ToastificationStyle.flat,
+          showProgressBar: false,
+          primaryColor: Colors.white,
+          icon: Icon(Icons.check_circle_outline, color: currentStatus ? Colors.orange : Colors.green),
+          title: Text(currentStatus ? 'Akun berhasil dinonaktifkan' : 'Akun berhasil diaktifkan'),
+          alignment: Alignment.topCenter,
+          autoCloseDuration: const Duration(seconds: 3),
+        );
+      }
     }
   }
 
@@ -545,22 +561,25 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
       context: context,
       title: 'Reset Password',
       message:
-          'Apakah Anda yakin ingin mengatur ulang password pengguna ini? Password akan direset ke default: pcippnumagetan',
+          'Apakah Anda yakin ingin mengatur ulang password pengguna ini? Password akan direset ke default: password',
       okLabel: 'Reset',
       cancelLabel: 'Batal',
     );
     if (result == OkCancelResult.ok && context.mounted) {
-      toastification.show(
-        context: context,
-        type: ToastificationType.success,
-        style: ToastificationStyle.flat,
-        showProgressBar: false,
-        primaryColor: Colors.white,
-        icon: const Icon(Icons.check_circle_outline, color: Colors.green),
-        title: const Text('Password berhasil direset'),
-        alignment: Alignment.topCenter,
-        autoCloseDuration: const Duration(seconds: 3),
-      );
+      final success = await ref.read(penggunaProvider.notifier).resetPassword(widget.userId);
+      if (success && context.mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.success,
+          style: ToastificationStyle.flat,
+          showProgressBar: false,
+          primaryColor: Colors.white,
+          icon: const Icon(Icons.check_circle_outline, color: Colors.green),
+          title: const Text('Password berhasil direset menjadi "password"'),
+          alignment: Alignment.topCenter,
+          autoCloseDuration: const Duration(seconds: 3),
+        );
+      }
     }
   }
 
@@ -575,18 +594,119 @@ class _DetailPenggunaScreenState extends State<DetailPenggunaScreen> {
       isDestructiveAction: true,
     );
     if (result == OkCancelResult.ok && context.mounted) {
-      toastification.show(
-        context: context,
-        type: ToastificationType.success,
-        style: ToastificationStyle.flat,
-        showProgressBar: false,
-        primaryColor: Colors.white,
-        icon: const Icon(Icons.check_circle_outline, color: Colors.green),
-        title: const Text('Akun berhasil dihapus'),
-        alignment: Alignment.topCenter,
-        autoCloseDuration: const Duration(seconds: 3),
-      );
-      Navigator.pop(context); // Pop back to list after delete
+      final success = await ref.read(penggunaProvider.notifier).deleteUser(widget.userId);
+      if (success && context.mounted) {
+        toastification.show(
+          context: context,
+          type: ToastificationType.success,
+          style: ToastificationStyle.flat,
+          showProgressBar: false,
+          primaryColor: Colors.white,
+          icon: const Icon(Icons.check_circle_outline, color: Colors.green),
+          title: const Text('Akun berhasil dihapus permanen'),
+          alignment: Alignment.topCenter,
+          autoCloseDuration: const Duration(seconds: 3),
+        );
+        Navigator.pop(context); // Pop back to list after delete
+      }
     }
+  }
+
+  Widget _buildShimmerLoading() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        // Shimmer Profile Section
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.black.withOpacity(0.05)),
+          ),
+          child: Column(
+            children: [
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(width: 100, height: 100, decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle)),
+              ),
+              const SizedBox(height: 16),
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(width: 200, height: 24, color: Colors.white),
+              ),
+              const SizedBox(height: 8),
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(width: 120, height: 20, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16))),
+              ),
+              const SizedBox(height: 12),
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(width: 80, height: 24, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16))),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        
+        // Shimmer Cards (2 columns, multiple rows)
+        Row(
+          children: [
+            Expanded(child: _buildShimmerCard()),
+            const SizedBox(width: 12),
+            Expanded(child: _buildShimmerCard()),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(child: _buildShimmerCard()),
+            const SizedBox(width: 12),
+            Expanded(child: _buildShimmerCard()),
+          ],
+        ),
+        const SizedBox(height: 16),
+        
+        // Shimmer Action Buttons
+        Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Container(width: double.infinity, height: 50, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+        ),
+        const SizedBox(height: 12),
+        Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Container(width: double.infinity, height: 50, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+        ),
+        const SizedBox(height: 12),
+        Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          child: Container(width: double.infinity, height: 50, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildShimmerCard() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        height: 80,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+        ),
+      ),
+    );
   }
 }

@@ -28,7 +28,7 @@ class _PresensiScreenState extends State<PresensiScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -78,7 +78,7 @@ class _PresensiScreenState extends State<PresensiScreen> {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.grey.shade300),
                     ),
-                    child: const Icon(CupertinoIcons.slider_horizontal_3, color: AppColors.textPrimary, size: 20),
+                    child: const Icon(Icons.tune, color: AppColors.textPrimary, size: 20),
                   ),
                 ),
               ],
@@ -111,7 +111,7 @@ class _PresensiScreenState extends State<PresensiScreen> {
         },
         backgroundColor: primaryColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const Icon(CupertinoIcons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -182,7 +182,7 @@ class _PresensiScreenState extends State<PresensiScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Icon(CupertinoIcons.ellipsis_vertical, color: Colors.grey.shade400, size: 20),
+                Icon(Icons.more_vert, color: Colors.grey.shade400, size: 20),
               ],
             ),
             const Padding(
@@ -191,15 +191,15 @@ class _PresensiScreenState extends State<PresensiScreen> {
             ),
             Row(
               children: [
-                Expanded(child: _buildInfoItem(CupertinoIcons.calendar, tanggal)),
-                Expanded(child: _buildInfoItem(CupertinoIcons.clock, waktu)),
+                Expanded(child: _buildInfoItem(Icons.calendar_today, tanggal)),
+                Expanded(child: _buildInfoItem(Icons.access_time, waktu)),
               ],
             ),
             const SizedBox(height: 12),
             Row(
               children: [
-                Expanded(child: _buildInfoItem(CupertinoIcons.location, tempat)),
-                Expanded(child: _buildInfoItem(CupertinoIcons.person_2, '$peserta Peserta')),
+                Expanded(child: _buildInfoItem(Icons.location_on_outlined, tempat)),
+                Expanded(child: _buildInfoItem(Icons.people_outline, '$peserta Peserta')),
               ],
             ),
           ],
@@ -272,7 +272,7 @@ class _PresensiScreenState extends State<PresensiScreen> {
                       child: DropdownButton<String>(
                         isExpanded: true,
                         value: _selectedStatus,
-                        icon: const Icon(CupertinoIcons.chevron_down, size: 16),
+                        icon: const Icon(Icons.expand_more, size: 16),
                         items: ['Semua', 'Dibuka', 'Ditutup'].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,

@@ -21,13 +21,13 @@ class DetailBerkasCabangScreen extends StatelessWidget {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+          icon: Icon(Icons.arrow_back_ios_new, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(isCabang ? 'Detail Berkas Cabang' : 'Detail Berkas PAC', style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16)),
         actions: [
           IconButton(
-            icon: Icon(CupertinoIcons.pencil, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+            icon: Icon(Icons.edit_outlined, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => FormBerkasCabangScreen(isEdit: true, isCabang: isCabang)));
             },
@@ -46,7 +46,7 @@ class DetailBerkasCabangScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             
-            _buildDetailRow(CupertinoIcons.calendar, 'Tanggal', '02 Agu 2026'),
+            _buildDetailRow(Icons.calendar_today, 'Tanggal', '02 Agu 2026'),
             
             const SizedBox(height: 24),
             const Text('Catatan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
@@ -73,7 +73,7 @@ class DetailBerkasCabangScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(color: Colors.red.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                    child: const Icon(CupertinoIcons.doc_fill, color: Colors.red, size: 24),
+                    child: const Icon(Icons.description, color: Colors.red, size: 24),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -87,7 +87,7 @@ class DetailBerkasCabangScreen extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(CupertinoIcons.cloud_download, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+                    icon: Icon(Icons.cloud_download, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
                     onPressed: () {},
                   )
                 ],

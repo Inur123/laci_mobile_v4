@@ -42,7 +42,7 @@ class _FormPeriodeScreenState extends ConsumerState<FormPeriodeScreen> {
         type: ToastificationType.warning,
         style: ToastificationStyle.flat,
         showProgressBar: false,
-        icon: const Icon(CupertinoIcons.exclamationmark_triangle, color: Colors.orange),
+        icon: const Icon(Icons.warning_amber_rounded, color: Colors.orange),
         title: const Text('Nama periode wajib diisi'),
         alignment: Alignment.topCenter,
         autoCloseDuration: const Duration(seconds: 3),
@@ -80,7 +80,7 @@ class _FormPeriodeScreenState extends ConsumerState<FormPeriodeScreen> {
         type: ToastificationType.error,
         style: ToastificationStyle.flat,
         showProgressBar: false,
-        icon: const Icon(CupertinoIcons.xmark_circle, color: Colors.red),
+        icon: const Icon(Icons.cancel_outlined, color: Colors.red),
         title: Text(errorMsg ?? (widget.isEdit ? 'Gagal memperbarui periode' : 'Gagal menyimpan periode')),
         alignment: Alignment.topCenter,
         autoCloseDuration: const Duration(seconds: 4),
@@ -100,7 +100,7 @@ class _FormPeriodeScreenState extends ConsumerState<FormPeriodeScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -120,7 +120,7 @@ class _FormPeriodeScreenState extends ConsumerState<FormPeriodeScreen> {
           
           CustomTextField(
             label: 'Nama Periode *',
-            icon: CupertinoIcons.tag,
+            icon: Icons.local_offer,
             controller: _nameController,
             hintText: 'Contoh: Masa Khidmat 2024-2026',
           ),

@@ -34,7 +34,7 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -53,7 +53,7 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(CupertinoIcons.calendar_badge_plus, size: 64, color: Colors.grey.shade300),
+                  Icon(Icons.event_note_outlined, size: 64, color: Colors.grey.shade300),
                   const SizedBox(height: 16),
                   const Text('Belum ada periode', style: TextStyle(color: AppColors.textSecondary, fontSize: 16)),
                   const SizedBox(height: 8),
@@ -86,7 +86,7 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(CupertinoIcons.exclamationmark_triangle, size: 48, color: Colors.red),
+              const Icon(Icons.warning_amber_rounded, size: 48, color: Colors.red),
               const SizedBox(height: 16),
               Text('$error', style: const TextStyle(color: AppColors.textSecondary)),
               const SizedBox(height: 16),
@@ -109,7 +109,7 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
           }
         },
         backgroundColor: primaryColor,
-        child: const Icon(CupertinoIcons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -128,9 +128,9 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDisplayed ? Colors.blue.withOpacity(0.02) : Colors.white,
+        color: isDisplayed ? primaryColor.withOpacity(0.02) : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: isDisplayed ? Colors.blue.withOpacity(0.5) : Colors.black.withOpacity(0.05)),
+        border: Border.all(color: isDisplayed ? primaryColor.withOpacity(0.5) : Colors.black.withOpacity(0.05)),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
         ],
@@ -170,13 +170,13 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: primaryColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(CupertinoIcons.eye_fill, color: Colors.white, size: 14),
+                      Icon(Icons.visibility, color: Colors.white, size: 14),
                       SizedBox(width: 6),
                       Text('Sedang Ditampilkan', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
                     ],
@@ -191,7 +191,7 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
                       type: ToastificationType.info,
                       style: ToastificationStyle.flat,
                       showProgressBar: false,
-                      icon: const Icon(CupertinoIcons.eye, color: Colors.blue),
+                      icon: Icon(Icons.visibility, color: primaryColor),
                       title: Text('Menampilkan data "${periode.nama}"'),
                       alignment: Alignment.topCenter,
                       autoCloseDuration: const Duration(seconds: 2),
@@ -208,7 +208,7 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(CupertinoIcons.eye, color: AppColors.textPrimary, size: 14),
+                        Icon(Icons.visibility_outlined, color: AppColors.textPrimary, size: 14),
                         SizedBox(width: 6),
                         Text('Tampilkan', style: TextStyle(color: AppColors.textPrimary, fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
@@ -216,45 +216,45 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
                   ),
                 ),
 
-              if (!isActive)
-                InkWell(
-                  onTap: () async {
-                    final success = await ref.read(periodesProvider.notifier).activate(periode.id);
-                    if (success && mounted) {
-                      // Reset viewed periode ke null (ikut aktif)
-                      ref.read(viewedPeriodeProvider.notifier).state = null;
-                      toastification.show(
-                        context: context,
-                        type: ToastificationType.success,
-                        style: ToastificationStyle.flat,
-                        showProgressBar: false,
-                        icon: const Icon(Icons.check_circle_outline, color: Colors.green),
-                        title: Text('Periode "${periode.nama}" berhasil diaktifkan'),
-                        alignment: Alignment.topCenter,
-                        autoCloseDuration: const Duration(seconds: 3),
-                      );
-                    }
-                  },
+          if (!isActive)
+            InkWell(
+              onTap: () async {
+                final success = await ref.read(periodesProvider.notifier).activate(periode.id);
+                if (success && mounted) {
+                  // Reset viewed periode ke null (ikut aktif)
+                  ref.read(viewedPeriodeProvider.notifier).state = null;
+                  toastification.show(
+                    context: context,
+                    type: ToastificationType.success,
+                    style: ToastificationStyle.flat,
+                    showProgressBar: false,
+                    icon: const Icon(Icons.check_circle_outline, color: Colors.green),
+                    title: Text('Periode "${periode.nama}" berhasil diaktifkan'),
+                    alignment: Alignment.topCenter,
+                    autoCloseDuration: const Duration(seconds: 3),
+                  );
+                }
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.grey.shade300),
                   borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(color: Colors.grey.shade300),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(CupertinoIcons.check_mark_circled, color: AppColors.textPrimary, size: 14),
-                        SizedBox(width: 6),
-                        Text('Aktifkan', style: TextStyle(color: AppColors.textPrimary, fontSize: 12, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
                 ),
-              
-              InkWell(
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.check_circle_outline, color: AppColors.textPrimary, size: 14),
+                    SizedBox(width: 6),
+                    Text('Aktifkan', style: TextStyle(color: AppColors.textPrimary, fontSize: 12, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ),
+          
+          InkWell(
                 onTap: () async {
                   final result = await Navigator.push(context, MaterialPageRoute(
                     builder: (context) => FormPeriodeScreen(isEdit: true, isCabang: widget.isCabang, initialName: periode.nama, periodeId: periode.id),
@@ -274,7 +274,7 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(CupertinoIcons.pencil, color: AppColors.textPrimary, size: 14),
+                      Icon(Icons.edit_outlined, color: AppColors.textPrimary, size: 14),
                       SizedBox(width: 6),
                       Text('Edit', style: TextStyle(color: AppColors.textPrimary, fontSize: 12, fontWeight: FontWeight.bold)),
                     ],
@@ -292,7 +292,7 @@ class _PeriodeScreenState extends ConsumerState<PeriodeScreen> {
                       color: Colors.red.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(CupertinoIcons.trash, color: Colors.red, size: 16),
+                    child: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
                   ),
                 ),
             ],

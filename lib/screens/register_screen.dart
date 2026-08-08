@@ -154,7 +154,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   CustomTextField(
                     controller: _nameController,
                     label: 'Nama Lengkap',
-                    icon: CupertinoIcons.person,
+                    icon: Icons.person_outline,
                     keyboardType: TextInputType.name,
                     errorText: _nameError,
                     isCabang: false,
@@ -164,7 +164,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   CustomTextField(
                     controller: _emailController,
                     label: 'Email',
-                    icon: CupertinoIcons.mail,
+                    icon: Icons.mail,
                     keyboardType: TextInputType.emailAddress,
                     errorText: _emailError,
                     isCabang: false,
@@ -174,7 +174,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   CustomTextField(
                     controller: _passwordController,
                     label: 'Password',
-                    icon: CupertinoIcons.lock,
+                    icon: Icons.lock_outline,
                     isPassword: true,
                     obscureText: _obscurePassword,
                     errorText: _passwordError,
@@ -190,7 +190,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   CustomTextField(
                     controller: _confirmPasswordController,
                     label: 'Konfirmasi Password',
-                    icon: CupertinoIcons.lock,
+                    icon: Icons.lock_outline,
                     isPassword: true,
                     obscureText: _obscureConfirmPassword,
                     errorText: _confirmPasswordError,

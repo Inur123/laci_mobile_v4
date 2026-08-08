@@ -48,7 +48,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back,
+          icon: Icon(Icons.arrow_back_ios_new,
               color: (widget.isCabang
                   ? AppColors.cabangPrimary
                   : AppColors.pacPrimary)),
@@ -73,7 +73,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // 1. FOTO ANGGOTA
-              _buildSectionTitle('Foto Anggota', CupertinoIcons.camera),
+              _buildSectionTitle('Foto Anggota', Icons.camera_alt),
               const SizedBox(height: 16),
               Center(
                 child: InkWell(
@@ -99,8 +99,8 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                       children: [
                         Icon(
                             _photoFileName != null
-                                ? CupertinoIcons.checkmark_seal_fill
-                                : CupertinoIcons.cloud_upload,
+                                ? Icons.verified
+                                : Icons.cloud_upload,
                             color: _photoFileName != null
                                 ? Colors.blue
                                 : Colors.white,
@@ -134,7 +134,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
 
               // 2. INFORMASI PERSONAL
               _buildSectionTitle(
-                  'Informasi Personal', CupertinoIcons.person_alt),
+                  'Informasi Personal', Icons.person),
               const SizedBox(height: 8),
               const Text('Lengkapi data diri anggota sesuai identitas resmi.',
                   style:
@@ -144,31 +144,31 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Nama Lengkap *',
-                  icon: CupertinoIcons.person,
+                  icon: Icons.person_outline,
                   keyboardType: TextInputType.text),
               const SizedBox(height: 16),
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Email',
-                  icon: CupertinoIcons.mail,
+                  icon: Icons.mail,
                   keyboardType: TextInputType.emailAddress),
               const SizedBox(height: 16),
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'NIK (Nomor Induk Kependudukan)',
-                  icon: CupertinoIcons.creditcard,
+                  icon: Icons.credit_card,
                   keyboardType: TextInputType.number),
               const SizedBox(height: 16),
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'NIA (Nomor Induk Anggota)',
-                  icon: CupertinoIcons.number_square,
+                  icon: Icons.tag,
                   keyboardType: TextInputType.text),
               const SizedBox(height: 16),
 
               _buildPremiumDropdown(
                 label: 'Jenis Kelamin *',
-                icon: CupertinoIcons.person_2,
+                icon: Icons.people_outline,
                 value: _selectedJenisKelamin,
                 hint: 'Pilih Jenis Kelamin',
                 onTap: () {
@@ -186,7 +186,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Nomor Handphone (WA)',
-                  icon: CupertinoIcons.phone,
+                  icon: Icons.phone,
                   keyboardType: TextInputType.phone),
               const SizedBox(height: 16),
 
@@ -194,12 +194,12 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Tempat Lahir',
-                  icon: CupertinoIcons.location,
+                  icon: Icons.location_on_outlined,
                   keyboardType: TextInputType.text),
               const SizedBox(height: 16),
               _buildPremiumDropdown(
                 label: 'Tanggal Lahir',
-                icon: CupertinoIcons.calendar,
+                icon: Icons.calendar_today,
                 value: _selectedTanggalLahir,
                 hint: 'Pilih tanggal',
                 onTap: () {
@@ -212,7 +212,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Alamat Lengkap',
-                  icon: CupertinoIcons.map,
+                  icon: Icons.map,
                   keyboardType: TextInputType.text),
 
               const Padding(
@@ -225,7 +225,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildSectionTitle('Riwayat pengkaderan',
-                      CupertinoIcons.badge_plus_radiowaves_right),
+                      Icons.cell_tower),
                   InkWell(
                     onTap: () {
                       setState(() {
@@ -242,7 +242,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                           borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         children: const [
-                          Icon(CupertinoIcons.add,
+                          Icon(Icons.add,
                               color: Colors.blue, size: 16),
                           SizedBox(width: 4),
                           Text('Tambah',
@@ -281,30 +281,30 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
 
               // 4. INFORMASI ORGANISASI & TAMBAHAN
               _buildSectionTitle('Informasi Organisasi & Tambahan',
-                  CupertinoIcons.building_2_fill),
+                  Icons.business),
               const SizedBox(height: 24),
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Jabatan',
-                  icon: CupertinoIcons.briefcase,
+                  icon: Icons.work,
                   keyboardType: TextInputType.text),
               const SizedBox(height: 16),
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Nomor RFID',
-                  icon: CupertinoIcons.creditcard_fill,
+                  icon: Icons.credit_card,
                   keyboardType: TextInputType.text),
               const SizedBox(height: 16),
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Pekerjaan',
-                  icon: CupertinoIcons.hammer,
+                  icon: Icons.build,
                   keyboardType: TextInputType.text),
               const SizedBox(height: 16),
               CustomTextField(
                   isCabang: widget.isCabang,
                   label: 'Hobi / Minat Bakat',
-                  icon: CupertinoIcons.heart,
+                  icon: Icons.favorite_border,
                   keyboardType: TextInputType.text),
 
               const Padding(
@@ -316,7 +316,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _buildSectionTitle('Riwayat Pendidikan', CupertinoIcons.book),
+                  _buildSectionTitle('Riwayat Pendidikan', Icons.menu_book),
                   InkWell(
                     onTap: () {
                       setState(() {
@@ -333,7 +333,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                           borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         children: const [
-                          Icon(CupertinoIcons.add,
+                          Icon(Icons.add,
                               color: Colors.blue, size: 16),
                           SizedBox(width: 4),
                           Text('Tambah',
@@ -450,7 +450,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                 onTap: () {
                   setState(() => _pengkaderanList.remove(id));
                 },
-                child: const Icon(CupertinoIcons.trash,
+                child: const Icon(Icons.delete_outline,
                     color: Colors.red, size: 20),
               ),
             ],
@@ -458,7 +458,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           const SizedBox(height: 16),
           _buildPremiumDropdown(
             label: 'Nama pengkaderan',
-            icon: CupertinoIcons.badge_plus_radiowaves_right,
+            icon: Icons.cell_tower,
             value: _selectedpengkaderan[id],
             hint: 'Pilih pengkaderan',
             onTap: () {
@@ -474,7 +474,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           const SizedBox(height: 12),
           _buildPremiumDropdown(
             label: 'Tanggal',
-            icon: CupertinoIcons.calendar,
+            icon: Icons.calendar_today,
             value: _selectedTanggalpengkaderan[id],
             hint: 'Pilih tanggal',
             onTap: () {
@@ -488,7 +488,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           CustomTextField(
               isCabang: widget.isCabang,
               label: 'Tempat',
-              icon: CupertinoIcons.location,
+              icon: Icons.location_on_outlined,
               keyboardType: TextInputType.text),
         ],
       ),
@@ -521,7 +521,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                 onTap: () {
                   setState(() => _pendidikanList.remove(id));
                 },
-                child: const Icon(CupertinoIcons.trash,
+                child: const Icon(Icons.delete_outline,
                     color: Colors.red, size: 20),
               ),
             ],
@@ -529,7 +529,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           const SizedBox(height: 16),
           _buildPremiumDropdown(
             label: 'Jenjang Pendidikan',
-            icon: CupertinoIcons.book,
+            icon: Icons.menu_book,
             value: _selectedPendidikan[id],
             hint: 'Pilih Jenjang',
             onTap: () {
@@ -554,7 +554,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
           CustomTextField(
               isCabang: widget.isCabang,
               label: 'Nama Sekolah / Kampus',
-              icon: CupertinoIcons.building_2_fill,
+              icon: Icons.business,
               keyboardType: TextInputType.text),
         ],
       ),
@@ -620,7 +620,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(CupertinoIcons.chevron_down,
+                const Icon(Icons.expand_more,
                     color: AppColors.textSecondary, size: 20),
                 const SizedBox(width: 16),
               ],
@@ -681,7 +681,7 @@ class _FormAnggotaScreenState extends State<FormAnggotaScreen> {
                       ),
                     ),
                     trailing: isSelected
-                        ? Icon(CupertinoIcons.checkmark_alt,
+                        ? Icon(Icons.check,
                             color: Colors.blue.shade700)
                         : null,
                     onTap: () {

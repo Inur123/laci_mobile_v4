@@ -75,15 +75,15 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     physics: const BouncingScrollPhysics(),
                     children: [
                       _buildStatCard(
-                          'TOTAL', '254', CupertinoIcons.doc_text, Colors.blue),
+                          'TOTAL', '254', Icons.description, Colors.blue),
                       _buildStatCard('MASUK', '131',
-                          CupertinoIcons.arrow_down_left, Colors.green),
+                          Icons.call_received, Colors.green),
                       _buildStatCard('KELUAR', '123',
-                          CupertinoIcons.arrow_up_right, Colors.orange),
+                          Icons.call_made, Colors.orange),
                       _buildStatCard(
-                          'IPNU', '40', CupertinoIcons.shield, Colors.teal),
+                          'IPNU', '40', Icons.security, Colors.teal),
                       _buildStatCard(
-                          'IPPNU', '77', CupertinoIcons.shield, Colors.teal),
+                          'IPPNU', '77', Icons.security, Colors.teal),
                     ],
                   ),
                 ),
@@ -132,7 +132,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                           border: Border.all(color: Colors.grey.shade300),
                         ),
                         child: IconButton(
-                          icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                          icon: const Icon(Icons.tune,
                               size: 18, color: AppColors.textPrimary),
                           onPressed: () {
                             _showFilterModal(context);
@@ -173,11 +173,11 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     physics: const BouncingScrollPhysics(),
                     children: [
                       _buildStatCard('TOTAL BERKAS', '15',
-                          CupertinoIcons.doc_text, Colors.blue),
+                          Icons.description, Colors.blue),
                       _buildStatCard(
-                          'IPNU', '12', CupertinoIcons.shield, Colors.green),
+                          'IPNU', '12', Icons.security, Colors.green),
                       _buildStatCard(
-                          'IPPNU', '3', CupertinoIcons.shield, Colors.pink),
+                          'IPPNU', '3', Icons.security, Colors.pink),
                     ],
                   ),
                 ),
@@ -226,7 +226,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                           border: Border.all(color: Colors.grey.shade300),
                         ),
                         child: IconButton(
-                          icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                          icon: const Icon(Icons.tune,
                               size: 18, color: AppColors.textPrimary),
                           onPressed: () {
                             _showFilterModal(context, showJenis: false);
@@ -317,7 +317,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
             _showAddOptions(context);
           },
           backgroundColor: primaryColor,
-          child: const Icon(CupertinoIcons.add, color: Colors.white),
+          child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
     );
@@ -409,7 +409,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                       ],
                     ),
                     PopupMenuButton<String>(
-                      icon: const Icon(CupertinoIcons.ellipsis,
+                      icon: const Icon(Icons.more_horiz,
                           size: 20, color: AppColors.textSecondary),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
@@ -434,11 +434,11 @@ class _ArsipScreenState extends State<ArsipScreen> {
                       },
                       itemBuilder: (context) => [
                         _buildPopupMenuItem(
-                            'lihat', CupertinoIcons.eye, 'Lihat Detail'),
+                            'lihat', Icons.visibility_outlined, 'Lihat Detail'),
                         _buildPopupMenuItem(
-                            'edit', CupertinoIcons.pencil, 'Edit'),
+                            'edit', Icons.edit_outlined, 'Edit'),
                         _buildPopupMenuItem(
-                            'hapus', CupertinoIcons.trash, 'Hapus',
+                            'hapus', Icons.delete_outline, 'Hapus',
                             isDestructive: true),
                       ],
                     ),
@@ -463,7 +463,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                 // Info Detail
                 Row(
                   children: [
-                    const Icon(CupertinoIcons.number,
+                    const Icon(Icons.tag,
                         size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 4),
                     Expanded(
@@ -475,7 +475,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(CupertinoIcons.calendar,
+                    const Icon(Icons.calendar_today,
                         size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 4),
                     const Expanded(
@@ -504,8 +504,8 @@ class _ArsipScreenState extends State<ArsipScreen> {
                           shape: BoxShape.circle),
                       child: Icon(
                           isMasuk
-                              ? CupertinoIcons.person_crop_circle
-                              : CupertinoIcons.paperplane,
+                              ? Icons.account_circle
+                              : Icons.send,
                           size: 16,
                           color: widget.isCabang
                               ? AppColors.cabangPrimary
@@ -596,7 +596,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                       ],
                     ),
                     PopupMenuButton<String>(
-                      icon: const Icon(CupertinoIcons.ellipsis,
+                      icon: const Icon(Icons.more_horiz,
                           size: 20, color: AppColors.textSecondary),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
@@ -620,11 +620,11 @@ class _ArsipScreenState extends State<ArsipScreen> {
                       },
                       itemBuilder: (context) => [
                         _buildPopupMenuItem(
-                            'lihat', CupertinoIcons.eye, 'Lihat Detail'),
+                            'lihat', Icons.visibility_outlined, 'Lihat Detail'),
                         _buildPopupMenuItem(
-                            'edit', CupertinoIcons.pencil, 'Edit'),
+                            'edit', Icons.edit_outlined, 'Edit'),
                         _buildPopupMenuItem(
-                            'hapus', CupertinoIcons.trash, 'Hapus',
+                            'hapus', Icons.delete_outline, 'Hapus',
                             isDestructive: true),
                       ],
                     ),
@@ -639,7 +639,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(CupertinoIcons.calendar,
+                    const Icon(Icons.calendar_today,
                         size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 6),
                     const Text('Mulai: 23 Nov 2026',
@@ -650,7 +650,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(CupertinoIcons.calendar_circle,
+                    const Icon(Icons.event,
                         size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 6),
                     const Text('Akhir: 23 Nov 2026',
@@ -722,7 +722,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                           overflow: TextOverflow.ellipsis),
                     ),
                     PopupMenuButton<String>(
-                      icon: const Icon(CupertinoIcons.ellipsis,
+                      icon: const Icon(Icons.more_horiz,
                           size: 20, color: AppColors.textSecondary),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
@@ -741,9 +741,9 @@ class _ArsipScreenState extends State<ArsipScreen> {
                       },
                       itemBuilder: (context) => [
                         _buildPopupMenuItem(
-                            'edit', CupertinoIcons.pencil, 'Edit'),
+                            'edit', Icons.edit_outlined, 'Edit'),
                         _buildPopupMenuItem(
-                            'hapus', CupertinoIcons.trash, 'Hapus',
+                            'hapus', Icons.delete_outline, 'Hapus',
                             isDestructive: true),
                       ],
                     ),
@@ -752,7 +752,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    const Icon(CupertinoIcons.calendar,
+                    const Icon(Icons.calendar_today,
                         size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 6),
                     Text(tanggals[index],
@@ -763,7 +763,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(CupertinoIcons.doc_text,
+                    const Icon(Icons.description,
                         size: 14, color: AppColors.textSecondary),
                     const SizedBox(width: 6),
                     const Text('Catatan: -',
@@ -847,7 +847,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         color: Colors.blue.shade50, shape: BoxShape.circle),
-                    child: const Icon(CupertinoIcons.doc_text,
+                    child: const Icon(Icons.description,
                         color: Colors.blue)),
                 title: const Text('Arsip Surat',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -868,7 +868,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         color: Colors.green.shade50, shape: BoxShape.circle),
-                    child: const Icon(CupertinoIcons.doc_person,
+                    child: const Icon(Icons.assignment_ind,
                         color: Colors.green)),
                 title: const Text('Berkas SP',
                     style: TextStyle(fontWeight: FontWeight.bold)),
@@ -889,7 +889,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                         color: Colors.orange.shade50, shape: BoxShape.circle),
-                    child: const Icon(CupertinoIcons.folder,
+                    child: const Icon(Icons.folder,
                         color: Colors.orange)),
                 title: Text(widget.isCabang ? 'Berkas Cabang' : 'Berkas PAC',
                     style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -971,7 +971,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                       child: DropdownButton<String>(
                         value: selectedOrganisasi,
                         isExpanded: true,
-                        icon: const Icon(CupertinoIcons.chevron_down, size: 16),
+                        icon: const Icon(Icons.expand_more, size: 16),
                         items: [
                           'Semua Organisasi',
                           'IPNU',
@@ -1012,7 +1012,7 @@ class _ArsipScreenState extends State<ArsipScreen> {
                           value: selectedJenis,
                           isExpanded: true,
                           icon:
-                              const Icon(CupertinoIcons.chevron_down, size: 16),
+                              const Icon(Icons.expand_more, size: 16),
                           items: [
                             'Semua Jenis',
                             'Surat Masuk',

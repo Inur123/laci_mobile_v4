@@ -30,7 +30,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -123,7 +123,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Icon(CupertinoIcons.tag, size: 12, color: AppColors.textSecondary),
+                        Icon(Icons.local_offer, size: 12, color: AppColors.textSecondary),
                         SizedBox(width: 4),
                         Text('Modul / Menu', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
                       ],
@@ -150,7 +150,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Icon(CupertinoIcons.bolt, size: 12, color: AppColors.textSecondary),
+                        Icon(Icons.bolt, size: 12, color: AppColors.textSecondary),
                         SizedBox(width: 4),
                         Text('Jenis Aksi', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
                       ],
@@ -181,7 +181,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Icon(CupertinoIcons.layers_alt, size: 12, color: AppColors.textSecondary),
+                        Icon(Icons.layers, size: 12, color: AppColors.textSecondary),
                         SizedBox(width: 4),
                         Text('Periode Aktif', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
                       ],
@@ -197,7 +197,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Icon(CupertinoIcons.doc_text, size: 12, color: AppColors.textSecondary),
+                        Icon(Icons.description, size: 12, color: AppColors.textSecondary),
                         SizedBox(width: 4),
                         Text('Log ID', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
                       ],
@@ -233,7 +233,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
         children: [
           _buildSectionHeader('PELAKU & WAKTU'),
           _buildListTile(
-            icon: CupertinoIcons.person,
+            icon: Icons.person_outline,
             iconColor: Colors.blue,
             title: 'USER AKUN',
             subtitle: data.userName,
@@ -241,7 +241,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
           ),
           const Divider(height: 16),
           _buildListTile(
-            icon: CupertinoIcons.calendar,
+            icon: Icons.calendar_today,
             iconColor: Colors.green,
             title: 'TANGGAL KEJADIAN',
             subtitle: data.formattedDateOnly,
@@ -249,7 +249,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
           ),
           const Divider(height: 16),
           _buildListTile(
-            icon: CupertinoIcons.clock,
+            icon: Icons.access_time,
             iconColor: Colors.orange,
             title: 'WAKTU PRESISI',
             subtitle: data.formattedTimeOnly,
@@ -267,7 +267,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
         children: [
           _buildSectionHeader('INFORMASI PERANGKAT & JARINGAN'),
           _buildListTile(
-            icon: CupertinoIcons.wifi,
+            icon: Icons.wifi,
             iconColor: Colors.blue,
             title: 'ALAMAT IP',
             subtitleWidget: Container(
@@ -278,7 +278,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
           ),
           const Divider(height: 16),
           _buildListTile(
-            icon: CupertinoIcons.globe,
+            icon: Icons.language,
             iconColor: Colors.green,
             title: 'BROWSER / KLIEN',
             subtitle: data.userAgent ?? 'Unknown Client',
@@ -286,7 +286,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
           ),
           const Divider(height: 16),
           _buildListTile(
-            icon: CupertinoIcons.device_desktop,
+            icon: Icons.desktop_windows,
             iconColor: Colors.orange,
             title: 'PERANGKAT',
             subtitle: data.device ?? 'Unknown Device',
@@ -294,7 +294,7 @@ class DetailRiwayatAktivitasScreen extends StatelessWidget {
           ),
           const Divider(height: 16),
           _buildListTile(
-            icon: CupertinoIcons.location_solid,
+            icon: Icons.location_on,
             iconColor: Colors.red,
             title: 'LOKASI PRESISI (GPS)',
             subtitle: data.location ?? 'Tidak ada data lokasi',

@@ -17,13 +17,13 @@ class DetailSpScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+          icon: Icon(Icons.arrow_back_ios_new, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text('Detail Berkas SP', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold, fontSize: 16)),
         actions: [
           IconButton(
-            icon: Icon(CupertinoIcons.pencil, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+            icon: Icon(Icons.edit_outlined, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const FormSpScreen(isEdit: true)));
             },
@@ -55,11 +55,11 @@ class DetailSpScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             
-            _buildDetailRow(CupertinoIcons.calendar, 'Tanggal Mulai', 'Jumat, 8 Mei 2026'),
+            _buildDetailRow(Icons.calendar_today, 'Tanggal Mulai', 'Jumat, 8 Mei 2026'),
             const Divider(height: 24, thickness: 1, color: Colors.black12),
-            _buildDetailRow(CupertinoIcons.calendar_circle, 'Tanggal Berakhir', 'Senin, 23 Agustus 2027'),
+            _buildDetailRow(Icons.event, 'Tanggal Berakhir', 'Senin, 23 Agustus 2027'),
             const Divider(height: 24, thickness: 1, color: Colors.black12),
-            _buildDetailRow(CupertinoIcons.time, 'Periode', '2025-2027'),
+            _buildDetailRow(Icons.access_time, 'Periode', '2025-2027'),
             
             const SizedBox(height: 24),
             const Text('Catatan', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
@@ -86,7 +86,7 @@ class DetailSpScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(color: Colors.blueGrey.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                    child: const Icon(CupertinoIcons.doc_fill, color: Colors.blueGrey, size: 24),
+                    child: const Icon(Icons.description, color: Colors.blueGrey, size: 24),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -100,7 +100,7 @@ class DetailSpScreen extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(CupertinoIcons.cloud_download, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+                    icon: Icon(Icons.cloud_download, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
                     onPressed: () {},
                   )
                 ],
@@ -110,7 +110,7 @@ class DetailSpScreen extends StatelessWidget {
             const SizedBox(height: 24),
             const Row(
               children: [
-                Icon(CupertinoIcons.doc_text_viewfinder, size: 16, color: Colors.blue),
+                Icon(Icons.manage_search, size: 16, color: Colors.blue),
                 SizedBox(width: 8),
                 Text('Pratinjau PDF', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue)),
               ],
@@ -126,7 +126,7 @@ class DetailSpScreen extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(CupertinoIcons.lock_fill, color: Colors.white54, size: 40),
+                    Icon(Icons.lock, color: Colors.white54, size: 40),
                     SizedBox(height: 12),
                     Text('Dokumen dilindungi kata sandi', style: TextStyle(color: Colors.white54)),
                   ],

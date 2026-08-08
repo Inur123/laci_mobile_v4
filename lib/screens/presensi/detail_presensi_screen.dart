@@ -30,7 +30,7 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -42,7 +42,7 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => FormPresensiScreen(isCabang: widget.isCabang, isEdit: true)));
             },
-            icon: Icon(CupertinoIcons.pencil, color: primaryColor),
+            icon: Icon(Icons.edit_outlined, color: primaryColor),
           ),
           const SizedBox(width: 4),
         ],
@@ -100,8 +100,8 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
               children: [
                 Row(
                   children: [
-                    Expanded(child: _buildInfoRow(CupertinoIcons.building_2_fill, 'PENYELENGGARA', 'PC IPNU IPPNU Magetan')),
-                    Expanded(child: _buildInfoRow(CupertinoIcons.location_solid, 'LOKASI / TEMPAT', 'Markas Besar PC IPNU...')),
+                    Expanded(child: _buildInfoRow(Icons.business, 'PENYELENGGARA', 'PC IPNU IPPNU Magetan')),
+                    Expanded(child: _buildInfoRow(Icons.location_on, 'LOKASI / TEMPAT', 'Markas Besar PC IPNU...')),
                   ],
                 ),
                 const Padding(
@@ -110,8 +110,8 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
                 ),
                 Row(
                   children: [
-                    Expanded(child: _buildInfoRow(CupertinoIcons.calendar, 'TANGGAL', 'Sabtu, 06 Juni 2026')),
-                    Expanded(child: _buildInfoRow(CupertinoIcons.clock_fill, 'WAKTU', '16:00 - 22:00 WIB')),
+                    Expanded(child: _buildInfoRow(Icons.calendar_today, 'TANGGAL', 'Sabtu, 06 Juni 2026')),
+                    Expanded(child: _buildInfoRow(Icons.access_time_filled, 'WAKTU', '16:00 - 22:00 WIB')),
                   ],
                 ),
               ],
@@ -135,7 +135,7 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(CupertinoIcons.qrcode, color: AppColors.textPrimary, size: 24),
+                    Icon(Icons.qr_code, color: AppColors.textPrimary, size: 24),
                     SizedBox(width: 8),
                     Text('QR Presensi', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
                   ],
@@ -152,7 +152,7 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
                     border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: const Center(
-                    child: Icon(CupertinoIcons.qrcode_viewfinder, size: 100, color: AppColors.textSecondary),
+                    child: Icon(Icons.qr_code_scanner, size: 100, color: AppColors.textSecondary),
                   ), // Placeholder for QR
                 ),
                 const SizedBox(height: 24),
@@ -160,7 +160,7 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: () {},
-                    icon: const Icon(CupertinoIcons.cloud_download, size: 16, color: Colors.white),
+                    icon: const Icon(Icons.cloud_download, size: 16, color: Colors.white),
                     label: const Text('Download QR', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primaryColor,
@@ -191,7 +191,7 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
               children: [
                 Row(
                   children: [
-                    const Icon(CupertinoIcons.person_2, size: 20, color: AppColors.textPrimary),
+                    const Icon(Icons.people_outline, size: 20, color: AppColors.textPrimary),
                     const SizedBox(width: 8),
                     const Expanded(child: Text('Daftar Kehadiran', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary))),
                     Container(
@@ -233,7 +233,7 @@ class _DetailPresensiScreenState extends State<DetailPresensiScreen> {
                     const SizedBox(width: 8),
                     OutlinedButton.icon(
                       onPressed: () {},
-                      icon: const Icon(CupertinoIcons.doc_text, size: 14, color: AppColors.cabangPrimary),
+                      icon: const Icon(Icons.description, size: 14, color: AppColors.cabangPrimary),
                       label: const Text('Export', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.cabangPrimary)),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),

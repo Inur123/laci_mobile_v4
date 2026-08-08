@@ -9,25 +9,47 @@ import 'package:laci_mobile/screens/periode/periode_screen.dart';
 import 'package:laci_mobile/screens/aktivitas/riwayat_aktivitas_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
 import 'package:laci_mobile/widgets/custom_refresh_control.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:laci_mobile/providers/dashboard_provider.dart';
+import 'package:laci_mobile/providers/data_saya_provider.dart';
+import 'package:shimmer/shimmer.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   final bool isCabang;
   const HomeScreen({super.key, this.isCabang = true});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(dataSayaProvider.notifier).fetchDataSaya();
+      if (widget.isCabang) {
+        ref.read(dashboardMonitoringProvider.notifier).fetchMonitoringStats();
+      }
+    });
+  }
+
   Future<void> _onRefresh() async {
-    // TODO: Nanti ganti dengan panggilan API untuk refresh data dari server
-    await Future.delayed(const Duration(milliseconds: 1500));
+    final futures = <Future>[
+      ref.read(dataSayaProvider.notifier).fetchDataSaya(),
+    ];
+    if (widget.isCabang) {
+      futures.add(ref.read(dashboardMonitoringProvider.notifier).fetchMonitoringStats());
+    }
+    await Future.wait(futures);
     if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+    final dashboardState = ref.watch(dashboardMonitoringProvider);
+    final dataSayaState = ref.watch(dataSayaProvider);
 
     return DefaultTabController(
       length: 2,
@@ -74,11 +96,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 _buildGridMenu(),
                                 const SizedBox(height: 24),
-                                _buildDataSayaStatsScroll(primaryColor),
-                                const SizedBox(height: 24),
-                                _buildStatistikDataChart(),
-                                const SizedBox(height: 24),
-                                _buildTrenKeaktifanChart(primaryColor),
+                                if (dataSayaState.isLoading && dataSayaState.stats == null)
+                                  _buildDataSayaShimmer()
+                                else ...[
+                                  _buildDataSayaStatsScroll(primaryColor, dataSayaState),
+                                  const SizedBox(height: 24),
+                                  _buildStatistikDataChart(),
+                                  const SizedBox(height: 24),
+                                  _buildTrenKeaktifanChart(primaryColor),
+                                ]
                               ],
                             ),
                           ),
@@ -94,21 +120,23 @@ class _HomeScreenState extends State<HomeScreen> {
                         SliverPadding(
                           padding: const EdgeInsets.only(bottom: 40),
                           sliver: SliverToBoxAdapter(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 16),
-                                _buildMonitoringStatsScroll(primaryColor),
-                                const SizedBox(height: 24),
-                                _buildPengkaderanBadges(),
-                                const SizedBox(height: 24),
-                                _buildTopPacChart(primaryColor),
-                                const SizedBox(height: 24),
-                                _buildSebaranDataChart(primaryColor),
-                                const SizedBox(height: 24),
-                                _buildRincianKlasemenTable(),
-                              ],
-                            ),
+                            child: dashboardState.isLoading && dashboardState.data == null
+                              ? _buildMonitoringShimmer()
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 16),
+                                    _buildMonitoringStatsScroll(primaryColor, dashboardState),
+                                    const SizedBox(height: 24),
+                                    _buildPengkaderanBadges(),
+                                    const SizedBox(height: 24),
+                                    _buildTopPacChart(primaryColor, dashboardState),
+                                    const SizedBox(height: 24),
+                                    _buildSebaranDataChart(primaryColor, dashboardState),
+                                    const SizedBox(height: 24),
+                                    _buildRincianKlasemenTable(dashboardState),
+                                  ],
+                                ),
                           ),
                         ),
                       ],
@@ -128,14 +156,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const SizedBox(height: 12),
                             _buildGridMenu(),
                             const SizedBox(height: 24),
-                            _buildDataSayaStatsScroll(primaryColor),
-                            const SizedBox(height: 24),
-                            _buildStatistikDataChart(),
-                            const SizedBox(height: 24),
-                            _buildTrenKeaktifanChart(primaryColor),
+                            if (dataSayaState.isLoading && dataSayaState.stats == null)
+                              _buildDataSayaShimmer()
+                            else ...[
+                              _buildDataSayaStatsScroll(primaryColor, dataSayaState),
+                              const SizedBox(height: 24),
+                              _buildStatistikDataChart(),
+                              const SizedBox(height: 24),
+                              _buildTrenKeaktifanChart(primaryColor),
+                            ]
                           ],
                         ),
                       ),
@@ -216,7 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: CircleAvatar(
               radius: 26,
               backgroundColor: Colors.white,
-              child: Icon(CupertinoIcons.person_solid, color: primaryColor, size: 30),
+              child: Icon(Icons.person, color: primaryColor, size: 30),
             ),
           ),
         ],
@@ -257,28 +288,28 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 widget.isCabang
                     ? _buildMenuButton(
-                        CupertinoIcons.person_3_fill,
+                        Icons.groups,
                         'Pengguna',
                         Colors.blue.shade100,
                         Colors.blue.shade700,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PenggunaScreen(isCabang: widget.isCabang))),
                       )
                     : _buildMenuButton(
-                        CupertinoIcons.layers_alt,
+                        Icons.layers,
                         'Periode',
                         Colors.blue.shade100,
                         Colors.blue.shade700,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => PeriodeScreen(isCabang: widget.isCabang))),
                       ),
                 _buildMenuButton(
-                  CupertinoIcons.calendar_today,
+                  Icons.calendar_today,
                   'Agenda',
                   Colors.orange.shade100,
                   Colors.orange.shade700,
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => AgendaScreen(isCabang: widget.isCabang))),
                 ),
                 _buildMenuButton(
-                  CupertinoIcons.qrcode_viewfinder,
+                  Icons.qr_code_scanner,
                   'Presensi',
                   Colors.green.shade100,
                   Colors.green.shade700,
@@ -286,14 +317,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 widget.isCabang
                     ? _buildMenuButton(
-                        CupertinoIcons.square_grid_2x2_fill,
+                        Icons.grid_view,
                         'Lainnya',
                         Colors.purple.shade100,
                         Colors.purple.shade700,
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => LainnyaScreen(isCabang: widget.isCabang))),
                       )
                     : _buildMenuButton(
-                        CupertinoIcons.chart_bar_alt_fill,
+                        Icons.bar_chart,
                         'Aktivitas',
                         Colors.purple.shade100,
                         Colors.purple.shade700,
@@ -334,25 +365,92 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildDataSayaStatsScroll(Color primaryColor) {
+  Widget _buildDataSayaShimmer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Shimmer Data Saya Stats
+        SizedBox(
+          height: 90,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 4,
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              return Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(
+                  width: 140,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Shimmer for Statistik Data Chart
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              height: 200,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Shimmer for Tren Keaktifan
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              height: 220,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDataSayaStatsScroll(Color primaryColor, DataSayaState state) {
+    final statsAktivitas = state.stats ?? {};
+    final totalAnggota = statsAktivitas['dataAnggota'] ?? 0;
+    final totalArsip = statsAktivitas['arsipSurat'] ?? 0;
+    final totalPeriode = statsAktivitas['periode'] ?? 0;
+    final totalPengajuan = statsAktivitas['pengajuanPac'] ?? 0;
+    final totalBerkasPimpinan = statsAktivitas['berkasPimpinan'] ?? 0;
+
     final stats = widget.isCabang ? [
-      {'title': 'TOTAL ANGGOTA', 'val': '1', 'color': Colors.blue},
-      {'title': 'ARSIP SURAT', 'val': '254', 'color': Colors.orange},
-      {'title': 'BERKAS SP', 'val': '15', 'color': Colors.purple},
-      {'title': 'BERKAS PIMPINAN', 'val': '8', 'color': Colors.pink},
-      {'title': 'VERIFIKASI PENGAJUAN', 'val': '29', 'color': Colors.green},
-      {'title': 'AGENDA KEGIATAN', 'val': '36', 'color': Colors.red},
-      {'title': 'MANAJEMEN USER', 'val': '20', 'color': Colors.blueGrey},
-      {'title': 'DATA ANGGOTA', 'val': '1', 'color': Colors.cyan},
-      {'title': 'PERIODE', 'val': '1', 'color': Colors.blue},
-      {'title': 'PRESENSI', 'val': '2', 'color': Colors.pink},
+      {'title': 'TOTAL ANGGOTA', 'val': '$totalAnggota', 'color': Colors.blue},
+      {'title': 'ARSIP SURAT', 'val': '$totalArsip', 'color': Colors.orange},
+      {'title': 'BERKAS SP', 'val': '0', 'color': Colors.purple}, // Belum ada di DB
+      {'title': 'BERKAS PIMPINAN', 'val': '$totalBerkasPimpinan', 'color': Colors.pink},
+      {'title': 'VERIFIKASI PENGAJUAN', 'val': '$totalPengajuan', 'color': Colors.green},
+      {'title': 'AGENDA KEGIATAN', 'val': '0', 'color': Colors.red}, // Belum ada di DB
+      {'title': 'MANAJEMEN USER', 'val': '0', 'color': Colors.blueGrey}, // Belum ada di DB
+      {'title': 'DATA ANGGOTA', 'val': '$totalAnggota', 'color': Colors.cyan},
+      {'title': 'PERIODE', 'val': '$totalPeriode', 'color': Colors.blue},
+      {'title': 'PRESENSI', 'val': '0', 'color': Colors.pink}, // Belum ada di DB
     ] : [
-      {'title': 'TOTAL ANGGOTA', 'val': '0', 'color': Colors.blue},
-      {'title': 'ARSIP SURAT', 'val': '0', 'color': Colors.orange},
-      {'title': 'ARSIP PIMPINAN', 'val': '0', 'color': Colors.purple},
-      {'title': 'PENGAJUAN BERKAS', 'val': '1', 'color': Colors.green},
-      {'title': 'PERIODE', 'val': '1', 'color': Colors.cyan},
-      {'title': 'PRESENSI', 'val': '0', 'color': Colors.pink},
+      {'title': 'TOTAL ANGGOTA', 'val': '$totalAnggota', 'color': Colors.blue},
+      {'title': 'ARSIP SURAT', 'val': '$totalArsip', 'color': Colors.orange},
+      {'title': 'ARSIP PIMPINAN', 'val': '$totalBerkasPimpinan', 'color': Colors.purple},
+      {'title': 'PENGAJUAN BERKAS', 'val': '$totalPengajuan', 'color': Colors.green},
+      {'title': 'PERIODE', 'val': '$totalPeriode', 'color': Colors.cyan},
+      {'title': 'PRESENSI', 'val': '0', 'color': Colors.pink}, // Belum ada di DB
     ];
 
     return SizedBox(
@@ -472,7 +570,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Row(
               children: [
-                Icon(CupertinoIcons.arrow_up_right, size: 18, color: primaryColor),
+                Icon(Icons.call_made, size: 18, color: primaryColor),
                 const SizedBox(width: 8),
                 const Text('Tren Keaktifan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
               ],
@@ -554,12 +652,108 @@ class _HomeScreenState extends State<HomeScreen> {
   // TAB 2: MONITORING WILAYAH COMPONENTS
   // ==========================================
 
-  Widget _buildMonitoringStatsScroll(Color primaryColor) {
+  Widget _buildMonitoringShimmer() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16),
+        // Shimmer for Stats Scroll
+        SizedBox(
+          height: 90,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 4,
+            separatorBuilder: (context, index) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              return Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(
+                  width: 150,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 24),
+        
+        // Shimmer for Pengkaderan Badges
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Row(
+            children: [
+              Expanded(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(height: 60, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(height: 60, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(height: 60, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Shimmer for Top PAC Chart
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              height: 250,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Shimmer for Sebaran Data (Pie Chart)
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey.shade300,
+            highlightColor: Colors.grey.shade100,
+            child: Container(
+              height: 260,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMonitoringStatsScroll(Color primaryColor, DashboardMonitoringState state) {
+    final data = state.data;
+    
     final stats = [
-      {'title': 'TOTAL ANGGOTA', 'val': '442', 'color': Colors.blue},
-      {'title': 'TOTAL ADMINISTRASI', 'val': '429', 'color': Colors.cyan},
-      {'title': 'PAC AKTIF', 'val': '20', 'color': Colors.deepPurple},
-      {'title': 'VALID / PENDING', 'val': '1', 'color': Colors.red},
+      {'title': 'TOTAL ANGGOTA', 'val': '${data?.totalAnggota ?? 0}', 'color': Colors.blue},
+      {'title': 'TOTAL ADMINISTRASI', 'val': '${data?.totalAdministrasi ?? 0}', 'color': Colors.cyan},
+      {'title': 'PAC AKTIF', 'val': '${data?.pacAktif ?? 0}', 'color': Colors.deepPurple},
+      {'title': 'VERIF / PENDING', 'val': '${data?.pacVerif ?? 0} / ${data?.pacPending ?? 0}', 'color': Colors.red},
     ];
 
     return SizedBox(
@@ -613,7 +807,7 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(
             children: [
-              Icon(CupertinoIcons.layers_alt_fill, size: 16, color: Colors.blue.shade700),
+              Icon(Icons.layers, size: 16, color: Colors.blue.shade700),
               const SizedBox(width: 8),
               const Text('Total Pengkaderan Wilayah', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
             ],
@@ -645,7 +839,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(CupertinoIcons.star_fill, size: 10, color: col),
+                        Icon(Icons.star, size: 10, color: col),
                         const SizedBox(width: 4),
                         Text(k['title'] as String, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: col)),
                       ],
@@ -662,15 +856,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTopPacChart(Color primaryColor) {
-    final data = [
-      {'name': 'PAC IPNU IPPNU PANEKAN', 'val': 173},
-      {'name': 'PAC KAWEDANAN', 'val': 83},
-      {'name': 'PAC Ngariboyo', 'val': 68},
-      {'name': 'PAC Parang', 'val': 63},
-      {'name': 'PAC IPNU IPPNU SUKOMORO', 'val': 51},
-    ];
-    final maxVal = 173.0;
+  Widget _buildTopPacChart(Color primaryColor, DashboardMonitoringState state) {
+    final topPacs = state.data?.topPacs ?? [];
+    
+    // Default dummy if empty, though real data should come from DB
+    final data = topPacs.isNotEmpty 
+        ? topPacs.map((p) => {'name': p.name, 'val': p.totalAnggota}).toList()
+        : [
+            {'name': 'Belum ada data', 'val': 0},
+          ];
+    
+    final maxVal = data.fold<double>(1.0, (max, item) => (item['val'] as int) > max ? (item['val'] as int).toDouble() : max);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -686,7 +882,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Row(
               children: [
-                const Icon(CupertinoIcons.rosette, size: 18, color: Colors.orange),
+                const Icon(Icons.military_tech, size: 18, color: Colors.orange),
                 const SizedBox(width: 8),
                 const Text('Top 5 PAC Paling Aktif', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
               ],
@@ -753,7 +949,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildSebaranDataChart(Color primaryColor) {
+  Widget _buildSebaranDataChart(Color primaryColor, DashboardMonitoringState state) {
+    final d = state.data;
+    final totalAnggota = d?.totalAnggota.toDouble() ?? 442.0;
+    final totalAdministrasi = d?.totalAdministrasi.toDouble() ?? 429.0;
+    final pacAktif = d?.pacAktif.toDouble() ?? 20.0;
+    // Scale up PAC visually if it's very small compared to the others
+    final pacScaled = pacAktif * 10; 
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
@@ -768,7 +971,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Row(
               children: [
-                const Icon(CupertinoIcons.chart_pie, size: 18, color: Colors.blue),
+                const Icon(Icons.pie_chart, size: 18, color: Colors.blue),
                 const SizedBox(width: 8),
                 const Text('Sebaran Data', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
               ],
@@ -784,9 +987,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       sectionsSpace: 4,
                       centerSpaceRadius: 60,
                       sections: [
-                        PieChartSectionData(color: Colors.blue, value: 442, title: '', radius: 24),
-                        PieChartSectionData(color: Colors.orange, value: 429, title: '', radius: 24),
-                        PieChartSectionData(color: Colors.cyan, value: 200, title: '', radius: 24), // PAC (*10 for visibility)
+                        PieChartSectionData(color: Colors.blue, value: totalAnggota, title: '', radius: 24),
+                        PieChartSectionData(color: Colors.orange, value: totalAdministrasi, title: '', radius: 24),
+                        PieChartSectionData(color: Colors.cyan, value: pacScaled, title: '', radius: 24), // PAC (*10 for visibility)
                       ],
                     ),
                   ),
@@ -820,7 +1023,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildRincianKlasemenTable() {
+  Widget _buildRincianKlasemenTable(DashboardMonitoringState state) {
+    final topPacs = state.data?.topPacs ?? [];
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
@@ -854,36 +1059,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   DataColumn(label: Text('ARSIP SURAT')),
                   DataColumn(label: Text('SKOR')),
                 ],
-                rows: [
-                  DataRow(
-                    color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) => Colors.orange.shade50),
-                    cells: const [
-                      DataCell(Icon(CupertinoIcons.rosette, color: Colors.orange, size: 16)),
-                      DataCell(Text('PAC IPNU IPPNU PANEKAN')),
-                      DataCell(Text('82')),
-                      DataCell(Text('82')),
-                      DataCell(Text('173', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold))),
-                    ]
-                  ),
-                  const DataRow(
+                rows: List.generate(topPacs.length, (index) {
+                  final pac = topPacs[index];
+                  final isFirst = index == 0;
+                  final rank = index + 1;
+                  final skor = pac.totalAnggota; // Assume score is member count
+
+                  return DataRow(
+                    color: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) => isFirst ? Colors.orange.shade50 : null),
                     cells: [
-                      DataCell(Text('2', style: TextStyle(color: Colors.grey))),
-                      DataCell(Text('PAC KAWEDANAN')),
-                      DataCell(Text('49')),
-                      DataCell(Text('27')),
-                      DataCell(Text('83')),
+                      DataCell(isFirst 
+                        ? const Icon(Icons.military_tech, color: Colors.orange, size: 16) 
+                        : Text('$rank', style: const TextStyle(color: Colors.grey))),
+                      DataCell(Text(pac.name)),
+                      DataCell(Text('${pac.totalAnggota}')),
+                      DataCell(Text('${pac.totalArsipSurat}')),
+                      DataCell(Text('$skor', style: TextStyle(color: isFirst ? Colors.orange : AppColors.textPrimary, fontWeight: isFirst ? FontWeight.bold : FontWeight.w600))),
                     ]
-                  ),
-                  const DataRow(
-                    cells: [
-                      DataCell(Text('3', style: TextStyle(color: Colors.grey))),
-                      DataCell(Text('PAC Ngariboyo')),
-                      DataCell(Text('66')),
-                      DataCell(Text('1')),
-                      DataCell(Text('68')),
-                    ]
-                  ),
-                ],
+                  );
+                }),
               ),
             ),
             const SizedBox(height: 12),
@@ -892,5 +1086,5 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
+}

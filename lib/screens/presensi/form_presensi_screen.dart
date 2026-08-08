@@ -41,7 +41,7 @@ class _FormPresensiScreenState extends State<FormPresensiScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -142,7 +142,7 @@ class _FormPresensiScreenState extends State<FormPresensiScreen> {
                     ),
                     child: Row(
                       children: [
-                        const Icon(CupertinoIcons.calendar, size: 20, color: AppColors.textSecondary),
+                        const Icon(Icons.calendar_today, size: 20, color: AppColors.textSecondary),
                         const SizedBox(width: 12),
                         Text(
                           _selectedDate ?? 'Pilih tanggal kegiatan',
@@ -186,7 +186,7 @@ class _FormPresensiScreenState extends State<FormPresensiScreen> {
                                     _jamMulai ?? '08:00',
                                     style: TextStyle(color: _jamMulai != null ? AppColors.textPrimary : AppColors.textSecondary, fontSize: 14),
                                   ),
-                                  const Icon(CupertinoIcons.clock, size: 18, color: AppColors.textSecondary),
+                                  const Icon(Icons.access_time, size: 18, color: AppColors.textSecondary),
                                 ],
                               ),
                             ),
@@ -225,7 +225,7 @@ class _FormPresensiScreenState extends State<FormPresensiScreen> {
                                     _jamSelesai ?? '12:00',
                                     style: TextStyle(color: _jamSelesai != null ? AppColors.textPrimary : AppColors.textSecondary, fontSize: 14),
                                   ),
-                                  const Icon(CupertinoIcons.clock, size: 18, color: AppColors.textSecondary),
+                                  const Icon(Icons.access_time, size: 18, color: AppColors.textSecondary),
                                 ],
                               ),
                             ),

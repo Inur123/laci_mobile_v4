@@ -125,7 +125,7 @@ class _FormAgendaScreenState extends State<FormAgendaScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -227,7 +227,7 @@ class _FormAgendaScreenState extends State<FormAgendaScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(CupertinoIcons.calendar, size: 20, color: Colors.grey.shade600),
+                          Icon(Icons.calendar_today, size: 20, color: Colors.grey.shade600),
                           const SizedBox(width: 12),
                           Text(dateRangeText, style: const TextStyle(fontSize: 14)),
                         ],
@@ -257,7 +257,7 @@ class _FormAgendaScreenState extends State<FormAgendaScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(_jamMulai.format(context), style: const TextStyle(fontSize: 14)),
-                                    Icon(CupertinoIcons.clock, size: 18, color: Colors.grey.shade600),
+                                    Icon(Icons.access_time, size: 18, color: Colors.grey.shade600),
                                   ],
                                 ),
                               ),
@@ -284,7 +284,7 @@ class _FormAgendaScreenState extends State<FormAgendaScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(_jamSelesai.format(context), style: const TextStyle(fontSize: 14)),
-                                    Icon(CupertinoIcons.clock, size: 18, color: Colors.grey.shade600),
+                                    Icon(Icons.access_time, size: 18, color: Colors.grey.shade600),
                                   ],
                                 ),
                               ),
@@ -384,7 +384,7 @@ class _FormAgendaScreenState extends State<FormAgendaScreen> {
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(CupertinoIcons.cloud_upload, size: 20),
+                        Icon(Icons.cloud_upload, size: 20),
                         SizedBox(width: 8),
                         Text('Simpan Kegiatan', style: TextStyle(fontWeight: FontWeight.bold)),
                       ],

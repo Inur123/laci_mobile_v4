@@ -115,7 +115,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               // 2. BAGIAN INFORMASI PRIBADI
               _buildSectionCard(
                 title: 'Informasi Pribadi',
-                icon: CupertinoIcons.person,
+                icon: Icons.person_outline,
                 children: [
                   // Field Nama
                   const Text('Nama Pimpinan',
@@ -130,7 +130,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       hintText: 'Masukkan Nama Pimpinan',
                       hintStyle:
                           const TextStyle(color: Colors.black38, fontSize: 14),
-                      prefixIcon: const Icon(CupertinoIcons.person_fill,
+                      prefixIcon: const Icon(Icons.person,
                           color: Colors.black45, size: 20),
                       filled: false,
                       contentPadding: const EdgeInsets.symmetric(
@@ -163,7 +163,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       hintText: 'Masukkan email baru',
                       hintStyle:
                           const TextStyle(color: Colors.black38, fontSize: 14),
-                      prefixIcon: const Icon(CupertinoIcons.mail_solid,
+                      prefixIcon: const Icon(Icons.mail,
                           color: Colors.black45, size: 20),
                       filled: false,
                       contentPadding: const EdgeInsets.symmetric(
@@ -197,7 +197,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       bool showVerified = isEmailVerified && !isEmailChanged;
                       String badgeText = showVerified ? 'Terverifikasi' : (isEmailChanged ? 'Perlu Disimpan & Verifikasi' : 'Belum Verifikasi');
                       Color badgeColor = showVerified ? Colors.green : Colors.orange;
-                      IconData badgeIcon = showVerified ? CupertinoIcons.checkmark_seal_fill : CupertinoIcons.exclamationmark_triangle_fill;
+                      IconData badgeIcon = showVerified ? Icons.verified : Icons.warning;
 
                       return Row(
                         children: [
@@ -259,7 +259,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             ),
                             child: Row(
                               children: [
-                                const Icon(CupertinoIcons.info_circle_fill,
+                                const Icon(Icons.info,
                                     color: Colors.orange, size: 20),
                                 const SizedBox(width: 12),
                                 const Expanded(
@@ -302,7 +302,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                     child: Row(
                       children: [
-                        Icon(CupertinoIcons.info_circle_fill,
+                        Icon(Icons.info,
                             color: primaryColor, size: 18),
                         SizedBox(width: 10),
                         Expanded(
@@ -323,7 +323,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               // 3. BAGIAN KEAMANAN (UBAH PASSWORD)
               _buildSectionCard(
                 title: 'Keamanan',
-                icon: CupertinoIcons.lock_shield,
+                icon: Icons.gpp_good,
                 children: [
                   const Text(
                     'Minimal 6 karakter untuk keamanan ekstra. Kosongkan jika tidak ingin mengubah password.',
@@ -346,13 +346,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       hintText: 'Masukkan password saat ini',
                       hintStyle:
                           const TextStyle(color: Colors.black38, fontSize: 14),
-                      prefixIcon: const Icon(CupertinoIcons.lock_fill,
+                      prefixIcon: const Icon(Icons.lock,
                           color: Colors.black45, size: 20),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscureCurrentPassword
-                              ? CupertinoIcons.eye_slash_fill
-                              : CupertinoIcons.eye_fill,
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Colors.black45,
                           size: 20,
                         ),
@@ -393,13 +393,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       hintText: 'Masukkan password baru',
                       hintStyle:
                           const TextStyle(color: Colors.black38, fontSize: 14),
-                      prefixIcon: const Icon(CupertinoIcons.lock_fill,
+                      prefixIcon: const Icon(Icons.lock,
                           color: Colors.black45, size: 20),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword
-                              ? CupertinoIcons.eye_slash_fill
-                              : CupertinoIcons.eye_fill,
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Colors.black45,
                           size: 20,
                         ),
@@ -439,13 +439,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       hintText: 'Konfirmasi password baru',
                       hintStyle:
                           const TextStyle(color: Colors.black38, fontSize: 14),
-                      prefixIcon: const Icon(CupertinoIcons.lock_fill,
+                      prefixIcon: const Icon(Icons.lock,
                           color: Colors.black45, size: 20),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscureConfirmPassword
-                              ? CupertinoIcons.eye_slash_fill
-                              : CupertinoIcons.eye_fill,
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Colors.black45,
                           size: 20,
                         ),
@@ -564,7 +564,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             strokeWidth: 2,
                           ),
                         )
-                      : const Icon(CupertinoIcons.square_arrow_right,
+                      : const Icon(Icons.output,
                           color: Colors.red),
                   label: Text(
                       _isLoggingOut ? 'Sedang keluar...' : 'Keluar dari Akun',
@@ -828,7 +828,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
-            Icon(CupertinoIcons.mail_solid, color: primaryColor),
+            Icon(Icons.mail, color: primaryColor),
             const SizedBox(width: 10),
             const Expanded(
                 child: Text('Verifikasi Email',
@@ -936,7 +936,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 3),
                 ),
-                child: const Icon(CupertinoIcons.camera_fill,
+                child: const Icon(Icons.camera_alt,
                     color: Colors.white, size: 16),
               ),
             ),

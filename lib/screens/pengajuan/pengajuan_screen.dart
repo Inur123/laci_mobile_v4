@@ -78,14 +78,14 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               physics: const BouncingScrollPhysics(),
               children: [
-                _buildStatCard('TOTAL', '0', CupertinoIcons.doc_text, Colors.blue),
-                _buildStatCard('IPNU', '0', CupertinoIcons.shield, Colors.green),
-                _buildStatCard('IPPNU', '0', CupertinoIcons.shield, Colors.red),
-                _buildStatCard('BERSAMA', '0', CupertinoIcons.person_2_fill, Colors.blue),
-                _buildStatCard('CBP KPP', '0', CupertinoIcons.shield, Colors.orange),
-                _buildStatCard('PENDING', '0', CupertinoIcons.clock, Colors.orange),
-                _buildStatCard('DITERIMA', '0', CupertinoIcons.checkmark_shield, Colors.green),
-                _buildStatCard('DITOLAK', '0', CupertinoIcons.xmark_shield, Colors.red),
+                _buildStatCard('TOTAL', '0', Icons.description, Colors.blue),
+                _buildStatCard('IPNU', '0', Icons.security, Colors.green),
+                _buildStatCard('IPPNU', '0', Icons.security, Colors.red),
+                _buildStatCard('BERSAMA', '0', Icons.people, Colors.blue),
+                _buildStatCard('CBP KPP', '0', Icons.security, Colors.orange),
+                _buildStatCard('PENDING', '0', Icons.access_time, Colors.orange),
+                _buildStatCard('DITERIMA', '0', Icons.gpp_good, Colors.green),
+                _buildStatCard('DITOLAK', '0', Icons.gpp_bad, Colors.red),
               ],
             ),
           ),
@@ -134,7 +134,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                     border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: IconButton(
-                    icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                    icon: const Icon(Icons.tune,
                         size: 20, color: AppColors.textPrimary),
                     onPressed: () {
                       _showFilterModal(context);
@@ -175,7 +175,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                 );
               },
               backgroundColor: AppColors.pacPrimary,
-              child: const Icon(CupertinoIcons.add, color: Colors.white),
+              child: const Icon(Icons.add, color: Colors.white),
             ),
     );
   }
@@ -304,7 +304,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                       ),
                       const SizedBox(width: 4),
                       PopupMenuButton<String>(
-                        icon: const Icon(CupertinoIcons.ellipsis,
+                        icon: const Icon(Icons.more_horiz,
                             size: 20, color: AppColors.textSecondary),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
@@ -336,12 +336,12 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                         },
                         itemBuilder: (context) => [
                           _buildPopupMenuItem(
-                              'lihat', CupertinoIcons.eye, 'Lihat Detail'),
+                              'lihat', Icons.visibility_outlined, 'Lihat Detail'),
                           if (!widget.isCabang && item['status'] == 'Pending')
                             _buildPopupMenuItem(
-                                'edit', CupertinoIcons.pencil, 'Edit'),
+                                'edit', Icons.edit_outlined, 'Edit'),
                           _buildPopupMenuItem(
-                              'hapus', CupertinoIcons.trash, 'Hapus',
+                              'hapus', Icons.delete_outline, 'Hapus',
                               isDestructive: true),
                         ],
                       ),
@@ -352,7 +352,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
               const SizedBox(height: 12),
               Row(
                 children: [
-                  const Icon(CupertinoIcons.person_solid,
+                  const Icon(Icons.person,
                       size: 14, color: AppColors.textSecondary),
                   const SizedBox(width: 6),
                   Expanded(
@@ -369,7 +369,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  const Icon(CupertinoIcons.doc_plaintext,
+                  const Icon(Icons.article,
                       size: 14, color: AppColors.textSecondary),
                   const SizedBox(width: 6),
                   Expanded(
@@ -392,7 +392,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                 children: [
                   Row(
                     children: [
-                      const Icon(CupertinoIcons.calendar,
+                      const Icon(Icons.calendar_today,
                           size: 14, color: AppColors.textSecondary),
                       const SizedBox(width: 4),
                       Text(item['tanggal'],
@@ -512,7 +512,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                       child: DropdownButton<String>(
                         value: selectedStatus,
                         isExpanded: true,
-                        icon: const Icon(CupertinoIcons.chevron_down, size: 16),
+                        icon: const Icon(Icons.expand_more, size: 16),
                         items: [
                           'Semua Status',
                           'Pending',
@@ -548,7 +548,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                       child: DropdownButton<String>(
                         value: selectedPenerima,
                         isExpanded: true,
-                        icon: const Icon(CupertinoIcons.chevron_down, size: 16),
+                        icon: const Icon(Icons.expand_more, size: 16),
                         items: [
                           'Semua Penerima',
                           'IPNU',
@@ -587,7 +587,7 @@ class _PengajuanScreenState extends State<PengajuanScreen> {
                       child: DropdownButton<String>(
                         value: selectedPac,
                         isExpanded: true,
-                        icon: const Icon(CupertinoIcons.chevron_down, size: 16),
+                        icon: const Icon(Icons.expand_more, size: 16),
                         items: [
                           'Semua PAC',
                           'Pac Barat',

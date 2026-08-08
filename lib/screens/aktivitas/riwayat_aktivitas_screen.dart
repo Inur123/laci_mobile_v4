@@ -56,7 +56,7 @@ class _RiwayatAktivitasScreenState
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      const Icon(CupertinoIcons.person_solid, size: 14, color: Colors.white),
+                      const Icon(Icons.person, size: 14, color: Colors.white),
                       const SizedBox(width: 6),
                       Container(width: 150, height: 14, color: Colors.white),
                     ],
@@ -107,7 +107,7 @@ class _RiwayatAktivitasScreenState
           elevation: 0,
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(CupertinoIcons.back, color: primaryColor),
+            icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
             onPressed: () => Navigator.pop(context),
           ),
           title: const Text(
@@ -142,7 +142,7 @@ class _RiwayatAktivitasScreenState
           elevation: 0,
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(CupertinoIcons.back, color: primaryColor),
+            icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
             onPressed: () => Navigator.pop(context),
           ),
           title: const Text(
@@ -215,67 +215,67 @@ class _RiwayatAktivitasScreenState
       {
         'title': 'SEMUA',
         'key': 'SEMUA',
-        'icon': CupertinoIcons.waveform_path_ecg,
+        'icon': Icons.monitor_heart,
         'color': isGlobal ? Colors.blue : Colors.green
       },
       {
         'title': 'PERIODE',
         'key': 'PERIODE',
-        'icon': CupertinoIcons.layers_alt,
+        'icon': Icons.layers,
         'color': Colors.blue
       },
       {
         'title': 'AUTENTIKASI',
         'key': 'AUTH',
-        'icon': CupertinoIcons.lock,
+        'icon': Icons.lock_outline,
         'color': Colors.grey
       },
       {
         'title': 'UPDATE PROFIL',
         'key': 'USER',
-        'icon': CupertinoIcons.person_crop_circle,
+        'icon': Icons.account_circle,
         'color': Colors.grey
       },
       {
         'title': 'ARSIP SURAT',
         'key': 'ARSIP_SURAT',
-        'icon': CupertinoIcons.doc_text,
+        'icon': Icons.description,
         'color': Colors.blue
       },
       {
         'title': 'ANGGOTA',
         'key': 'ANGGOTA',
-        'icon': CupertinoIcons.person_2,
+        'icon': Icons.people_outline,
         'color': Colors.green
       },
       {
         'title': 'BERKAS PIMPINAN',
         'key': 'BERKAS_PIMPINAN',
-        'icon': CupertinoIcons.folder,
+        'icon': Icons.folder,
         'color': Colors.purple
       },
       {
         'title': 'BERKAS SP',
         'key': 'BERKAS_SP',
-        'icon': CupertinoIcons.doc_plaintext,
+        'icon': Icons.article,
         'color': Colors.purple.shade300
       },
       {
         'title': 'KEGIATAN',
         'key': 'AGENDA_KEGIATAN',
-        'icon': CupertinoIcons.calendar,
+        'icon': Icons.calendar_today,
         'color': Colors.orange
       },
       {
         'title': 'PENGAJUAN PAC',
         'key': 'PENGAJUAN_BERKAS',
-        'icon': CupertinoIcons.paperplane,
+        'icon': Icons.send,
         'color': Colors.red
       },
       {
         'title': 'PRESENSI',
         'key': 'PRESENSI',
-        'icon': CupertinoIcons.waveform_path,
+        'icon': Icons.show_chart,
         'color': Colors.grey
       },
     ];
@@ -388,7 +388,7 @@ class _RiwayatAktivitasScreenState
             children: [
               Row(
                 children: [
-                  Icon(CupertinoIcons.graph_circle,
+                  Icon(Icons.data_usage,
                       color: primaryColor, size: 20),
                   const SizedBox(width: 8),
                   const Text('Tren Aktivitas User (7 Hari)',
@@ -512,7 +512,7 @@ class _RiwayatAktivitasScreenState
             children: [
               Row(
                 children: [
-                  Icon(CupertinoIcons.chart_pie, color: primaryColor, size: 20),
+                  Icon(Icons.pie_chart, color: primaryColor, size: 20),
                   const SizedBox(width: 8),
                   const Text('Sebaran Aktivitas per Modul',
                       style: TextStyle(
@@ -668,7 +668,7 @@ class _RiwayatAktivitasScreenState
                     ),
                   )
                 : IconButton(
-                    icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                    icon: const Icon(Icons.tune,
                         size: 18, color: AppColors.textPrimary),
                     onPressed: () {
                       _showFilterModal(context, isGlobal);
@@ -762,7 +762,7 @@ class _RiwayatAktivitasScreenState
                                     const SizedBox(height: 12),
                                     Row(
                                       children: [
-                                        const Icon(CupertinoIcons.person_solid, size: 14, color: Colors.white),
+                                        const Icon(Icons.person, size: 14, color: Colors.white),
                                         const SizedBox(width: 6),
                                         Container(width: 150, height: 14, color: Colors.white),
                                       ],
@@ -849,7 +849,7 @@ class _RiwayatAktivitasScreenState
                         if (isGlobal) ...[
                           Row(
                             children: [
-                              const Icon(CupertinoIcons.person_solid,
+                              const Icon(Icons.person,
                                   size: 14, color: AppColors.textSecondary),
                               const SizedBox(width: 6),
                               Text(item.userName,
@@ -870,7 +870,7 @@ class _RiwayatAktivitasScreenState
                                 color: Colors.blue.withOpacity(0.1),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(CupertinoIcons.square_list,
+                              child: const Icon(Icons.list_alt,
                                   size: 16, color: Colors.blue),
                             ),
                             const SizedBox(width: 12),
@@ -1026,7 +1026,7 @@ class _RiwayatAktivitasScreenState
                                 dropdownItems.add(DropdownMenuItem(
                                   value: u.id,
                                   child: Text(
-                                      '${u.name} (${u.role.replaceAll("_", " ")})',
+                                      u.name,
                                       style: const TextStyle(fontSize: 14)),
                                 ));
                               }
@@ -1049,7 +1049,7 @@ class _RiwayatAktivitasScreenState
                                             : 'Semua User',
                                     isExpanded: true,
                                     icon: const Icon(
-                                        CupertinoIcons.chevron_down,
+                                        Icons.expand_more,
                                         size: 16),
                                     items: dropdownItems,
                                     onChanged: (val) {
@@ -1157,7 +1157,7 @@ class _RiwayatAktivitasScreenState
         child: DropdownButton<String>(
           value: value,
           isExpanded: true,
-          icon: const Icon(CupertinoIcons.chevron_down, size: 16),
+          icon: const Icon(Icons.expand_more, size: 16),
           items: items
               .map((e) => DropdownMenuItem(
                   value: e,

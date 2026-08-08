@@ -31,7 +31,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back,
+          icon: Icon(Icons.arrow_back_ios_new,
               color: (widget.isCabang
                   ? AppColors.cabangPrimary
                   : AppColors.pacPrimary)),
@@ -58,14 +58,14 @@ class _FormSpScreenState extends State<FormSpScreen> {
               children: [
                 CustomTextField(
                   label: 'Nama Pimpinan *',
-                  icon: CupertinoIcons.person_3_fill,
+                  icon: Icons.groups,
                   isCabang: widget.isCabang,
                 ),
                 const SizedBox(height: 16),
 
                 _buildPremiumDropdown(
                   label: 'Organisasi *',
-                  icon: CupertinoIcons.shield_fill,
+                  icon: Icons.security,
                   value: _selectedOrganisasi,
                   hint: 'Pilih Organisasi',
                   onTap: () {
@@ -85,7 +85,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
                     Expanded(
                       child: _buildPremiumDropdown(
                         label: 'Tanggal Mulai *',
-                        icon: CupertinoIcons.calendar,
+                        icon: Icons.calendar_today,
                         value: _tanggalMulai,
                         hint: 'Pilih',
                         onTap: () {
@@ -98,7 +98,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
                     Expanded(
                       child: _buildPremiumDropdown(
                         label: 'Tanggal Berakhir *',
-                        icon: CupertinoIcons.calendar,
+                        icon: Icons.calendar_today,
                         value: _tanggalBerakhir,
                         hint: 'Pilih',
                         onTap: () {
@@ -178,8 +178,8 @@ class _FormSpScreenState extends State<FormSpScreen> {
                           ),
                           child: Icon(
                             _fileName != null
-                                ? CupertinoIcons.doc_fill
-                                : CupertinoIcons.cloud_upload,
+                                ? Icons.description
+                                : Icons.cloud_upload,
                             color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                             size: 28,
                           ),
@@ -317,7 +317,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(CupertinoIcons.chevron_down,
+                const Icon(Icons.expand_more,
                     color: AppColors.textSecondary, size: 20),
                 const SizedBox(width: 16),
               ],
@@ -378,7 +378,7 @@ class _FormSpScreenState extends State<FormSpScreen> {
                       ),
                     ),
                     trailing: isSelected
-                        ? Icon(CupertinoIcons.checkmark_alt,
+                        ? Icon(Icons.check,
                             color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)
                         : null,
                     onTap: () {

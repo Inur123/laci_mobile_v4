@@ -25,7 +25,7 @@ class LainnyaScreen extends StatelessWidget {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
+          icon: Icon(Icons.arrow_back_ios_new, color: isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -42,7 +42,7 @@ class LainnyaScreen extends StatelessWidget {
             'Administrasi & Sistem',
             [
               _buildMenuItem(
-                icon: CupertinoIcons.calendar_badge_plus,
+                icon: Icons.event_note,
                 color: Colors.blue,
                 title: 'Periode',
                 subtitle: 'Kelola data periode kepengurusan aktif',
@@ -51,7 +51,7 @@ class LainnyaScreen extends StatelessWidget {
                 },
               ),
               _buildMenuItem(
-                icon: CupertinoIcons.clock_fill,
+                icon: Icons.access_time_filled,
                 color: Colors.orange,
                 title: 'Riwayat Aktivitas',
                 subtitle: 'Pantau log aktivitas pengguna aplikasi',
@@ -60,7 +60,7 @@ class LainnyaScreen extends StatelessWidget {
                 },
               ),
               _buildMenuItem(
-                icon: CupertinoIcons.mail_solid,
+                icon: Icons.mail,
                 color: Colors.red.shade400,
                 title: 'Log Email',
                 subtitle: 'Cek riwayat pengiriman email sistem',
@@ -69,7 +69,7 @@ class LainnyaScreen extends StatelessWidget {
                 },
               ),
               _buildMenuItem(
-                icon: CupertinoIcons.tray_arrow_down_fill,
+                icon: Icons.move_to_inbox,
                 color: Colors.green,
                 title: 'Backup Database',
                 subtitle: 'Cadangkan atau pulihkan data sistem',
@@ -148,7 +148,7 @@ class LainnyaScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Icon(CupertinoIcons.chevron_right, color: Colors.black26, size: 16),
+                const Icon(Icons.chevron_right, color: Colors.black26, size: 16),
               ],
             ),
           ),

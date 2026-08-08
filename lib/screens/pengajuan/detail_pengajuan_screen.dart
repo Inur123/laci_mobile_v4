@@ -61,7 +61,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(CupertinoIcons.xmark_circle_fill,
+                    icon: const Icon(Icons.cancel,
                         color: Colors.black26),
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -206,7 +206,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -250,13 +250,13 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              _buildInfoRow(CupertinoIcons.doc_text, 'Nomor Surat',
+              _buildInfoRow(Icons.description, 'Nomor Surat',
                   widget.data['no_surat']),
               _buildInfoRow(
-                  CupertinoIcons.person_2, 'Penerima', widget.data['penerima']),
-              _buildInfoRow(CupertinoIcons.calendar, 'Tanggal Surat',
+                  Icons.people_outline, 'Penerima', widget.data['penerima']),
+              _buildInfoRow(Icons.calendar_today, 'Tanggal Surat',
                   widget.data['tanggal']),
-              _buildInfoRow(CupertinoIcons.doc_plaintext, 'Keperluan',
+              _buildInfoRow(Icons.article, 'Keperluan',
                   widget.data['keperluan']),
 
               const Padding(
@@ -281,7 +281,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                       shape: BoxShape.circle,
                     ),
                     child:
-                        const Icon(CupertinoIcons.person, color: Colors.grey),
+                        const Icon(Icons.person_outline, color: Colors.grey),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -340,7 +340,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                         color: primaryColor.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Icon(CupertinoIcons.doc_on_doc_fill,
+                      child: Icon(Icons.file_copy,
                           color: primaryColor),
                     ),
                     const SizedBox(width: 12),
@@ -350,12 +350,12 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                               fontWeight: FontWeight.w600, fontSize: 14)),
                     ),
                     IconButton(
-                      icon: const Icon(CupertinoIcons.eye,
+                      icon: const Icon(Icons.visibility_outlined,
                           color: AppColors.textSecondary),
                       onPressed: () {},
                     ),
                     IconButton(
-                      icon: Icon(CupertinoIcons.cloud_download,
+                      icon: Icon(Icons.cloud_download,
                           color: primaryColor),
                       onPressed: () {},
                     ),
@@ -377,7 +377,7 @@ class _DetailPengajuanScreenState extends State<DetailPengajuanScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(CupertinoIcons.photo,
+                      Icon(Icons.photo,
                           color: Colors.black26, size: 48),
                       SizedBox(height: 8),
                       Text('Pratinjau Gambar / Dokumen',

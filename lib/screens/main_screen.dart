@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
             backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
             elevation: 2,
             shape: const CircleBorder(),
-            child: const Icon(CupertinoIcons.doc_text, color: Colors.white, size: 28),
+            child: const Icon(Icons.description, color: Colors.white, size: 28),
           ),
         ),
       ),
@@ -66,11 +66,11 @@ class _MainScreenState extends State<MainScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: _buildNavItem(CupertinoIcons.home, 'Beranda', 0)),
-            Expanded(child: _buildNavItem(CupertinoIcons.folder, 'Arsip', 1)),
+            Expanded(child: _buildNavItem(Icons.home, 'Beranda', 0)),
+            Expanded(child: _buildNavItem(Icons.folder, 'Arsip', 1)),
             const Expanded(child: SizedBox()), // Ruang kosong untuk FAB
-            Expanded(child: _buildNavItem(CupertinoIcons.person_2, 'Anggota', 3)),
-            Expanded(child: _buildNavItem(CupertinoIcons.person_circle, 'Profil', 4)),
+            Expanded(child: _buildNavItem(Icons.people_outline, 'Anggota', 3)),
+            Expanded(child: _buildNavItem(Icons.account_circle, 'Profil', 4)),
           ],
         ),
       ),

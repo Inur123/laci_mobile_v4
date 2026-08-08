@@ -21,13 +21,13 @@ class DetailArsipSuratScreen extends StatelessWidget {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+          icon: Icon(Icons.arrow_back_ios_new, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text('Detail Arsip', style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600, fontSize: 16)),
         actions: [
           IconButton(
-            icon: Icon(CupertinoIcons.pencil, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+            icon: Icon(Icons.edit_outlined, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const FormArsipSuratScreen(isEdit: true)));
             },
@@ -55,11 +55,11 @@ class DetailArsipSuratScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             
-            _buildDetailRow(CupertinoIcons.number, 'Nomor Surat', '020/PW/A/7455/2026'),
+            _buildDetailRow(Icons.tag, 'Nomor Surat', '020/PW/A/7455/2026'),
             const Divider(height: 24, thickness: 1, color: Colors.black12),
-            _buildDetailRow(CupertinoIcons.calendar, 'Tanggal', '16 Juli 2026'),
+            _buildDetailRow(Icons.calendar_today, 'Tanggal', '16 Juli 2026'),
             const Divider(height: 24, thickness: 1, color: Colors.black12),
-            _buildDetailRow(CupertinoIcons.person_2, 'Pengirim', 'PW IPPNU Jatim'),
+            _buildDetailRow(Icons.people_outline, 'Pengirim', 'PW IPPNU Jatim'),
             
             const SizedBox(height: 24),
             const Text('Deskripsi', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
@@ -86,7 +86,7 @@ class DetailArsipSuratScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(color: Colors.red.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                    child: const Icon(CupertinoIcons.doc_fill, color: Colors.red, size: 24),
+                    child: const Icon(Icons.description, color: Colors.red, size: 24),
                   ),
                   const SizedBox(width: 16),
                   const Expanded(
@@ -100,7 +100,7 @@ class DetailArsipSuratScreen extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(CupertinoIcons.cloud_download, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
+                    icon: Icon(Icons.cloud_download, color: (isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
                     onPressed: () {},
                   )
                 ],

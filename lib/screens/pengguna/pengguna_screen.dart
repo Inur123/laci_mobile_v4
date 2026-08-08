@@ -1,24 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:laci_mobile/utils/app_colors.dart';
+import 'package:laci_mobile/widgets/custom_refresh_control.dart';
 import 'package:laci_mobile/screens/pengguna/detail_pengguna_screen.dart';
+import 'package:laci_mobile/providers/pengguna_provider.dart';
 
-class PenggunaScreen extends StatefulWidget {
+class PenggunaScreen extends ConsumerStatefulWidget {
   final bool isCabang;
 
   const PenggunaScreen({super.key, this.isCabang = true});
 
   @override
-  State<PenggunaScreen> createState() => _PenggunaScreenState();
+  ConsumerState<PenggunaScreen> createState() => _PenggunaScreenState();
 }
 
-class _PenggunaScreenState extends State<PenggunaScreen> {
+class _PenggunaScreenState extends ConsumerState<PenggunaScreen> {
   String _selectedStatusAkun = 'Semua';
   String _selectedStatusEmail = 'Semua';
+
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(penggunaProvider.notifier).fetchData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary;
+    final state = ref.watch(penggunaProvider);
     
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -28,7 +43,7 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -40,10 +55,12 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
       ),
-      body: Column(
-        children: [
-          // Statistics Scrollable Row
-          Container(
+      body: state.isLoading 
+          ? _buildFullShimmerLoading()
+          : Column(
+              children: [
+                // Statistics Scrollable Row
+                Container(
             padding: const EdgeInsets.symmetric(vertical: 16),
             color: Colors.white,
             child: SingleChildScrollView(
@@ -52,15 +69,15 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
               physics: const BouncingScrollPhysics(),
               child: Row(
                 children: [
-                  _buildStatCard('TOTAL USER', '22', CupertinoIcons.person_2, Colors.blue),
+                  _buildStatCard('TOTAL USER', '${state.stats?.totalUser ?? 0}', Icons.people_outline, Colors.blue),
                   const SizedBox(width: 12),
-                  _buildStatCard('AKUN AKTIF', '21', CupertinoIcons.person_crop_circle_badge_checkmark, Colors.green),
+                  _buildStatCard('AKUN AKTIF', '${state.stats?.akunAktif ?? 0}', Icons.how_to_reg, Colors.green),
                   const SizedBox(width: 12),
-                  _buildStatCard('AKUN NONAKTIF', '1', CupertinoIcons.person_crop_circle_badge_xmark, Colors.red),
-                  const SizedBox(width: 12),
-                  _buildStatCard('EMAIL TERVERIFIKASI', '21', CupertinoIcons.mail_solid, Colors.blue),
-                  const SizedBox(width: 12),
-                  _buildStatCard('BELUM VERIFIKASI', '1', CupertinoIcons.mail, Colors.orange),
+                  _buildStatCard('AKUN NONAKTIF', '${state.stats?.akunNonaktif ?? 0}', Icons.person_remove, Colors.red),
+                  // const SizedBox(width: 12),
+                  // _buildStatCard('EMAIL TERVERIFIKASI', '21', Icons.mail, Colors.blue),
+                  // const SizedBox(width: 12),
+                  // _buildStatCard('BELUM VERIFIKASI', '1', Icons.mail, Colors.orange),
                 ],
               ),
             ),
@@ -76,6 +93,11 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                   child: SizedBox(
                     height: 48,
                     child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value.toLowerCase();
+                        });
+                      },
                       decoration: InputDecoration(
                         hintText: 'Cari nama atau email...',
                         hintStyle: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
@@ -102,7 +124,7 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: Colors.grey.shade300),
                     ),
-                    child: const Icon(CupertinoIcons.slider_horizontal_3, color: AppColors.textPrimary, size: 20),
+                    child: const Icon(Icons.tune, color: AppColors.textPrimary, size: 20),
                   ),
                 ),
               ],
@@ -112,19 +134,195 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
           const Divider(height: 1, thickness: 1, color: Colors.black12),
           
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              physics: const BouncingScrollPhysics(),
-              children: [
-                // List Users
-                ...List.generate(10, (index) => _buildUserItem(index)),
-                
-                const SizedBox(height: 32),
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+              slivers: [
+                CustomRefreshControl(
+                  onRefresh: () async => ref.read(penggunaProvider.notifier).fetchData(),
+                  primaryColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final filteredUsers = state.users.where((u) {
+                          final nameMatch = u.name.toLowerCase().contains(_searchQuery);
+                          final emailMatch = u.email.toLowerCase().contains(_searchQuery);
+                          final statusMatch = _selectedStatusAkun == 'Semua' 
+                              ? true 
+                              : (_selectedStatusAkun == 'Aktif' ? u.isActive : !u.isActive);
+                          final emailStatusMatch = _selectedStatusEmail == 'Semua'
+                              ? true
+                              : (_selectedStatusEmail == 'Verif' ? u.emailVerified : !u.emailVerified);
+                          return (nameMatch || emailMatch) && statusMatch && emailStatusMatch;
+                        }).toList();
+                        return _buildUserItem(filteredUsers[index]);
+                      },
+                      childCount: state.users.where((u) {
+                        final nameMatch = u.name.toLowerCase().contains(_searchQuery);
+                        final emailMatch = u.email.toLowerCase().contains(_searchQuery);
+                        final statusMatch = _selectedStatusAkun == 'Semua' 
+                            ? true 
+                            : (_selectedStatusAkun == 'Aktif' ? u.isActive : !u.isActive);
+                        final emailStatusMatch = _selectedStatusEmail == 'Semua'
+                            ? true
+                            : (_selectedStatusEmail == 'Verif' ? u.emailVerified : !u.emailVerified);
+                        return (nameMatch || emailMatch) && statusMatch && emailStatusMatch;
+                      }).length,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFullShimmerLoading() {
+    return Column(
+      children: [
+        // Shimmer Stats Cards
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          color: Colors.white,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            physics: const NeverScrollableScrollPhysics(),
+            child: Row(
+              children: List.generate(4, (index) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 12.0),
+                  child: Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Container(
+                      width: 140,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+        
+        // Shimmer Search Bar
+        Container(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          color: Colors.white,
+          child: Row(
+            children: [
+              Expanded(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: Container(
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Shimmer.fromColors(
+                baseColor: Colors.grey.shade300,
+                highlightColor: Colors.grey.shade100,
+                child: Container(
+                  height: 48,
+                  width: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        
+        const Divider(height: 1, thickness: 1, color: Colors.black12),
+        
+        // Shimmer List Users
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 8,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.black.withOpacity(0.05)),
+                ),
+                child: Row(
+                  children: [
+                    Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      child: Container(
+                        width: 46,
+                        height: 46,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            child: Container(height: 14, width: 150, color: Colors.white),
+                          ),
+                          const SizedBox(height: 8),
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            child: Container(height: 10, width: 100, color: Colors.white),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(height: 20, width: 50, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+                              ),
+                              const SizedBox(width: 8),
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(height: 20, width: 60, decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12))),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -158,12 +356,11 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
     );
   }
 
-  Widget _buildUserItem(int index) {
-    final names = ['Pac Barat', 'Pac Bendo', 'Pacipnuippnu Lembeyan', 'Pacipnuippnumagetan', 'Pac Ipnu Ippnu Panekan'];
-    final name = names[index % names.length];
-    final isAktif = index != 3;
-    final isVerif = index != 3;
-    final initials = name.split(' ').take(2).map((e) => e[0].toUpperCase()).join();
+  Widget _buildUserItem(user) {
+    final name = user.name;
+    final isAktif = user.isActive;
+    final isVerif = user.emailVerified;
+    final initials = name.split(' ').take(2).map((e) => e.isNotEmpty ? e[0].toUpperCase() : '').join();
 
     return InkWell(
       onTap: () {
@@ -171,6 +368,7 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
           context,
           MaterialPageRoute(builder: (context) => DetailPenggunaScreen(
             isCabang: widget.isCabang,
+            userId: user.id,
             userName: name,
             initials: initials,
           )),
@@ -217,7 +415,7 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  const Text('SEKRETARIS PAC', style: TextStyle(fontSize: 10, color: AppColors.textSecondary, fontWeight: FontWeight.w600)),
+                  Text(user.role == 'SEKRETARIS_PAC' ? 'SEKRETARIS PAC' : 'SEKRETARIS CABANG', style: const TextStyle(fontSize: 10, color: AppColors.textSecondary, fontWeight: FontWeight.w600)),
                   const SizedBox(height: 8),
                   Row(
                     children: [
@@ -252,7 +450,7 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
               ),
             ),
             const SizedBox(width: 8),
-            Icon(CupertinoIcons.eye, color: Colors.grey.shade400, size: 20),
+            Icon(Icons.visibility_outlined, color: Colors.grey.shade400, size: 20),
           ],
         ),
       ),
@@ -260,6 +458,9 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
   }
 
   void _showFilterModal(BuildContext context) {
+    String tempStatusAkun = _selectedStatusAkun;
+    String tempStatusEmail = _selectedStatusEmail;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -305,8 +506,8 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        value: _selectedStatusAkun,
-                        icon: const Icon(CupertinoIcons.chevron_down, size: 16),
+                        value: tempStatusAkun,
+                        icon: const Icon(Icons.expand_more, size: 16),
                         items: ['Semua', 'Aktif', 'Nonaktif'].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -315,8 +516,7 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                         }).toList(),
                         onChanged: (newValue) {
                           if (newValue != null) {
-                            setModalState(() => _selectedStatusAkun = newValue);
-                            setState(() => _selectedStatusAkun = newValue);
+                            setModalState(() => tempStatusAkun = newValue);
                           }
                         },
                       ),
@@ -338,8 +538,8 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         isExpanded: true,
-                        value: _selectedStatusEmail,
-                        icon: const Icon(CupertinoIcons.chevron_down, size: 16),
+                        value: tempStatusEmail,
+                        icon: const Icon(Icons.expand_more, size: 16),
                         items: ['Semua', 'Verif', 'Belum Verif'].map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -348,8 +548,7 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                         }).toList(),
                         onChanged: (newValue) {
                           if (newValue != null) {
-                            setModalState(() => _selectedStatusEmail = newValue);
-                            setState(() => _selectedStatusEmail = newValue);
+                            setModalState(() => tempStatusEmail = newValue);
                           }
                         },
                       ),
@@ -357,19 +556,47 @@ class _PenggunaScreenState extends State<PenggunaScreen> {
                   ),
 
                   const SizedBox(height: 32),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedStatusAkun = 'Semua';
+                              _selectedStatusEmail = 'Semua';
+                            });
+                            Navigator.pop(context);
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.red,
+                            side: const BorderSide(color: Colors.red),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          child: const Text('Reset', style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
                       ),
-                      child: const Text('Terapkan Filter', style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedStatusAkun = tempStatusAkun;
+                              _selectedStatusEmail = tempStatusEmail;
+                            });
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          child: const Text('Terapkan', style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                 ],

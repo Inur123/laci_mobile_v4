@@ -33,7 +33,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                 fontSize: 18)),
         actions: [
           IconButton(
-            icon: const Icon(CupertinoIcons.doc_on_clipboard,
+            icon: const Icon(Icons.content_paste,
                 color: AppColors.textSecondary, size: 22),
             onPressed: () {
               _showSalinModal(context, primaryColor);
@@ -53,18 +53,18 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               physics: const BouncingScrollPhysics(),
               children: [
-                _buildStatCard('TOTAL ANGGOTA', '312', CupertinoIcons.person_2,
+                _buildStatCard('TOTAL ANGGOTA', '312', Icons.people_outline,
                     primaryColor),
-                _buildStatCard('LAKI-LAKI (IPNU)', '113', CupertinoIcons.person,
+                _buildStatCard('LAKI-LAKI (IPNU)', '113', Icons.person_outline,
                     Colors.green),
                 _buildStatCard('PEREMPUAN (IPPNU)', '199',
-                    CupertinoIcons.person, Colors.pink),
+                    Icons.person_outline, Colors.pink),
                 _buildStatCard(
-                    'MAKESTA', '116', CupertinoIcons.shield, Colors.blue),
+                    'MAKESTA', '116', Icons.security, Colors.blue),
                 _buildStatCard(
-                    'LAKMUD', '21', CupertinoIcons.shield_fill, Colors.indigo),
+                    'LAKMUD', '21', Icons.security, Colors.indigo),
                 _buildStatCard(
-                    'LATIN', '2', CupertinoIcons.rosette, Colors.orange),
+                    'LATIN', '2', Icons.military_tech, Colors.orange),
               ],
             ),
           ),
@@ -113,7 +113,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                     border: Border.all(color: Colors.grey.shade300),
                   ),
                   child: IconButton(
-                    icon: const Icon(CupertinoIcons.slider_horizontal_3,
+                    icon: const Icon(Icons.tune,
                         size: 18, color: AppColors.textPrimary),
                     onPressed: () {
                       _showFilterModal(context);
@@ -150,7 +150,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
         },
         backgroundColor:
             widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
-        child: const Icon(CupertinoIcons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -307,7 +307,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                       const SizedBox(height: 6),
                       Row(
                         children: [
-                          Icon(CupertinoIcons.person_solid,
+                          Icon(Icons.person,
                               size: 12,
                               color: isLaki ? Colors.green : Colors.pink),
                           const SizedBox(width: 4),
@@ -321,7 +321,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          const Icon(CupertinoIcons.building_2_fill,
+                          const Icon(Icons.business,
                               size: 12, color: AppColors.textSecondary),
                           const SizedBox(width: 4),
                           const Expanded(
@@ -337,7 +337,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
 
                 // Menu 3 Titik
                 PopupMenuButton<String>(
-                  icon: const Icon(CupertinoIcons.ellipsis,
+                  icon: const Icon(Icons.more_horiz,
                       size: 20, color: AppColors.textSecondary),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
@@ -390,9 +390,9 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                   },
                   itemBuilder: (context) => [
                     _buildPopupMenuItem(
-                        'lihat', CupertinoIcons.eye, 'Lihat Detail'),
-                    _buildPopupMenuItem('edit', CupertinoIcons.pencil, 'Edit'),
-                    _buildPopupMenuItem('hapus', CupertinoIcons.trash, 'Hapus',
+                        'lihat', Icons.visibility_outlined, 'Lihat Detail'),
+                    _buildPopupMenuItem('edit', Icons.edit_outlined, 'Edit'),
+                    _buildPopupMenuItem('hapus', Icons.delete_outline, 'Hapus',
                         isDestructive: true),
                   ],
                 ),
@@ -434,7 +434,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           title: Row(
             children: [
-              Icon(CupertinoIcons.doc_on_clipboard_fill,
+              Icon(Icons.content_paste,
                   color: primaryColor),
               const SizedBox(width: 8),
               const Text('Salin Anggota',
@@ -468,7 +468,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                   children: const [
                     Text('Pilih periode...',
                         style: TextStyle(color: AppColors.textSecondary)),
-                    Icon(CupertinoIcons.chevron_down,
+                    Icon(Icons.expand_more,
                         size: 16, color: AppColors.textSecondary),
                   ],
                 ),
@@ -635,7 +635,7 @@ class _AnggotaScreenState extends State<AnggotaScreen> {
                                               : FontWeight.w500,
                                           color: AppColors.textPrimary)),
                                   if (isSelected)
-                                    Icon(CupertinoIcons.checkmark_alt,
+                                    Icon(Icons.check,
                                         color: widget.isCabang
                                             ? AppColors.cabangPrimary
                                             : AppColors.pacPrimary,

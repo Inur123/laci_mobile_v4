@@ -35,7 +35,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back,
+          icon: Icon(Icons.arrow_back_ios_new,
               color: (widget.isCabang
                   ? AppColors.cabangPrimary
                   : AppColors.pacPrimary)),
@@ -61,14 +61,14 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                   children: [
               CustomTextField(
                 label: 'Nomor Surat *',
-                icon: CupertinoIcons.number,
+                icon: Icons.tag,
                 keyboardType: TextInputType.text,
                 isCabang: widget.isCabang,
               ),
               const SizedBox(height: 16),
               _buildPremiumDropdown(
                 label: 'Jenis Surat *',
-                icon: CupertinoIcons.doc_text,
+                icon: Icons.description,
                 value: _selectedJenisSurat,
                 hint: 'Pilih Jenis Surat',
                 onTap: () {
@@ -89,7 +89,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
               const SizedBox(height: 16),
               _buildPremiumDropdown(
                 label: 'Organisasi *',
-                icon: CupertinoIcons.building_2_fill,
+                icon: Icons.business,
                 value: _selectedOrganisasi,
                 hint: 'Pilih Organisasi',
                 onTap: () {
@@ -105,7 +105,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
               const SizedBox(height: 16),
               _buildPremiumDropdown(
                 label: 'Tanggal Surat *',
-                icon: CupertinoIcons.calendar,
+                icon: Icons.calendar_today,
                 value: _selectedTanggal,
                 hint: 'Pilih tanggal surat',
                 onTap: () {
@@ -116,14 +116,14 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
               const SizedBox(height: 16),
               CustomTextField(
                 label: 'Pengirim/Penerima *',
-                icon: CupertinoIcons.person_2,
+                icon: Icons.people_outline,
                 keyboardType: TextInputType.text,
                 isCabang: widget.isCabang,
               ),
               const SizedBox(height: 16),
               CustomTextField(
                 label: 'Perihal *',
-                icon: CupertinoIcons.info_circle,
+                icon: Icons.info_outline,
                 keyboardType: TextInputType.text,
                 isCabang: widget.isCabang,
               ),
@@ -193,8 +193,8 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                         ),
                         child: Icon(
                           _fileName != null
-                              ? CupertinoIcons.doc_fill
-                              : CupertinoIcons.cloud_upload,
+                              ? Icons.description
+                              : Icons.cloud_upload,
                           color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary,
                           size: 28,
                         ),
@@ -320,7 +320,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                const Icon(CupertinoIcons.chevron_down,
+                const Icon(Icons.expand_more,
                     color: AppColors.textSecondary, size: 20),
                 const SizedBox(width: 16),
               ],
@@ -381,7 +381,7 @@ class _FormArsipSuratScreenState extends State<FormArsipSuratScreen> {
                       ),
                     ),
                     trailing: isSelected
-                        ? Icon(CupertinoIcons.checkmark_alt,
+                        ? Icon(Icons.check,
                             color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)
                         : null,
                     onTap: () {

@@ -35,7 +35,7 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
+          icon: Icon(Icons.arrow_back_ios_new, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -55,7 +55,7 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
                     Expanded(
                       child: CustomTextField(
                         label: 'Nama *',
-                        icon: CupertinoIcons.doc_text_fill,
+                        icon: Icons.description,
                         isCabang: widget.isCabang,
                       ),
                     ),
@@ -63,7 +63,7 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
                     Expanded(
                       child: _buildPremiumDropdown(
                         label: 'Tanggal *',
-                        icon: CupertinoIcons.calendar,
+                        icon: Icons.calendar_today,
                         value: _tanggal,
                         hint: 'Pilih tanggal',
                         onTap: () {
@@ -111,7 +111,7 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
-                                child: const Icon(CupertinoIcons.doc_fill, color: Colors.blueGrey, size: 24),
+                                child: const Icon(Icons.description, color: Colors.blueGrey, size: 24),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -129,9 +129,9 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              Icon(CupertinoIcons.eye, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, size: 20),
+                              Icon(Icons.visibility_outlined, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, size: 20),
                               const SizedBox(width: 16),
-                              const Icon(CupertinoIcons.xmark, color: Colors.red, size: 20),
+                              const Icon(Icons.close, color: Colors.red, size: 20),
                             ],
                           ),
                           const SizedBox(height: 16),
@@ -157,7 +157,7 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
                               boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
                             ),
                             child: Icon(
-                              _fileName != null ? CupertinoIcons.doc_fill : CupertinoIcons.cloud_upload, 
+                              _fileName != null ? Icons.description : Icons.cloud_upload, 
                               color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary, 
                               size: 28,
                             ),
@@ -183,11 +183,11 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
                   const SizedBox(height: 12),
                   Row(
                     children: [
-                      Icon(CupertinoIcons.doc_text_viewfinder, size: 16, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
+                      Icon(Icons.manage_search, size: 16, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary),
                       const SizedBox(width: 8),
                       Text('Pratinjau PDF', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: widget.isCabang ? AppColors.cabangPrimary : AppColors.pacPrimary)),
                       const Spacer(),
-                      const Icon(CupertinoIcons.arrow_up_right_square, size: 16, color: AppColors.textSecondary),
+                      const Icon(Icons.open_in_new, size: 16, color: AppColors.textSecondary),
                       const SizedBox(width: 4),
                       const Text('Layar Penuh', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
                     ],
@@ -204,7 +204,7 @@ class _FormBerkasCabangScreenState extends State<FormBerkasCabangScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(CupertinoIcons.doc_plaintext, color: Colors.white54, size: 48),
+                          Icon(Icons.article, color: Colors.white54, size: 48),
                           SizedBox(height: 16),
                           Text('PDF Preview Placeholder', style: TextStyle(color: Colors.white)),
                           Text('Menampilkan dokumen Cabang PDF', style: TextStyle(color: Colors.white54, fontSize: 12)),

@@ -29,7 +29,7 @@ class _BackupDatabaseScreenState extends State<BackupDatabaseScreen> {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -107,7 +107,7 @@ class _BackupDatabaseScreenState extends State<BackupDatabaseScreen> {
               onPressed: () {
                 _showBackupConfirmationDialog();
               },
-              icon: const Icon(CupertinoIcons.tray_arrow_down, size: 18, color: Colors.white),
+              icon: const Icon(Icons.inbox, size: 18, color: Colors.white),
               label: const Text('Mulai Backup Database', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
@@ -165,7 +165,7 @@ class _BackupDatabaseScreenState extends State<BackupDatabaseScreen> {
                       color: primaryColor.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(CupertinoIcons.doc_text_fill, color: primaryColor, size: 18),
+                    child: Icon(Icons.description, color: primaryColor, size: 18),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -179,7 +179,7 @@ class _BackupDatabaseScreenState extends State<BackupDatabaseScreen> {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(CupertinoIcons.calendar, size: 12, color: AppColors.textSecondary),
+                            const Icon(Icons.calendar_today, size: 12, color: AppColors.textSecondary),
                             const SizedBox(width: 4),
                             Text(
                               item['waktu'] as String,
@@ -218,7 +218,7 @@ class _BackupDatabaseScreenState extends State<BackupDatabaseScreen> {
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
                           padding: const EdgeInsets.all(8),
-                          child: Icon(CupertinoIcons.cloud_download, size: 20, color: primaryColor),
+                          child: Icon(Icons.cloud_download, size: 20, color: primaryColor),
                         ),
                       ),
                       const SizedBox(width: 4),
@@ -229,7 +229,7 @@ class _BackupDatabaseScreenState extends State<BackupDatabaseScreen> {
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
                           padding: const EdgeInsets.all(8),
-                          child: const Icon(CupertinoIcons.trash, size: 20, color: Colors.red),
+                          child: const Icon(Icons.delete_outline, size: 20, color: Colors.red),
                         ),
                       ),
                     ],

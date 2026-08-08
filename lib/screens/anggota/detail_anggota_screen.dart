@@ -36,7 +36,7 @@ class DetailAnggotaScreen extends StatelessWidget {
           child: Container(color: Colors.black.withOpacity(0.05), height: 1.0),
         ),
         leading: IconButton(
-          icon: Icon(CupertinoIcons.back, color: primaryColor),
+          icon: Icon(Icons.arrow_back_ios_new, color: primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text('Detail Anggota',
@@ -46,7 +46,7 @@ class DetailAnggotaScreen extends StatelessWidget {
                 fontSize: 16)),
         actions: [
           IconButton(
-            icon: Icon(CupertinoIcons.pencil, color: primaryColor),
+            icon: Icon(Icons.edit_outlined, color: primaryColor),
             onPressed: () {
               Navigator.push(
                 context,
@@ -91,7 +91,7 @@ class DetailAnggotaScreen extends StatelessWidget {
                     ),
                     child: Center(
                       child: Icon(
-                        CupertinoIcons.person_solid,
+                        Icons.person,
                         size: 40,
                         color: Colors.grey.shade400,
                       ),
@@ -130,7 +130,7 @@ class DetailAnggotaScreen extends StatelessWidget {
             // 1. INFORMASI PERSONAL
             _buildSection(
               title: 'Informasi Personal',
-              icon: CupertinoIcons.person_alt,
+              icon: Icons.person,
               color: Colors.blue,
               children: [
                 _buildInfoRow('Nama Lengkap', namaLengkap),
@@ -149,7 +149,7 @@ class DetailAnggotaScreen extends StatelessWidget {
             // 2. RIWAYAT pengkaderan
             _buildSection(
               title: 'Riwayat pengkaderan',
-              icon: CupertinoIcons.badge_plus_radiowaves_right,
+              icon: Icons.cell_tower,
               color: Colors.indigo,
               children: (data['pengkaderan'] as List<dynamic>? ?? []).map((p) {
                 return Padding(
@@ -162,7 +162,7 @@ class DetailAnggotaScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: Colors.indigo.shade50,
                             shape: BoxShape.circle),
-                        child: const Icon(CupertinoIcons.checkmark_seal_fill,
+                        child: const Icon(Icons.verified,
                             color: Colors.indigo, size: 16),
                       ),
                       const SizedBox(width: 12),
@@ -191,7 +191,7 @@ class DetailAnggotaScreen extends StatelessWidget {
             // 3. INFORMASI ORGANISASI & TAMBAHAN
             _buildSection(
               title: 'Informasi Organisasi & Tambahan',
-              icon: CupertinoIcons.building_2_fill,
+              icon: Icons.business,
               color: Colors.orange,
               children: [
                 _buildInfoRow('Jabatan', data['jabatan'] ?? '-'),
@@ -205,7 +205,7 @@ class DetailAnggotaScreen extends StatelessWidget {
             // 4. RIWAYAT PENDIDIKAN
             _buildSection(
               title: 'Riwayat Pendidikan',
-              icon: CupertinoIcons.book,
+              icon: Icons.menu_book,
               color: Colors.green,
               children: (data['pendidikan'] as List<dynamic>? ?? []).map((p) {
                 return Padding(
@@ -218,7 +218,7 @@ class DetailAnggotaScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: Colors.green.shade50,
                             shape: BoxShape.circle),
-                        child: const Icon(CupertinoIcons.building_2_fill,
+                        child: const Icon(Icons.business,
                             color: Colors.green, size: 16),
                       ),
                       const SizedBox(width: 12),
