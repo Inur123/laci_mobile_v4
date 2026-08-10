@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/screens/main_screen.dart';
 import 'package:laci_mobile/screens/register_screen.dart';

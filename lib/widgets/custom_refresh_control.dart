@@ -85,13 +85,12 @@ class _BouncingDotsIndicatorState extends State<BouncingDotsIndicator> with Sing
           opacity = 0.2 + ((progress - 0.5) / 0.5) * 0.8;
         }
         
-        return Container(
-          width: 10.0,
-          height: 10.0,
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          decoration: BoxDecoration(
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2.0),
+          child: Icon(
+            Icons.circle,
+            size: 10.0,
             color: widget.color.withOpacity(opacity.clamp(0.0, 1.0)),
-            shape: BoxShape.circle,
           ),
         );
       },

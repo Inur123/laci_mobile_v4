@@ -33,6 +33,11 @@ class ApiService {
           if (location != null) {
             options.headers['x-user-location'] = location;
           }
+
+          final appKey = dotenv.env['APP_API_KEY'];
+          if (appKey != null && appKey.isNotEmpty) {
+            options.headers['x-app-key'] = appKey;
+          }
           
           return handler.next(options);
         },

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/screens/pengajuan/detail_pengajuan_screen.dart';
 import 'package:laci_mobile/utils/app_colors.dart';

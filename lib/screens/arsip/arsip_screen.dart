@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/screens/arsip/detail_arsip_surat_screen.dart';
 import 'package:laci_mobile/screens/arsip/detail_sp_screen.dart';

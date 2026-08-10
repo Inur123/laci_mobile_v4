@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:laci_mobile/screens/anggota/form_anggota_screen.dart';
 import 'package:laci_mobile/screens/anggota/detail_anggota_screen.dart';
